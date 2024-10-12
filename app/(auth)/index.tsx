@@ -77,7 +77,7 @@ export default function App() {
             }}
             style={styles.signUpButton}
           >
-            Continue with Google
+            <Text>Continue with Google</Text>
           </Pressable>
         </View>
       ) : (
@@ -85,12 +85,7 @@ export default function App() {
           {userInfo?.picture && (
             <Image source={{ uri: userInfo?.picture }} style={styles.image} />
           )}
-          <Text style={styles.text}>ID: {JSON.stringify(userInfo)}</Text>
-          <Text style={styles.text}>Email: {userInfo.email}</Text>
-          <Text style={styles.text}>
-            Verified: {userInfo.verified_email ? "yes" : "no"}
-          </Text>
-          <Text style={styles.text}>Name: {userInfo.name}</Text>
+          <Text style={styles.text}>{JSON.stringify(userInfo)}</Text>
         </View>
       )}
     </View>
@@ -130,6 +125,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     backgroundColor: "#966440",
-    color: "white",
+    color: "#fff",
   },
 });

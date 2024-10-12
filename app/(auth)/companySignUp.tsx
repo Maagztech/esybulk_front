@@ -1,4 +1,3 @@
-import { isValidPhoneNumber } from "@/globalUtils";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -11,54 +10,25 @@ import {
 } from "react-native";
 
 const CompanySignUp = () => {
-  const [personalDetails, setPersonalDetails] = useState({
-    name: "",
-    designation: "",
-  });
-
-  const [companyDetails, setCompanyDetails] = useState({
+  const [accountDetails, setAccountDetails] = useState({
     companyName: "",
     companyAddress: "",
-  });
-
-  const [accountDetails, setAccountDetails] = useState({
+    designation: "",
     phoneNumber: "",
-    otp: "",
-    password: "",
   });
-
-  const [otpSent, setOtpSent] = useState(false);
   const navigation = useNavigation();
-
-  // Function to handle OTP send logic
-  const sendOtp = () => {
-    if (!isValidPhoneNumber(accountDetails.phoneNumber)) {
-      Alert.alert("Error", "Please enter a valid phone number");
-      return;
-    }
-    Alert.alert(
-      "OTP Sent",
-      `OTP has been sent to ${accountDetails.phoneNumber}`
-    );
-    setOtpSent(true);
-  };
-
-  // Check if all fields are filled for enabling Sign Up button
   const canSignUp = () => {
     return (
-      personalDetails.name &&
-      personalDetails.designation &&
-      companyDetails.companyName &&
-      companyDetails.companyAddress &&
-      accountDetails.phoneNumber &&
-      accountDetails.password &&
-      accountDetails.otp
+      accountDetails.designation &&
+      accountDetails.companyName &&
+      accountDetails.companyAddress &&
+      accountDetails.phoneNumber
     );
   };
 
   const handleSignUp = () => {
     if (!canSignUp()) {
-      Alert.alert("Error", "Please fill out all fields and provide the OTP");
+      Alert.alert("Error", "Please fill out all fields");
       return;
     }
 
@@ -73,36 +43,29 @@ const CompanySignUp = () => {
 
         {/* Personal Details */}
         <TextInput
-          placeholder="Name"
-          value={personalDetails.name}
+          placeholder="Company Name"
+          value={accountDetails.companyName}
           onChangeText={(text) =>
-            setPersonalDetails({ ...personalDetails, name: text })
+            setAccountDetails({ ...accountDetails, companyName: text })
           }
           style={styles.input}
         />
         <TextInput
           placeholder="Designation"
-          value={personalDetails.designation}
+          value={accountDetails.designation}
           onChangeText={(text) =>
-            setPersonalDetails({ ...personalDetails, designation: text })
+            setAccountDetails({ ...accountDetails, designation: text })
           }
           style={styles.input}
         />
 
         {/* Company Details */}
-        <TextInput
-          placeholder="Company Name"
-          value={companyDetails.companyName}
-          onChangeText={(text) =>
-            setCompanyDetails({ ...companyDetails, companyName: text })
-          }
-          style={styles.input}
-        />
+
         <TextInput
           placeholder="Company Address"
-          value={companyDetails.companyAddress}
+          value={accountDetails.companyAddress}
           onChangeText={(text) =>
-            setCompanyDetails({ ...companyDetails, companyAddress: text })
+            setAccountDetails({ ...accountDetails, companyAddress: text })
           }
           style={styles.input}
         />
@@ -121,48 +84,6 @@ const CompanySignUp = () => {
           keyboardType="phone-pad"
           style={styles.input}
         />
-        <Pressable
-          style={[
-            styles.otpButton,
-            {
-              backgroundColor: isValidPhoneNumber(accountDetails.phoneNumber)
-                ? "#966440"
-                : "#aaa",
-            },
-          ]}
-          onPress={sendOtp}
-          disabled={!isValidPhoneNumber(accountDetails.phoneNumber)}
-        >
-          <Text style={styles.otpButtonText}>
-            {otpSent ? "OTP Sent" : "Send OTP"}
-          </Text>
-        </Pressable>
-
-        {/* OTP Input */}
-        {otpSent && (
-          <TextInput
-            placeholder="Enter OTP"
-            value={accountDetails.otp}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, otp: text })
-            }
-            keyboardType="number-pad"
-            style={styles.input}
-          />
-        )}
-
-        {/* Password field */}
-        {otpSent && accountDetails.otp.length > 0 && (
-          <TextInput
-            placeholder="Password"
-            secureTextEntry
-            value={accountDetails.password}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, password: text })
-            }
-            style={styles.input}
-          />
-        )}
 
         <View style={styles.PressableContainer}>
           <Pressable

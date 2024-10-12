@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -10,7 +11,7 @@ const Header = () => {
   const [canGoBack, setCanGoBack] = useState(false);
   const auth = useSelector((state: any) => state?.auth?.user);
   const [user, setUser] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
       setCanGoBack(navigation.canGoBack());
@@ -20,15 +21,15 @@ const Header = () => {
   }, [navigation]);
 
   const handleSearchPress = () => {
-    navigation.navigate("search" as never); // Using navigate instead of replace
+    navigation.navigate("search" as never);
   };
 
   const handleLogout = () => {
-    navigation.navigate("/" as never); // Using navigate instead of replace
+    router.push("/");
   };
 
   const handleCartPress = () => {
-    navigation.navigate("cart" as never); // Using navigate instead of replace
+    navigation.navigate("cart" as never);
   };
 
   useEffect(() => {
