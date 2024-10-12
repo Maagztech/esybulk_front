@@ -75,9 +75,9 @@ export default function App() {
             onPress={() => {
               promptAsync();
             }}
-            style={styles.signUpButton}
+            style={styles.signUpPresseble}
           >
-            <Text>Continue with Google</Text>
+            <Text style={styles.signUpButton}>Continue with Google</Text>
           </Pressable>
         </View>
       ) : (
@@ -121,10 +121,19 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     alignItems: "center",
   },
+  signUpPresseble: {
+    display: "flex",
+    justifyContent: "center",
+    marginVertical: 10,
+    width: "100%",
+    maxWidth: 500,
+    alignItems: "center",
+  },
   signUpButton: {
     padding: 15,
     borderRadius: 8,
     backgroundColor: "#966440",
-    color: "#fff",
+    color: "white",
+    fontWeight: "bold",
   },
 });
