@@ -5,6 +5,7 @@ const DistributorSignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
     phoneNumber: "",
     address: "",
+    companyName: "",
   });
 
   const handleSignUp = () => {
@@ -17,13 +18,25 @@ const DistributorSignUp = () => {
   };
 
   const canSignUp = () => {
-    return accountDetails.phoneNumber && accountDetails.address;
+    return (
+      accountDetails.phoneNumber &&
+      accountDetails.address &&
+      accountDetails.companyName
+    );
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Sign Up</Text>
+        <TextInput
+          placeholder="Company Name"
+          value={accountDetails.companyName}
+          onChangeText={(text) =>
+            setAccountDetails({ ...accountDetails, companyName: text })
+          }
+          style={styles.input}
+        />
         <TextInput
           placeholder="Address"
           value={accountDetails.address}
@@ -36,7 +49,6 @@ const DistributorSignUp = () => {
           placeholder="Phone Number"
           value={accountDetails.phoneNumber}
           onChangeText={(text) =>
-            // Remove any non-numeric characters
             setAccountDetails({
               ...accountDetails,
               phoneNumber: text.replace(/[^0-9]/g, ""),
@@ -50,7 +62,12 @@ const DistributorSignUp = () => {
           <Pressable
             style={[
               styles.signUpButton,
-              { backgroundColor: canSignUp() ? "#966440" : "#aaa" },
+              {
+                backgroundColor:
+                  canSignUp() && isValidPhoneNumber(accountDetails.phoneNumber)
+                    ? "#966440"
+                    : "#aaa",
+              },
             ]}
             onPress={handleSignUp}
             disabled={!canSignUp()}

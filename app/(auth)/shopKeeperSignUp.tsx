@@ -5,6 +5,7 @@ const ShopKeeperSignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
     phoneNumber: "",
     address: "",
+    companyName: "",
   });
 
   const handleSignUp = () => {
@@ -19,6 +20,14 @@ const ShopKeeperSignUp = () => {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Sign Up</Text>
+        <TextInput
+          placeholder="Shop Name"
+          value={accountDetails.companyName}
+          onChangeText={(text) =>
+            setAccountDetails({ ...accountDetails, companyName: text })
+          }
+          style={styles.input}
+        />
         <TextInput
           placeholder="Address"
           value={accountDetails.address}
