@@ -11,17 +11,27 @@ import {
 
 const CompanySignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
+    name: "",
     companyName: "",
-    companyAddress: "",
+    landmark: "",
+    zipCode: "",
+    block: "",
+    city_village: "",
+    state: "",
     designation: "",
     phoneNumber: "",
   });
   const navigation = useNavigation();
   const canSignUp = () => {
     return (
+      accountDetails.name &&
       accountDetails.designation &&
       accountDetails.companyName &&
-      accountDetails.companyAddress &&
+      accountDetails.landmark &&
+      accountDetails.zipCode &&
+      accountDetails.block &&
+      accountDetails.city_village &&
+      accountDetails.state &&
       accountDetails.phoneNumber
     );
   };
@@ -43,6 +53,14 @@ const CompanySignUp = () => {
 
         {/* Personal Details */}
         <TextInput
+          placeholder="Your Name"
+          value={accountDetails.name}
+          onChangeText={(text) =>
+            setAccountDetails({ ...accountDetails, name: text })
+          }
+          style={styles.input}
+        />
+        <TextInput
           placeholder="Company Name"
           value={accountDetails.companyName}
           onChangeText={(text) =>
@@ -58,18 +76,50 @@ const CompanySignUp = () => {
           }
           style={styles.input}
         />
-
-        {/* Company Details */}
-
         <TextInput
-          placeholder="Company Address"
-          value={accountDetails.companyAddress}
+          placeholder="Landmark"
+          value={accountDetails.landmark}
           onChangeText={(text) =>
-            setAccountDetails({ ...accountDetails, companyAddress: text })
+            setAccountDetails({ ...accountDetails, landmark: text })
           }
           style={styles.input}
         />
-
+        <View style={styles.address}>
+          <TextInput
+            placeholder="Zip Code"
+            value={accountDetails.zipCode}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, zipCode: text })
+            }
+            style={styles.input50}
+          />
+          <TextInput
+            placeholder="Block"
+            value={accountDetails.block}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, block: text })
+            }
+            style={styles.input50}
+          />
+        </View>
+        <View style={styles.address}>
+          <TextInput
+            placeholder="City / Village"
+            value={accountDetails.city_village}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, city_village: text })
+            }
+            style={styles.input50}
+          />
+          <TextInput
+            placeholder="State"
+            value={accountDetails.state}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, state: text })
+            }
+            style={styles.input50}
+          />
+        </View>
         {/* Account Details */}
         <TextInput
           placeholder="Phone Number"
@@ -135,6 +185,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: "#000",
   },
+  input50: {
+    width: "50%",
+    padding: 15,
+    marginBottom: 15,
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
+    borderColor: "#966440",
+    borderWidth: 1,
+    color: "#000",
+  },
   otpButton: {
     padding: 10,
     borderRadius: 5,
@@ -161,6 +221,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontWeight: "bold",
+  },
+  address: {
+    width: "100%",
+    flexDirection: "row", // Add this line
+    justifyContent: "space-between",
+    gap: 10,
   },
 });
 
