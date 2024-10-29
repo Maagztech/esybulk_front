@@ -1,12 +1,13 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
+import { useAuth } from "@/context/authContext";
 import React, { useState } from "react";
 import {
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
 } from "react-native";
 import AddProductModal from "./components/addProductsModal";
 
@@ -15,7 +16,7 @@ export const PendingFromDistributor = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { width } = useWindowDimensions();
   const isLargeScreen = width >= 768;
-
+  const { isLoggedIn, dummyFunction } = useAuth();
   const products = [
     {
       id: "1",
@@ -65,6 +66,7 @@ export const PendingFromDistributor = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.headerTitle}>{isLoggedIn}</Text>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Your Products</Text>
         <Pressable style={styles.addButton} onPress={() => setIsOpen(true)}>

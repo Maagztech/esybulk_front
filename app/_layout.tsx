@@ -1,4 +1,5 @@
 import Header from "@/components/mobileview/global/header";
+import { AuthProvider } from "@/context/authContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { store } from "@/store";
 import {
@@ -9,12 +10,11 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -33,6 +33,7 @@ export default function RootLayout() {
     return null;
   }
   return (
+    <AuthProvider>
     <Provider store={store}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <View style={styles.overlay}>
@@ -53,6 +54,7 @@ export default function RootLayout() {
         </View>
       </ThemeProvider>
     </Provider>
+    </AuthProvider>
   );
 }
 
