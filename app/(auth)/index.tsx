@@ -1,33 +1,33 @@
+import { useAuth } from "@/context/authContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigationState } from "@react-navigation/native"; // Import navigation state hook
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
-  const [token, setToken] = useState("");
-  interface UserInfo {
-    picture?: string;
-    email: string;
-    verified_email: boolean;
-    name: string;
-  }
-
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const { getUserInfo, setUserInfo, userInfo }: any = useAuth();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
       "791745687932-ghg45cqrj6ojrupbs3h9v2tbr665bt4h.apps.googleusercontent.com",
-    // iosClientId: "",
     webClientId:
       "791745687932-e0dh3e3inqbgmmjabntt927fe104jlme.apps.googleusercontent.com",
   });
 
+  const currentPathname = useNavigationState(
+    (state) => state.routes[state.index].name
+  );
+
   useEffect(() => {
-    handleEffect();
-  }, [response, token]);
+    console.log(currentPathname);
+    if (currentPathname === "index") {
+      handleEffect();
+    }
+  }, [response, currentPathname]);
 
   async function handleEffect() {
     const user = await getLocalUser();
@@ -45,25 +45,7 @@ export default function App() {
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
-    return JSON.parse(data);
-  };
-
-  const getUserInfo = async (token: string) => {
-    if (!token) return;
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const user = await response.json();
-      await AsyncStorage.setItem("@user", JSON.stringify(user));
-      setUserInfo(user);
-    } catch (error) {
-      // Add your own error handler here
-    }
+    return data;
   };
 
   return (

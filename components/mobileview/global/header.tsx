@@ -1,15 +1,15 @@
+import { useAuth } from "@/context/authContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 
 const Header = () => {
   const navigation = useNavigation();
   const [canGoBack, setCanGoBack] = useState(false);
-  const auth = useSelector((state: any) => state?.auth?.user);
+  const { userInfo }: any = useAuth();
   const [user, setUser] = useState(null);
   const router = useRouter();
   useEffect(() => {
@@ -32,17 +32,6 @@ const Header = () => {
     navigation.navigate("cart" as never);
   };
 
-  useEffect(() => {
-    getLocalUser();
-  }, []);
-
-  const getLocalUser = async () => {
-    const data = await AsyncStorage.getItem("@user");
-    if (data) {
-      setUser(JSON.parse(data));
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -56,7 +45,7 @@ const Header = () => {
           style={styles.image}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{auth?.type}</Text>
+          {/* <Text style={styles.title}>{auth?.type}</Text> */}
         </View>
       </View>
       {user && (
