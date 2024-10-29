@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     padding: 20,
   },
-
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
