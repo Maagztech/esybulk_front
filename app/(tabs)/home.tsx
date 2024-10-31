@@ -9,8 +9,8 @@ const profile = () => {
   return (
     <>
       {type === "company" && <PendingFromDistributor />}
-      {(type === "distributor" || true) && <OrderFromShop />}
-      {type === "shopkeeper" && <ProductsToBuyNearby />}
+      {type === "distributor" && <OrderFromShop />}
+      {(type === "shopkeeper" || true) && <ProductsToBuyNearby />}
     </>
   );
 };
