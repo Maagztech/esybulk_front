@@ -4,7 +4,7 @@ import { useNavigationState } from "@react-navigation/native"; // Import navigat
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -23,7 +23,6 @@ export default function App() {
   );
 
   useEffect(() => {
-    console.log(currentPathname);
     if (currentPathname === "index") {
       handleEffect();
     }
@@ -38,7 +37,7 @@ export default function App() {
         }
       }
     } else {
-      setUserInfo(user);
+      getUserInfo(user);
     }
   }
 
@@ -64,10 +63,7 @@ export default function App() {
         </View>
       ) : (
         <View style={styles.card}>
-          {userInfo?.picture && (
-            <Image source={{ uri: userInfo?.picture }} style={styles.image} />
-          )}
-          <Text style={styles.text}>{JSON.stringify(userInfo)}</Text>
+          <Text style={styles.text}>{userInfo}</Text>
         </View>
       )}
     </View>
