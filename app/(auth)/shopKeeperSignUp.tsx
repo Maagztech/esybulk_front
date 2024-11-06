@@ -20,6 +20,7 @@ const ShopKeeperSignUp = () => {
   const canSignUp = () => {
     return (
       accountDetails.name &&
+      accountDetails.companyName &&
       accountDetails.phoneNumber &&
       accountDetails.landmark &&
       accountDetails.zipCode &&

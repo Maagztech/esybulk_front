@@ -51,7 +51,7 @@ const Header = () => {
       {user && (
         <View style={styles.rightcontainer}>
           <Pressable onPress={handleCartPress} style={styles.iconContainer}>
-            <Ionicons name="cart" size={28} color="#000" />
+            <Ionicons name="heart" size={28} color="#000" />
           </Pressable>
           <Pressable onPress={handleSearchPress} style={styles.iconContainer}>
             <Ionicons name="search" size={28} color="#000" />

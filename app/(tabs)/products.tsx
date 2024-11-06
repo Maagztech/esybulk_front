@@ -7,8 +7,8 @@ const profile = () => {
   const type = useSelector((state: any) => state?.auth?.user?.type);
   return (
     <>
-      {(type === "company" || true) && <YourProducts />}
-      {type === "shopkeeper" && <OrderStatus />}
+      {type === "company" && <YourProducts />}
+      {type === "shopkeeper" || (true && <OrderStatus />)}
     </>
   );
 };

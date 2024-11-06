@@ -1,7 +1,9 @@
 import React from "react";
 
 const OrderStatus = () => {
-  return <></>;
+  return <view>
+    
+  </view>;
 };
 
 export default OrderStatus;

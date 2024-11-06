@@ -1,6 +1,5 @@
+import ProductDetails from "@/components/mobileview/shopkeeper/components/productDetails";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { router } from "expo-router";
-import { Button } from "react-native";
 
 type RouteParams = {
   params: {
@@ -14,9 +13,8 @@ const ProductPage = () => {
   const navigation = useNavigation();
   return (
     <div>
-      <h1>Product ID: {id}</h1>
-
-      <Button title="Go to Home" onPress={() => router.push("/home")} />
+      {/* <h1>Product ID: {id}</h1> */}
+      <ProductDetails id={id} />
     </div>
   );
 };
