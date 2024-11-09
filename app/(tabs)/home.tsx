@@ -8,9 +8,9 @@ const profile = () => {
   const type = useSelector((state: any) => state?.auth?.user?.type);
   return (
     <>
-      {type === "company" && <PendingFromDistributor />}
+      {type === "company" || (true && <PendingFromDistributor />)}
       {type === "distributor" && <OrderFromShop />}
-      {(type === "shopkeeper" || true) && <ProductsToBuyNearby />}
+      {type === "shopkeeper" && <ProductsToBuyNearby />}
     </>
   );
 };

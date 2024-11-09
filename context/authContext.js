@@ -1,33 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
-import { router } from "expo-router";
+import { router } from 'expo-router';
 import React, { createContext, useContext, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 const AuthContext = createContext(undefined);
-
 export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const navigation = useNavigation();
-  const getUserInfo = async (token) => {
+  const [idtoken, setIdToken] = useState(null);
+  const getUserInfo = async (token, setUserInfo) => {
     if (!token) return;
+    setIdToken(token);
     await AsyncStorage.setItem("@user", token);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/login", {},
+        "http://localhost:5000/api/login",
+        {},
         {
           headers: { Authorization: `${token}` },
-        },
+        }
       );
+
       const user = response.data;
-      if (user.role && user.zipcode) router.push("/home")
-      else router.push("/selectRole");
+
+
+      if (user.role && user.zipcode) {
+        router.push("/home");
+      } else {
+        router.push("/selectRole");
+      }
+
       setUserInfo(user);
     } catch (error) {
-      router.push("/selectRole")
+      alert("Failed! Try again.");
     }
   };
   return (
-    <AuthContext.Provider value={{ userInfo, setUserInfo, getUserInfo }}>
+    <AuthContext.Provider value={{ idtoken, userInfo, setUserInfo, getUserInfo }}>
       {children}
     </AuthContext.Provider>
   );

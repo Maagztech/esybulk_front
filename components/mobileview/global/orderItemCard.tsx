@@ -1,77 +1,99 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-export const ItemCard = ({ product }: any) => (
-  <View style={styles.card}>
-    <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-    <Text style={styles.productName}>{product.productName}</Text>
-    <View style={styles.buttonAndInfo}>
-      <View style={styles.infoContainer}>
-        <Text style={styles.productInfo}>
-          Quantity to Deliver:{" "}
-          <Text style={styles.quantity}>{product.quantityToDeliver}</Text>
-        </Text>
-        <Text style={styles.productInfo}>
-          Price: <Text style={styles.price}>${product.price}</Text>
-        </Text>
-        <Text style={styles.productInfo}>
-          total Collectible:{" "}
-          <Text style={styles.price}>
-            {product.price * product.quantityToDeliver}
+export const ItemCard = ({ product }: any) => {
+  const handleContactManager = () => {
+    const phoneUrl = `tel:${product.contact}`;
+    Linking.openURL(phoneUrl).catch((err) =>
+      Alert.alert("Error", "Unable to open dialer.")
+    );
+  };
+
+  return (
+    <View style={styles.card}>
+      <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
+      <Text style={styles.productName}>{product.productName}</Text>
+      <View style={styles.buttonAndInfo}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.productInfo}>
+            Quantity to Deliver:{" "}
+            <Text style={styles.quantity}>{product.quantityToDeliver}</Text>
           </Text>
-        </Text>
-        <Text style={styles.productInfo}>
-          Shop: <Text style={styles.shop}>{product.shopName}</Text>
-        </Text>
-        <Text style={styles.productInfo}>
-          Location: <Text style={styles.location}>{product.location}</Text>
-        </Text>
-      </View>
-      <View style={styles.buttons}>
-        \
-        <View>
-          <Pressable
-            style={styles.complete_button}
-            onPress={() => console.log("Cancel Order")}
-          >
-            <Text style={styles.addButtonText}>Cancel Order</Text>
-          </Pressable>
+          <Text style={styles.productInfo}>
+            Price: <Text style={styles.price}>${product.price}</Text>
+          </Text>
+          <Text style={styles.productInfo}>
+            total Collectible:{" "}
+            <Text style={styles.price}>
+              {product.price * product.quantityToDeliver}
+            </Text>
+          </Text>
+          <Text style={styles.productInfo}>
+            Shop: <Text style={styles.shop}>{product.shopName}</Text>
+          </Text>
+          <Text style={styles.productInfo}>
+            Location: <Text style={styles.location}>{product.location}</Text>
+          </Text>
+        </View>
+        <View style={styles.buttons}>
+          <View>
+            <Pressable
+              style={styles.complete_button}
+              onPress={() => console.log("Cancel Order")}
+            >
+              <Text style={styles.addButtonText}>Cancel Order</Text>
+            </Pressable>
+            <Pressable
+              style={styles.complete_button}
+              onPress={handleContactManager}
+            >
+              <Text style={styles.addButtonText}>Contact</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
 
-    {/* Delivery process (status circles) */}
-    <View style={styles.deliveryProcess}>
-      <View style={styles.circleFilled} />
-      <View style={styles.horizontalBar} />
-      <View style={styles.circleVacant} />
-      <View style={styles.horizontalBar} />
-      <View style={styles.circleVacant} />
-    </View>
+      {/* Delivery process (status circles) */}
+      <View style={styles.deliveryProcess}>
+        <View style={styles.circleFilled} />
+        <View style={styles.horizontalBar} />
+        <View style={styles.circleVacant} />
+        <View style={styles.horizontalBar} />
+        <View style={styles.circleVacant} />
+      </View>
 
-    {/* Delivery status buttons */}
-    <View style={styles.deliveryProcessButtons}>
-      <Pressable
-        style={styles.complete_button}
-        onPress={() => console.log("Ordered")}
-      >
-        <Text style={styles.addButtonText}>Ordered</Text>
-      </Pressable>
-      <Pressable
-        style={styles.incomplete_button}
-        onPress={() => console.log("Out for Delivery")}
-      >
-        <Text style={styles.addButtonText}>Out for Delivery</Text>
-      </Pressable>
-      <Pressable
-        style={styles.incomplete_button}
-        onPress={() => console.log("Delivered")}
-      >
-        <Text style={styles.addButtonText}>Delivered</Text>
-      </Pressable>
+      {/* Delivery status buttons */}
+      <View style={styles.deliveryProcessButtons}>
+        <Pressable
+          style={styles.complete_button}
+          onPress={() => console.log("Ordered")}
+        >
+          <Text style={styles.addButtonText}>Ordered</Text>
+        </Pressable>
+        <Pressable
+          style={styles.incomplete_button}
+          onPress={() => console.log("Out for Delivery")}
+        >
+          <Text style={styles.addButtonText}>Out for Delivery</Text>
+        </Pressable>
+        <Pressable
+          style={styles.incomplete_button}
+          onPress={() => console.log("Delivered")}
+        >
+          <Text style={styles.addButtonText}>Delivered</Text>
+        </Pressable>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -81,7 +103,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 20,
-
     marginTop: 10,
     paddingHorizontal: 10,
   },
@@ -176,6 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 5,
     marginHorizontal: 5,
+    marginVertical: 5,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
