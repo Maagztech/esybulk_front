@@ -1,3 +1,5 @@
+import { useAuth } from "@/context/authContext";
+import { router } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -11,22 +13,10 @@ import {
 } from "react-native";
 
 const BusinessProfile = () => {
-  const businessInfo = {
-    name: "Tech Solutions Inc.",
-    description: "Leading provider of software development and IT consulting.",
-    logo: "https://via.placeholder.com/150",
-    manager: {
-      name: "John Doe",
-      position: "Account Manager",
-      email: "johndoe@techsolutions.com",
-      phone: "+1 555 123 4567",
-    },
-    address: "123 Business Park, Suite 400, Silicon Valley, CA",
-  };
-
+  const { userInfo, role }: any = useAuth();
   const handleContactManager = () => {
     // Use Linking to open the phone dialer with the manager's phone number
-    const phoneUrl = `tel:${businessInfo.manager.phone}`;
+    const phoneUrl = `tel:8114694441`;
     Linking.openURL(phoneUrl).catch((err) =>
       Alert.alert("Error", "Unable to open dialer.")
     );
@@ -35,36 +25,65 @@ const BusinessProfile = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={{ uri: businessInfo.logo }} style={styles.logo} />
+        <Image
+          source={{
+            uri:
+              userInfo?.avatar ||
+              "https://cdn.pixabay.com/photo/2021/07/02/04/48/user-6380868_1280.png",
+          }}
+          style={styles.logo}
+        />
       </View>
-      <Text style={styles.businessName}>{businessInfo.name}</Text>
-      <Text style={styles.description}>{businessInfo.description}</Text>
+      <Text style={styles.businessName}>{userInfo?.name}</Text>
+      <Text style={styles.description}>{userInfo?.companyName}</Text>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Manager Information</Text>
         <Text style={styles.infoLabel}>Name:</Text>
-        <Text style={styles.infoText}>{businessInfo.manager.name}</Text>
-
-        <Text style={styles.infoLabel}>Position:</Text>
-        <Text style={styles.infoText}>{businessInfo.manager.position}</Text>
-
+        <Text style={styles.infoText}>{userInfo?.name}</Text>
+        {role != "shopkeeper" && (
+          <>
+            <Text style={styles.infoLabel}>Designation:</Text>
+            <Text style={styles.infoText}>{userInfo?.designation}</Text>
+          </>
+        )}
         <Text style={styles.infoLabel}>Email:</Text>
-        <Text style={styles.infoText}>{businessInfo.manager.email}</Text>
+        <Text style={styles.infoText}>{userInfo?.account}</Text>
 
         <Text style={styles.infoLabel}>Phone:</Text>
-        <Text style={styles.infoText}>{businessInfo.manager.phone}</Text>
+        <Text style={styles.infoText}>{userInfo?.phoneNumber}</Text>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Business Details</Text>
         <Text style={styles.infoLabel}>Address:</Text>
-        <Text style={styles.infoText}>{businessInfo.address}</Text>
-
-        {/* Removed website as it's not defined in the businessInfo */}
+        <Text style={styles.infoText}>
+          {userInfo?.landmark}, {userInfo?.village_city}, {userInfo?.block},{" "}
+          {userInfo?.district}, {userInfo?.state}
+        </Text>
+        <Text style={styles.infoLabel}>Pincode:</Text>
+        <Text style={styles.infoText}>{userInfo?.pinCode}</Text>
       </View>
 
-      <Pressable style={styles.contactPressable} onPress={handleContactManager}>
-        <Text style={styles.contactPressableText}>Contact Manager</Text>
+      <Pressable
+        style={styles.contactPressable}
+        onPress={() => {
+          if (role === "shopkeeper") {
+            router.push("shopKeeperSignUp" as never);
+          } else if (role === "company") {
+            router.push("companySignUp" as never);
+          } else {
+            router.push("distributorSignUp" as never);
+          }
+        }}
+      >
+        <Text style={styles.contactPressableText}>Edit Profile</Text>
+      </Pressable>
+      <Pressable
+        style={{ ...styles.contactPressable, backgroundColor: "#966440" }}
+        onPress={handleContactManager}
+      >
+        <Text style={styles.contactPressableText}>Costumer Care</Text>
       </Pressable>
     </ScrollView>
   );
@@ -117,6 +136,7 @@ const styles = StyleSheet.create({
   contactPressable: {
     backgroundColor: "#28C76F",
     paddingVertical: 15,
+    marginVertical: 10,
     borderRadius: 5,
     alignItems: "center",
   },

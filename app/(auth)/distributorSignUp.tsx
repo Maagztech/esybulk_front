@@ -1,22 +1,30 @@
+import { useAuth } from "@/context/authContext";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { toast } from "react-toastify";
 
 const DistributorSignUp = () => {
+  const { activeAccount, userInfo }: any = useAuth();
   const [accountDetails, setAccountDetails] = useState({
-    name: "",
-    phoneNumber: "",
-    landmark: "",
-    zipCode: "",
-    block: "",
-    city_village: "",
-    state: "",
-    companyName: "",
+    name: userInfo?.name || "",
+    phoneNumber: userInfo?.phoneNumber || "",
+    landmark: userInfo?.landmark || "",
+    village_city: userInfo?.village_city || "",
+    pinCode: userInfo?.pinCode || "",
+    block: userInfo?.block || "",
+    district: userInfo?.district || "",
+    state: userInfo?.state || "",
+    companyName: userInfo?.companyName || "",
+    designation: userInfo?.designation || "",
   });
 
-  const handleSignUp = () => {
-    console.log("Sign Up", { accountDetails });
+  const handleSignUp = async () => {
+    if (!canSignUp()) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+    await activeAccount(accountDetails);
   };
-
   const isValidPhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^[0-9]{10}$/;
     return phoneRegex.test(phoneNumber);
@@ -27,9 +35,10 @@ const DistributorSignUp = () => {
       accountDetails.name &&
       accountDetails.phoneNumber &&
       accountDetails.landmark &&
-      accountDetails.zipCode &&
+      accountDetails.village_city &&
+      accountDetails.pinCode &&
       accountDetails.block &&
-      accountDetails.city_village &&
+      accountDetails.district &&
       accountDetails.state &&
       accountDetails.companyName
     );
@@ -38,7 +47,7 @@ const DistributorSignUp = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Profile</Text>
         <TextInput
           placeholder="Your Name"
           value={accountDetails.name}
@@ -55,20 +64,48 @@ const DistributorSignUp = () => {
           }
           style={styles.input}
         />
-          <TextInput
-          placeholder="Landmark"
-          value={accountDetails.landmark}
+        <TextInput
+          placeholder="Phone Number"
+          value={accountDetails.phoneNumber}
           onChangeText={(text) =>
-            setAccountDetails({ ...accountDetails, landmark: text })
+            setAccountDetails({
+              ...accountDetails,
+              phoneNumber: text.replace(/[^0-9]/g, ""),
+            })
           }
+          keyboardType="phone-pad"
           style={styles.input}
         />
+        <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
+          Company Address{" "}
+          <Text style={{ fontSize: 12, color: "#966440" }}>
+            (Fill it correctly)
+          </Text>
+        </Text>
         <View style={styles.address}>
           <TextInput
-            placeholder="Zip Code"
-            value={accountDetails.zipCode}
+            placeholder="Landmark"
+            value={accountDetails.landmark}
             onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, zipCode: text })
+              setAccountDetails({ ...accountDetails, landmark: text })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Village / city"
+            value={accountDetails.landmark}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, village_city: text })
+            }
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.address}>
+          <TextInput
+            placeholder="Pin Code"
+            value={accountDetails.pinCode}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, pinCode: text })
             }
             style={styles.input50}
           />
@@ -83,10 +120,10 @@ const DistributorSignUp = () => {
         </View>
         <View style={styles.address}>
           <TextInput
-            placeholder="City / Village"
-            value={accountDetails.city_village}
+            placeholder="District"
+            value={accountDetails.district}
             onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, city_village: text })
+              setAccountDetails({ ...accountDetails, district: text })
             }
             style={styles.input50}
           />
@@ -99,18 +136,6 @@ const DistributorSignUp = () => {
             style={styles.input50}
           />
         </View>
-        <TextInput
-          placeholder="Phone Number"
-          value={accountDetails.phoneNumber}
-          onChangeText={(text) =>
-            setAccountDetails({
-              ...accountDetails,
-              phoneNumber: text.replace(/[^0-9]/g, ""),
-            })
-          }
-          keyboardType="phone-pad"
-          style={styles.input}
-        />
 
         <View style={styles.PressableContainer}>
           <Pressable

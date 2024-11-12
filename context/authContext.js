@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 import axios from 'axios';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Alert } from "react-native";
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
@@ -12,13 +12,28 @@ export const AuthProvider = ({ children }) => {
   const [access_token, setAccessToken] = useState(null);
   const [role, setRole] = useState("");
 
+
+  const currentPathname = useNavigationState((state) => {
+    return state.routes[state.index] ? state.routes[state.index].name : null;
+  });
+
+
   useEffect(() => {
+    if (!userInfo && currentPathname && currentPathname !== "index") {
+      router.push("/");
+    } else if (userInfo && currentPathname === "index") {
+      router.push("(tabs)");
+    }
+  }, [currentPathname, userInfo, router]);
+
+  useEffect(() => {
+    if (userInfo) return;
     const fetchUser = async () => {
       const refresh_token = await getLocalUser();
       if (!refresh_token) router.push("/")
       if (refresh_token) {
         const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
-        console.log(response.data)
+        setUserInfo(response.data.user)
         setAccessToken(response.data.access_token)
         await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
       } else {
@@ -34,8 +49,7 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-
-  const getUserInfo = async (token, setUserInfo) => {
+  const getUserInfo = async (token) => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/login",
@@ -44,34 +58,63 @@ export const AuthProvider = ({ children }) => {
           headers: { Authorization: `${token}` },
         }
       );
+
       const user = response.data;
-      setAccessToken(user.access_token)
+      setAccessToken(user.access_token);
       await AsyncStorage.setItem("refresh_token", user.refresh_token);
-      if (user.user.role && user.user.pincode) {
+
+      if (user.user.role && user.user.pinCode) {
+        setUserInfo(user.user);
         setRole(user.user.role);
         router.push("/home");
       } else {
+        console.log("Redirecting to /selectRole due to missing role or pincode.");
         router.push("/selectRole");
       }
-      setUserInfo(user);
     } catch (error) {
-      Alert.alert("Failed! Try again.");
+      console.error("Error during login:", error);
+      toast.error("Failed Try again!");
     }
   };
+
 
   const selectRole = async (role) => {
     try {
       const response = await axios.post("http://localhost:5000/api/selectRole", { role }, {
         headers: { Authorization: `${access_token}` },
       });
-      console.log(response.data); // Use response.data instead of response.body
     } catch (error) {
       console.error("Error selecting role:", error);
     }
   };
 
+
+  const activeAccount = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/active",
+        data,
+        { headers: { Authorization: `${access_token}` } })
+      setUserInfo(response.data.user);
+      toast.success("Account created successfully");
+      navigation.navigate("(tabs)");
+    } catch (error) {
+      toast.error("Errour occured, Try Again !")
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("refresh_token");
+      setUserInfo(null);
+      setRole(null);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
+    <AuthContext.Provider value={{ handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
       {children}
     </AuthContext.Provider>
   );

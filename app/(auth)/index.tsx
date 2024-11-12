@@ -37,23 +37,17 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {!userInfo ? (
-        <View style={styles.PressableContainer}>
-          <Pressable
-            disabled={!request}
-            onPress={() => {
-              promptAsync();
-            }}
-            style={styles.signUpPresseble}
-          >
-            <Text style={styles.signUpButton}>Continue with Google</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <View style={styles.card}>
-          <Text style={styles.text}>{userInfo}</Text>
-        </View>
-      )}
+      <View style={styles.PressableContainer}>
+        <Pressable
+          disabled={!request}
+          onPress={() => {
+            promptAsync();
+          }}
+          style={styles.signUpPresseble}
+        >
+          <Text style={styles.signUpButton}>Continue with Google</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

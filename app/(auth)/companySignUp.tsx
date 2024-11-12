@@ -1,25 +1,22 @@
+import { useAuth } from "@/context/authContext";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { toast } from "react-toastify";
 
 const CompanySignUp = () => {
+  const { activeAccount, userInfo }: any = useAuth();
   const [accountDetails, setAccountDetails] = useState({
-    name: "",
-    companyName: "",
-    landmark: "",
-    zipCode: "",
-    block: "",
-    city_village: "",
-    state: "",
-    designation: "",
-    phoneNumber: "",
+    name: userInfo?.name || "",
+    phoneNumber: userInfo?.phoneNumber || "",
+    landmark: userInfo?.landmark || "",
+    village_city: userInfo?.village_city || "",
+    pinCode: userInfo?.pinCode || "",
+    block: userInfo?.block || "",
+    district: userInfo?.district || "",
+    state: userInfo?.state || "",
+    companyName: userInfo?.companyName || "",
+    designation: userInfo?.designation || "",
   });
   const navigation = useNavigation();
   const canSignUp = () => {
@@ -28,30 +25,27 @@ const CompanySignUp = () => {
       accountDetails.designation &&
       accountDetails.companyName &&
       accountDetails.landmark &&
-      accountDetails.zipCode &&
+      accountDetails.village_city && // Check village_city correctly
+      accountDetails.pinCode &&
       accountDetails.block &&
-      accountDetails.city_village &&
+      accountDetails.district &&
       accountDetails.state &&
       accountDetails.phoneNumber
     );
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!canSignUp()) {
-      Alert.alert("Error", "Please fill out all fields");
+      toast.error("Please fill out all fields");
       return;
     }
-
-    Alert.alert("Success", "Account created successfully");
-    navigation.navigate("(tabs)" as never);
+    await activeAccount(accountDetails);
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Profile</Text>
 
-        {/* Personal Details */}
         <TextInput
           placeholder="Your Name"
           value={accountDetails.name}
@@ -77,19 +71,48 @@ const CompanySignUp = () => {
           style={styles.input}
         />
         <TextInput
-          placeholder="Landmark"
-          value={accountDetails.landmark}
+          placeholder="Phone Number"
+          value={accountDetails.phoneNumber}
           onChangeText={(text) =>
-            setAccountDetails({ ...accountDetails, landmark: text })
+            setAccountDetails({
+              ...accountDetails,
+              phoneNumber: text.replace(/[^0-9]/g, ""),
+            })
           }
+          keyboardType="phone-pad"
           style={styles.input}
         />
+        <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
+          Company Address{" "}
+          <Text style={{ fontSize: 12, color: "#966440" }}>
+            (Fill it correctly)
+          </Text>
+        </Text>
+
         <View style={styles.address}>
           <TextInput
-            placeholder="Zip Code"
-            value={accountDetails.zipCode}
+            placeholder="Landmark"
+            value={accountDetails.landmark}
             onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, zipCode: text })
+              setAccountDetails({ ...accountDetails, landmark: text })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Village / city"
+            value={accountDetails.village_city} // Corrected field
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, village_city: text })
+            }
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.address}>
+          <TextInput
+            placeholder="Pin Code"
+            value={accountDetails.pinCode}
+            onChangeText={(text) =>
+              setAccountDetails({ ...accountDetails, pinCode: text })
             }
             style={styles.input50}
           />
@@ -104,10 +127,10 @@ const CompanySignUp = () => {
         </View>
         <View style={styles.address}>
           <TextInput
-            placeholder="City / Village"
-            value={accountDetails.city_village}
+            placeholder="District"
+            value={accountDetails.district}
             onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, city_village: text })
+              setAccountDetails({ ...accountDetails, district: text })
             }
             style={styles.input50}
           />
@@ -120,20 +143,6 @@ const CompanySignUp = () => {
             style={styles.input50}
           />
         </View>
-        {/* Account Details */}
-        <TextInput
-          placeholder="Phone Number"
-          value={accountDetails.phoneNumber}
-          onChangeText={(text) =>
-            // Remove any non-numeric characters
-            setAccountDetails({
-              ...accountDetails,
-              phoneNumber: text.replace(/[^0-9]/g, ""),
-            })
-          }
-          keyboardType="phone-pad"
-          style={styles.input}
-        />
 
         <View style={styles.PressableContainer}>
           <Pressable
@@ -142,7 +151,7 @@ const CompanySignUp = () => {
               { backgroundColor: canSignUp() ? "#966440" : "#aaa" },
             ]}
             onPress={handleSignUp}
-            disabled={!canSignUp()}
+            // disabled={!canSignUp()}
           >
             <Text style={styles.signUpButtonText}>Sign Up</Text>
           </Pressable>
@@ -164,7 +173,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width: "100%",
-    maxWidth: 500, // Max width for the form
+    maxWidth: 500,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 15,
     alignItems: "center",
-    width: "100%", // Make OTP button full width
+    width: "100%",
   },
   otpButtonText: {
     color: "#fff",
@@ -224,7 +233,7 @@ const styles = StyleSheet.create({
   },
   address: {
     width: "100%",
-    flexDirection: "row", // Add this line
+    flexDirection: "row",
     justifyContent: "space-between",
     gap: 10,
   },

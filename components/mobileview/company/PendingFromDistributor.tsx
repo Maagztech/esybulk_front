@@ -14,7 +14,7 @@ export const PendingFromDistributor = () => {
     quantityToDeliver: number;
     shopName: string;
     location: string;
-    zipCode: number;
+    pinCode: number;
     contact: number;
     status: string;
   }

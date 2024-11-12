@@ -33,7 +33,6 @@ const SelectRoleScreen = () => {
                 selectRole("company");
                 navigation.navigate("companySignUp" as never);
               } catch (error: any) {
-                console.log(error);
               }
             }}
           >

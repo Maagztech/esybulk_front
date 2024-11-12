@@ -15,6 +15,8 @@ import { StyleSheet, View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -34,26 +36,29 @@ export default function RootLayout() {
   }
   return (
     <AuthProvider>
-    <Provider store={store}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <View style={styles.overlay}>
-          <SafeAreaView
-            style={styles.container}
-            edges={["top", "bottom", "left", "right"]}
-          >
-            <Header />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
+      <Provider store={store}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <View style={styles.overlay}>
+            <SafeAreaView
+              style={styles.container}
+              edges={["top", "bottom", "left", "right"]}
             >
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
-          </SafeAreaView>
-        </View>
-      </ThemeProvider>
-    </Provider>
+              <Header />
+              <ToastContainer />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              </Stack>
+            </SafeAreaView>
+          </View>
+        </ThemeProvider>
+      </Provider>
     </AuthProvider>
   );
 }

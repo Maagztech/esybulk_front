@@ -1,6 +1,5 @@
 import { useAuth } from "@/context/authContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -9,7 +8,7 @@ import { Image, Pressable, StyleSheet, View } from "react-native";
 const Header = () => {
   const navigation = useNavigation();
   const [canGoBack, setCanGoBack] = useState(false);
-  const { userInfo }: any = useAuth();
+  const { userInfo, handleLogout }: any = useAuth();
   const [user, setUser] = useState(null);
   const router = useRouter();
   useEffect(() => {
@@ -21,15 +20,11 @@ const Header = () => {
   }, [navigation]);
 
   const handleSearchPress = () => {
-    navigation.navigate("search" as never);
-  };
-
-  const handleLogout = () => {
-    router.push("/");
+    router.push("/search" as never);
   };
 
   const handleCartPress = () => {
-    navigation.navigate("cart" as never);
+    router.push("cart" as never);
   };
 
   return (
@@ -48,7 +43,7 @@ const Header = () => {
           {/* <Text style={styles.title}>{auth?.type}</Text> */}
         </View>
       </View>
-      {user && (
+      {userInfo && (
         <View style={styles.rightcontainer}>
           <Pressable onPress={handleCartPress} style={styles.iconContainer}>
             <Ionicons name="heart" size={28} color="#000" />
@@ -56,13 +51,7 @@ const Header = () => {
           <Pressable onPress={handleSearchPress} style={styles.iconContainer}>
             <Ionicons name="search" size={28} color="#000" />
           </Pressable>
-          <Pressable
-            style={styles.iconContainer}
-            onPress={async () => {
-              await AsyncStorage.removeItem("@user");
-              handleLogout();
-            }}
-          >
+          <Pressable style={styles.iconContainer} onPress={handleLogout}>
             <Ionicons name="log-out" size={28} color="#000" />
           </Pressable>
         </View>
