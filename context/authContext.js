@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -9,12 +10,26 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const navigation = useNavigation();
   const [access_token, setAccessToken] = useState(null);
-  useEffect(()=>{
+  const [role, setRole] = useState("");
 
-  },[])
+  useEffect(() => {
+    const fetchUser = async () => {
+      const refresh_token = await getLocalUser();
+      if (!refresh_token) router.push("/")
+      if (refresh_token) {
+        const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
+        console.log(response.data)
+        setAccessToken(response.data.access_token)
+        await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
+      } else {
+        router.push("/");
+      }
+    };
+    fetchUser();
+  }, [])
 
   const getLocalUser = async () => {
-    const data = await AsyncStorage.getItem("rf_token");
+    const data = await AsyncStorage.getItem("refresh_token");
     if (!data) return null;
     return data;
   };
@@ -30,7 +45,10 @@ export const AuthProvider = ({ children }) => {
         }
       );
       const user = response.data;
+      setAccessToken(user.access_token)
+      await AsyncStorage.setItem("refresh_token", user.refresh_token);
       if (user.user.role && user.user.pincode) {
+        setRole(user.user.role);
         router.push("/home");
       } else {
         router.push("/selectRole");
@@ -40,8 +58,20 @@ export const AuthProvider = ({ children }) => {
       Alert.alert("Failed! Try again.");
     }
   };
+
+  const selectRole = async (role) => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/selectRole", { role }, {
+        headers: { Authorization: `${access_token}` },
+      });
+      console.log(response.data); // Use response.data instead of response.body
+    } catch (error) {
+      console.error("Error selecting role:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ idtoken, userInfo, setUserInfo, getUserInfo }}>
+    <AuthContext.Provider value={{ userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
       {children}
     </AuthContext.Provider>
   );

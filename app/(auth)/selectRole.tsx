@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/authContext";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
@@ -16,6 +17,7 @@ const distributorImage = require("@/assets/images/distributor.jpg");
 const shopkeeperImage = require("@/assets/images/shopkeeper.jpg");
 
 const SelectRoleScreen = () => {
+  const { selectRole }: any = useAuth();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -27,7 +29,12 @@ const SelectRoleScreen = () => {
           <Pressable
             style={styles.card}
             onPress={() => {
-              navigation.navigate("companySignUp" as never);
+              try {
+                selectRole("company");
+                navigation.navigate("companySignUp" as never);
+              } catch (error: any) {
+                console.log(error);
+              }
             }}
           >
             <ImageBackground
@@ -42,7 +49,10 @@ const SelectRoleScreen = () => {
           <Pressable
             style={styles.card}
             onPress={() => {
-              navigation.navigate("distributorSignUp" as never);
+              try {
+                selectRole("distributor");
+                navigation.navigate("distributorSignUp" as never);
+              } catch (error) {}
             }}
           >
             <ImageBackground
@@ -57,7 +67,10 @@ const SelectRoleScreen = () => {
           <Pressable
             style={styles.card}
             onPress={() => {
-              navigation.navigate("shopKeeperSignUp" as never);
+              try {
+                selectRole("shopkeeper");
+                navigation.navigate("shopKeeperSignUp" as never);
+              } catch (error) {}
             }}
           >
             <ImageBackground

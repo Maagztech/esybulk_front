@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { ItemCard } from "../global/orderItemCard";
 
 export const PendingFromDistributor = () => {
-  const { idtoken } = useAuth();
+  const { access_token } = useAuth();
   interface Product {
     id: string;
     imageUrl: string;
@@ -29,7 +29,7 @@ export const PendingFromDistributor = () => {
     const response = await axios.get(
       "http://localhost:5000/api/distributor_or_company_orders",
       {
-        headers: { Authorization: `${idtoken}` },
+        headers: { Authorization: `${access_token}` },
       }
     );
     setProducts(response.data);

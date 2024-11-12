@@ -5,11 +5,11 @@ import { useAuth } from './authContext.js';
 const ProductContext = createContext(undefined);
 
 export const ProductProvider = ({ children }) => {
-  const { idtoken } = useAuth();
+  const { access_token } = useAuth();
   const [products, setProducts] = useState([]);
   const loadOrderedProducts = async () => {
     const response = await axios.get("http://localhost:5000/api/products", {
-      headers: { Authorization: `${idtoken}` },
+      headers: { Authorization: `${access_token}` },
     });
     setProducts(response.data);
   }

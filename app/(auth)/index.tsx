@@ -1,5 +1,4 @@
 import { useAuth } from "@/context/authContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigationState } from "@react-navigation/native"; // Import navigation state hook
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
@@ -29,23 +28,12 @@ export default function App() {
   }, [response, currentPathname]);
 
   async function handleEffect() {
-    const user = await getLocalUser();
-    if (!user) {
-      if (response?.type === "success") {
-        if (response?.authentication?.accessToken) {
-          getUserInfo(response.authentication.accessToken);
-        }
+    if (response?.type === "success") {
+      if (response?.authentication?.accessToken) {
+        getUserInfo(response.authentication.accessToken);
       }
-    } else {
-      getUserInfo(user);
     }
   }
-
-  const getLocalUser = async () => {
-    const data = await AsyncStorage.getItem("@user");
-    if (!data) return null;
-    return data;
-  };
 
   return (
     <View style={styles.container}>
