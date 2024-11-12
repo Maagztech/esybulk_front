@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { ItemCard } from "../global/orderItemCard";
 
-export const PendingFromDistributor = () => {
+export const OrderFromShop = () => {
   const { access_token } = useAuth();
   interface Product {
     id: string;

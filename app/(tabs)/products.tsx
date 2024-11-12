@@ -1,14 +1,16 @@
-import YourProducts from "@/components/mobileview/company/yourProducts";
+import { PendingFromDistributor } from "@/components/mobileview/company/PendingFromDistributor";
+import { OrderFromShop } from "@/components/mobileview/distributer/OrderFromShop";
 import OrderStatus from "@/components/mobileview/shopkeeper/OrderStatus";
+import { useAuth } from "@/context/authContext";
 import React from "react";
-import { useSelector } from "react-redux";
 
 const profile = () => {
-  const type = useSelector((state: any) => state?.auth?.user?.type);
+  const { role }: any = useAuth();
   return (
     <>
-      {type === "company" && <YourProducts />}
-      {type === "shopkeeper" || (true && <OrderStatus />)}
+      {role === "company" && <PendingFromDistributor />}
+      {role === "distributor" && <OrderFromShop />}
+      {role === "shopkeeper" && <OrderStatus />}
     </>
   );
 };
