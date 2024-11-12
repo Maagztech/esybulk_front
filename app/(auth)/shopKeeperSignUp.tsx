@@ -88,7 +88,7 @@ const ShopKeeperSignUp = () => {
           />
           <TextInput
             placeholder="Village / city"
-            value={accountDetails.landmark}
+            value={accountDetails.village_city}
             onChangeText={(text) =>
               setAccountDetails({ ...accountDetails, village_city: text })
             }

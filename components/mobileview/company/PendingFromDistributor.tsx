@@ -45,6 +45,11 @@ export const PendingFromDistributor = () => {
               <ItemCard product={product} />
             </View>
           ))}
+          {products.length === 0 && (
+            <View>
+              <Text>You donot have any orders Yet.</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
