@@ -6,7 +6,6 @@ import { ItemCard } from "../global/orderItemCard";
 
 export const PendingFromDistributor = () => {
   const { idtoken } = useAuth();
-
   interface Product {
     id: string;
     imageUrl: string;
@@ -17,6 +16,7 @@ export const PendingFromDistributor = () => {
     location: string;
     zipCode: number;
     contact: number;
+    status: string;
   }
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -43,9 +43,6 @@ export const PendingFromDistributor = () => {
           {products.map((product, index) => (
             <View style={styles.row} key={product.id}>
               <ItemCard product={product} />
-              {products[index + 1] && (
-                <ItemCard product={products[index + 1]} />
-              )}
             </View>
           ))}
         </View>

@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import {
   Alert,
   Image,
@@ -10,6 +11,8 @@ import {
 } from "react-native";
 
 export const ItemCard = ({ product }: any) => {
+  const [status, setStatus] = useState("ordered"); // Initialize status to "Ordered"
+
   const handleContactManager = () => {
     const phoneUrl = `tel:${product.contact}`;
     Linking.openURL(phoneUrl).catch((err) =>
@@ -17,6 +20,36 @@ export const ItemCard = ({ product }: any) => {
     );
   };
 
+  const updateStatus = (newStatus: string) => {
+    const url =
+      newStatus === "shipped"
+        ? "http://localhost:5000/api/shipped"
+        : newStatus === "delivered"
+        ? "http://localhost:5000/api/delivered"
+        : newStatus === "cancelled"
+        ? "http://localhost:5000/api/cancelled"
+        : null;
+
+    if (!url) {
+      Alert.alert("Error", "Invalid status.");
+      return;
+    }
+
+    axios
+      .post(url, {
+        orderId: product.id,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setStatus(newStatus);
+        } else {
+          Alert.alert("Error", "Unable to update status.");
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Error", "Unable to connect to server.");
+      });
+  };
   return (
     <View style={styles.card}>
       <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
@@ -31,7 +64,7 @@ export const ItemCard = ({ product }: any) => {
             Price: <Text style={styles.price}>${product.price}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            total Collectible:{" "}
+            Total Collectible:{" "}
             <Text style={styles.price}>
               {product.price * product.quantityToDeliver}
             </Text>
@@ -44,49 +77,80 @@ export const ItemCard = ({ product }: any) => {
           </Text>
         </View>
         <View style={styles.buttons}>
-          <View>
+          {product.status === "ordered" && (
             <Pressable
               style={styles.complete_button}
-              onPress={() => console.log("Cancel Order")}
+              onPress={() => updateStatus("cancelled")}
             >
               <Text style={styles.addButtonText}>Cancel Order</Text>
             </Pressable>
-            <Pressable
-              style={styles.complete_button}
-              onPress={handleContactManager}
-            >
-              <Text style={styles.addButtonText}>Contact</Text>
-            </Pressable>
-          </View>
+          )}
+          <Pressable
+            style={styles.complete_button}
+            onPress={handleContactManager}
+          >
+            <Text style={styles.addButtonText}>Contact</Text>
+          </Pressable>
         </View>
       </View>
 
       {/* Delivery process (status circles) */}
       <View style={styles.deliveryProcess}>
         <View style={styles.circleFilled} />
-        <View style={styles.horizontalBar} />
-        <View style={styles.circleVacant} />
-        <View style={styles.horizontalBar} />
-        <View style={styles.circleVacant} />
+        <View
+          style={
+            status === "shipped" || status === "delivered"
+              ? styles.horizontalBarFilled
+              : styles.horizontalBar
+          }
+        />
+        <View
+          style={
+            status === "shipped" ? styles.circleFilled : styles.circleVacant
+          }
+        />
+        <View
+          style={
+            status === "delivered"
+              ? styles.horizontalBarFilled
+              : styles.horizontalBar
+          }
+        />
+        <View
+          style={
+            status === "delivered" ? styles.circleFilled : styles.circleVacant
+          }
+        />
       </View>
 
       {/* Delivery status buttons */}
       <View style={styles.deliveryProcessButtons}>
         <Pressable
-          style={styles.complete_button}
-          onPress={() => console.log("Ordered")}
+          style={
+            status === "Ordered"
+              ? styles.complete_button
+              : styles.incomplete_button
+          }
         >
           <Text style={styles.addButtonText}>Ordered</Text>
         </Pressable>
         <Pressable
-          style={styles.incomplete_button}
-          onPress={() => console.log("Out for Delivery")}
+          style={
+            status === "shipped"
+              ? styles.complete_button
+              : styles.incomplete_button
+          }
+          onPress={() => updateStatus("shipped")}
         >
-          <Text style={styles.addButtonText}>Out for Delivery</Text>
+          <Text style={styles.addButtonText}>Shipped</Text>
         </Pressable>
         <Pressable
-          style={styles.incomplete_button}
-          onPress={() => console.log("Delivered")}
+          style={
+            status === "delivered"
+              ? styles.complete_button
+              : styles.incomplete_button
+          }
+          onPress={() => updateStatus("delivered")}
         >
           <Text style={styles.addButtonText}>Delivered</Text>
         </Pressable>
@@ -96,47 +160,18 @@ export const ItemCard = ({ product }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  innerContainer: {
+  card: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
     width: "100%",
-    maxWidth: 800,
-    flex: 1,
-    padding: 10,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  productGridWrapper: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  addButton: {
-    backgroundColor: "#2A7EFF",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "600",
+    maxWidth: 350,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   productImage: {
     width: "100%",
@@ -155,40 +190,23 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 3,
   },
-  card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    width: "100%",
-    maxWidth: 350,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  infoContainer: {
-    paddingVertical: 5,
+  quantity: {
+    color: "#FF5733",
   },
   price: {
     fontWeight: "bold",
-    color: "#2A7EFF", // Change color to highlight the price
-  },
-  quantity: {
-    color: "#FF5733", // Highlight quantity with a different color
+    color: "#2A7EFF",
   },
   shop: {
     fontStyle: "italic",
   },
   location: {
-    color: "#555", // Slightly darker color for the location
+    color: "#555",
   },
   buttonAndInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
-    flex: 1,
     width: "100%",
   },
   complete_button: {
@@ -198,64 +216,63 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
     marginVertical: 5,
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
   },
   incomplete_button: {
-    backgroundColor: "red",
+    backgroundColor: "gray",
     paddingVertical: 8,
     paddingHorizontal: 8,
     borderRadius: 5,
     marginHorizontal: 5,
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
   },
+  infoContainer: {
+    flex: 1,
+  },
   buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
   },
   deliveryProcess: {
-    flexDirection: "row", // Align circles and bars in a row
-    alignItems: "center", // Vertically center the items
-    width: "100%", // Full width of the container
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     marginTop: 10,
-    marginBottom: 10, // Space between the delivery process and the product
+    marginBottom: 10,
   },
   circleFilled: {
-    width: 20, // Circle size
+    width: 20,
     height: 20,
-    borderRadius: 10, // Make it circular
-    backgroundColor: "green", // Filled green circle
-    padding: 1,
-    borderColor: "green",
+    borderRadius: 10,
+    backgroundColor: "green",
   },
   circleVacant: {
-    width: 20, // Circle size
+    width: 20,
     height: 20,
-    borderRadius: 10, // Make it circular
-    backgroundColor: "red", // Vacant red circle
-    padding: 5,
-    borderColor: "red",
+    borderRadius: 10,
+    backgroundColor: "red",
   },
   horizontalBar: {
-    flex: 1, // Allows the bar to take up remaining space
-    height: 4, // Bar thickness
-    backgroundColor: "black", // Bar color
+    flex: 1,
+    height: 4,
+    backgroundColor: "gray",
+  },
+  horizontalBarFilled: {
+    flex: 1,
+    height: 4,
+    backgroundColor: "green",
   },
   deliveryProcessButtons: {
     width: "100%",
-    display: "flex",
     flexDirection: "row",
   },
-  button_bar: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-    gap: 10,
+  addButtonText: {
+    color: "#fff",
+    fontWeight: "600",
   },
 });
