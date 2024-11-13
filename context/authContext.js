@@ -21,8 +21,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!userInfo && currentPathname && currentPathname !== "index") {
       router.push("/");
-    } else if (userInfo) {
-      router.push("/home");
     }
   }, [currentPathname, userInfo, router]);
 

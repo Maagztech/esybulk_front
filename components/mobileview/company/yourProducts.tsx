@@ -3,7 +3,7 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import AddProductModal from "./components/addProductsModal";
+import AddProductModal from "../global/ProductAddModal";
 
 export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -30,30 +30,39 @@ export const CompanyProducts = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Your Products</Text>
-        <Pressable style={styles.addButton} onPress={() => setIsOpen(true)}>
-          <Text style={styles.addButtonText}>Add Product</Text>
-        </Pressable>
-      </View>
-      <ScrollView>
-        {products.map((order) => (
-          <Pressable key={order.id} onPress={() => handleProductClick(order)}>
-            <ItemCard product={order} />
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Your Products</Text>
+          <Pressable style={styles.addButton} onPress={() => setIsOpen(true)}>
+            <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
-        ))}
-        {products.length === 0 && <Text>You donot have any products Yet.</Text>}
-      </ScrollView>
+        </View>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {products.map((order) => (
+            <Pressable key={order.id} onPress={() => handleProductClick(order)}>
+              <ItemCard product={order} />
+            </Pressable>
+          ))}
+          {products.length === 0 && (
+            <Text>You do not have any products yet.</Text>
+          )}
+        </ScrollView>
+      </View>
       <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    maxWidth: 800,
+    flex: 1,
+    alignItems: "center",
     padding: 20,
+  },
+  innerContainer: {
+    width: "100%",
+    maxWidth: 800,
   },
   header: {
     flexDirection: "row",
@@ -63,6 +72,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
+    color: "black",
     fontWeight: "bold",
   },
   addButton: {
@@ -72,5 +82,8 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: "#fff",
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
 });

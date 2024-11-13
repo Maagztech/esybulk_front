@@ -2,14 +2,15 @@ import { ProductsToBuyNearbydistributor } from "@/components/mobileview/distribu
 import ProductsToBuyNearby from "@/components/mobileview/shopkeeper/ProductsToBuyNearby";
 import { useAuth } from "@/context/authContext";
 import React from "react";
-import { CompanyProducts } from './../../components/mobileview/company/yourProducts';
+import { CompanyProducts } from "./../../components/mobileview/company/yourProducts";
 const profile = () => {
-  const { role }: any = useAuth();
+  const { role, userInfo }: any = useAuth();
+  console.log(userInfo);
   return (
     <>
-      {role === "company" && <CompanyProducts />}
-      {role === "distributor" && <ProductsToBuyNearbydistributor />}
-      {role === "shopkeeper" && <ProductsToBuyNearby />}
+      {userInfo?.role === "company" && <CompanyProducts />}
+      {userInfo?.role === "distributor" && <ProductsToBuyNearbydistributor />}
+      {userInfo?.role === "shopkeeper" && <ProductsToBuyNearby />}
     </>
   );
 };

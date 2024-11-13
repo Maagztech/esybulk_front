@@ -8,7 +8,7 @@ import { Image, Pressable, StyleSheet, View } from "react-native";
 const Header = () => {
   const navigation = useNavigation();
   const [canGoBack, setCanGoBack] = useState(false);
-  const { userInfo, handleLogout }: any = useAuth();
+  const { userInfo, handleLogout, role }: any = useAuth();
   const [user, setUser] = useState(null);
   const router = useRouter();
   useEffect(() => {
@@ -45,9 +45,11 @@ const Header = () => {
       </View>
       {userInfo && (
         <View style={styles.rightcontainer}>
-          <Pressable onPress={handleCartPress} style={styles.iconContainer}>
-            <Ionicons name="heart" size={28} color="#000" />
-          </Pressable>
+          {userInfo.role != "company" && (
+            <Pressable onPress={handleCartPress} style={styles.iconContainer}>
+              <Ionicons name="heart" size={28} color="#000" />
+            </Pressable>
+          )}
           <Pressable onPress={handleSearchPress} style={styles.iconContainer}>
             <Ionicons name="search" size={28} color="#000" />
           </Pressable>

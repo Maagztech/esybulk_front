@@ -5,12 +5,12 @@ import { useAuth } from "@/context/authContext";
 import React from "react";
 
 const profile = () => {
-  const { role }: any = useAuth();
+  const { userInfo }: any = useAuth();
   return (
     <>
-      {role === "company" && <PendingFromDistributor />}
-      {role === "distributor" && <OrderFromShop />}
-      {role === "shopkeeper" && <OrderStatus />}
+      {userInfo?.role === "company" && <PendingFromDistributor />}
+      {userInfo?.role === "distributor" && <OrderFromShop />}
+      {userInfo?.role === "shopkeeper" && <OrderStatus />}
     </>
   );
 };

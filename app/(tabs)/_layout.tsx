@@ -1,12 +1,8 @@
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { Tabs } from "expo-router";
 import React from "react";
-import { useSelector } from "react-redux";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const type = useSelector((state: any) => state?.auth?.user?.type);
   return (
     <Tabs
       screenOptions={{
@@ -29,11 +25,11 @@ export default function TabLayout() {
           ),
         }}
       />
-      {type !== "distributor" && (
+     
         <Tabs.Screen
-          name="products"
+          name="orders"
           options={{
-            title: "Products",
+            title: "Orders",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "cart" : "cart-outline"}
@@ -42,8 +38,7 @@ export default function TabLayout() {
             ),
           }}
         />
-      )}
-      {type !== "distributor" && (
+   
         <Tabs.Screen
           name="stats"
           options={{
@@ -56,7 +51,6 @@ export default function TabLayout() {
             ),
           }}
         />
-      )}
       <Tabs.Screen
         name="profile"
         options={{

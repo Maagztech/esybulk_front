@@ -37,21 +37,23 @@ export const PendingFromDistributor = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerTitle}>Pending Orders</Text>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.cardContainer}>
-          {products.map((product, index) => (
-            <View style={styles.row} key={product.id}>
-              <ItemCard product={product} />
-            </View>
-          ))}
-          {products.length === 0 && (
-            <View>
-              <Text>You donot have any orders Yet.</Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      <View style={styles.innerContainer}>
+        <Text style={styles.headerTitle}>Pending Orders</Text>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.cardContainer}>
+            {products.map((product, index) => (
+              <View style={styles.row} key={product.id}>
+                <ItemCard product={product} />
+              </View>
+            ))}
+            {products.length === 0 && (
+              <View>
+                <Text>You donot have any orders Yet.</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -61,6 +63,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
+    display: "flex",
+    alignItems: "center",
+  },
+  innerContainer: {
+    maxWidth: 800,
   },
   headerTitle: {
     fontSize: 24,
