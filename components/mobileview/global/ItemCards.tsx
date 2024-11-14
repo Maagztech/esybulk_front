@@ -1,205 +1,120 @@
-import { useRouter } from "expo-router";
+import { useProduct } from "@/context/productContext";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import {
+  FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
-  TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
-
-interface Product {
-  id: string;
-  productName: string;
-  price: number;
-  cost: number;
-  totalSold: number;
-  expiryDates: { [expiryDate: string]: number };
-  imageUrl: string;
-}
-
-const ItemCard = (product: any) => {
-  const [quantities, setQuantities] = useState<{
-    [expiryDate: string]: number;
-  }>(product?.expiryDates);
-  const router = useRouter();
-  const incrementQuantity = (expiryDate: string) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [expiryDate]: prev[expiryDate] + 1,
-    }));
-  };
-
-  const decrementQuantity = (expiryDate: string) => {
-    if (quantities[expiryDate] > 0) {
-      setQuantities((prev) => ({
-        ...prev,
-        [expiryDate]: prev[expiryDate] - 1,
-      }));
-    }
-  };
-
-  const handleQuantityChange = (expiryDate: any, newValue: any) => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [expiryDate]: newValue,
-    }));
-  };
-
+import AddProductModal from "./ProductAddModal";
+const ProductDetails = ({ product }: any) => {
+  const { setSelectedProduct }: any = useProduct();
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <View style={styles.card}>
-      <View style={styles.header_more}>
-        <View style={styles.header}>
-          <Image source={{ uri: product?.imageUrl }} style={styles.image} />
-          <Text style={styles.cardTitle}>{product?.title}</Text>
-        </View>
-      </View>
-      <Text style={styles.cardText}>
-        Price: <Text style={styles.highlight}>${product?.price}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{product.title}</Text>
+      <Image source={{ uri: product.images[0] }} style={styles.image} />
+      <Text style={styles.about}>{product.about}</Text>
+      <Text style={styles.mrp}>MRP: {product.mrp} Rs.</Text>
+      <Text style={styles.quantity}>
+        Available Quantity: {product.quantity}
       </Text>
-      <Text style={styles.cardText}>
-        Cost: <Text style={styles.highlight}>${product?.cost}</Text>
-      </Text>
-      <Text style={styles.cardText}>
-        Total Sold: <Text style={styles.highlight}>{product?.totalSold}</Text>
-      </Text>
-      {Object.keys(product?.expiryDates).map((expiryDate) => {
-        return (
-          <View key={expiryDate} style={styles.expirySection}>
-            <Text style={styles.expiryDate}>
-              Expiry Date: <Text style={styles.highlight}>{expiryDate}</Text>
-            </Text>
-            <View style={styles.quantity_delete}>
-              <Text style={styles.quantity}>
-                Quantity:{" "}
-                <Pressable
-                  style={[styles.Pressable, styles.increment]}
-                  onPress={() => incrementQuantity(expiryDate)}
-                >
-                  <Text style={styles.PressableText}>+</Text>
-                </Pressable>
-                <TextInput
-                  value={String(quantities[expiryDate])}
-                  onChangeText={(text) =>
-                    handleQuantityChange(expiryDate, text)
-                  }
-                  keyboardType="numeric"
-                  style={{
-                    width: 50,
-                    textAlign: "center",
-                    ...styles.highlight,
-                  }}
-                />
-                <Pressable
-                  style={[styles.Pressable, styles.decrement]}
-                  onPress={() => decrementQuantity(expiryDate)}
-                >
-                  <Text style={styles.PressableText}>-</Text>
-                </Pressable>
-              </Text>
-              <Image
-                source={{
-                  uri: "https://imagecolorpicker.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-55x55_b.eee47b98.png&w=64&q=75",
-                }}
-                style={{ width: 20, height: 20, marginBottom: -10 }}
-              />
-            </View>
+
+      <Text style={styles.buyOptionsTitle}>Buy Options:</Text>
+      <FlatList
+        data={product.buyOptions}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <View style={styles.buyOption}>
+            <Text>Quantity: {item.quantity}</Text>
+            <Text>Price: {item.price} Rs.</Text>
           </View>
-        );
-      })}
+        )}
+      />
+
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => {
+          setSelectedProduct(product);
+          setIsOpen(true);
+        }}
+      >
+        <Ionicons name="create-outline" size={24} color="#FFF" />
+        <Text style={styles.editButtonText}>Edit</Text>
+      </TouchableOpacity>
+      <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "rgba(9, 33, 29, 0.5)",
-    borderRadius: 12,
+  container: {
     padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 8,
     shadowColor: "#000",
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-    marginBottom: 15,
-    maxWidth: 500,
+    shadowRadius: 8,
+    elevation: 5,
+    margin: 10,
+    maxWidth: 400,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
     marginBottom: 10,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10,
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 10,
   },
-  cardTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#333333",
-  },
-  header_more: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  cardText: {
+  about: {
     fontSize: 16,
-    marginBottom: 5,
-    color: "#666666",
+    marginBottom: 10,
   },
-  highlight: {
-    color: "#007bff",
-    fontWeight: "bold",
-  },
-  expirySection: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  expiryDate: {
-    fontSize: 16,
-    color: "#666666",
+  mrp: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 10,
   },
   quantity: {
     fontSize: 16,
-    color: "#666666",
-    marginTop: 13,
+    marginBottom: 10,
   },
-  PressableContainer: {
+  buyOptionsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+  buyOption: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 5,
+    justifyContent: "flex-start",
+    gap: 10,
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
-  Pressable: {
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    width: "5%",
-    alignItems: "center",
-  },
-  PressableText: {
-    color: "#ffffff",
-  },
-  increment: {
-    backgroundColor: "#28a745",
-  },
-  decrement: {
-    backgroundColor: "#dc3545",
-  },
-  quantity_delete: {
+  editButton: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+  },
+  editButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 5,
   },
 });
 
-export default ItemCard;
+export default ProductDetails;

@@ -1,7 +1,7 @@
 import Header from "@/components/mobileview/global/header";
 import { AuthProvider } from "@/context/authContext";
+import { ProductProvider } from "@/context/productContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { store } from "@/store";
 import {
   DarkTheme,
   DefaultTheme,
@@ -15,7 +15,6 @@ import { StyleSheet, View } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 SplashScreen.preventAutoHideAsync();
@@ -37,7 +36,7 @@ export default function RootLayout() {
   }
   return (
     <AuthProvider>
-      <Provider store={store}>
+      <ProductProvider>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
@@ -67,7 +66,7 @@ export default function RootLayout() {
             </SafeAreaView>
           </View>
         </ThemeProvider>
-      </Provider>
+      </ProductProvider>
     </AuthProvider>
   );
 }

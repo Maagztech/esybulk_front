@@ -1,8 +1,9 @@
 import { useAuth } from "@/context/authContext";
+import { useProduct } from "@/context/productContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -16,15 +17,45 @@ import {
 import { toast } from "react-toastify";
 
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
-  const { access_token, loadcompanyProducts }: any = useAuth();
-  const [title, setTitle] = useState("");
-  const [about, setAbout] = useState("");
-  const [images, setImages] = useState<string[]>([]);
-  const [quantity, setQuantity] = useState("");
-  const [mrp, setMrp] = useState("");
-  const [buyOptions, setBuyOptions] = useState([{ quantity: "", price: "" }]);
+  const { access_token }: any = useAuth();
+  const { loadcompanyProducts, setSelectedProduct, selectedProduct }: any =
+    useProduct();
 
-  const closeModal = () => setIsOpen(false);
+  const [productData, setProductData] = useState({
+    title: "",
+    about: "",
+    images: [] as string[],
+    quantity: "",
+    mrp: "",
+    buyOptions: [{ quantity: "", price: "" }],
+  });
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setProductData({
+        title: selectedProduct.title,
+        about: selectedProduct.about,
+        images: selectedProduct.images,
+        quantity: selectedProduct.quantity,
+        mrp: selectedProduct.mrp,
+        buyOptions: selectedProduct.buyOptions || [{ quantity: "", price: "" }],
+      });
+    } else {
+      setProductData({
+        title: "",
+        about: "",
+        images: [],
+        quantity: "",
+        mrp: "",
+        buyOptions: [{ quantity: "", price: "" }],
+      });
+    }
+  }, [selectedProduct]);
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+    setIsOpen(false);
+  };
 
   const pickImages = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -36,66 +67,101 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     });
     if (!result.canceled && result.assets) {
       const selectedImages = result.assets.map((asset) => asset.uri);
-      setImages((prevImages) => [...prevImages, ...selectedImages]);
+      setProductData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, ...selectedImages],
+      }));
     }
   };
 
   const handleAddProduct = async () => {
     try {
       const uploadedImageUrls = [];
-      for (const image of images) {
-        const formData = new FormData();
-        const response = await fetch(image);
-        const blob = await response.blob();
-        formData.append("file", blob, "product-image.jpg");
-        formData.append("upload_preset", "esybulk");
-        formData.append("cloud_name", "dv5daoaut");
-        const cloudinaryResponse = await axios.post(
-          "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
-          formData
-        );
-        uploadedImageUrls.push(cloudinaryResponse.data.secure_url);
+      for (const image of productData.images) {
+        if (!image.startsWith("http")) {
+          // Only upload new images, skip existing ones
+          const formData = new FormData();
+          const response = await fetch(image);
+          const blob = await response.blob();
+          formData.append("file", blob, `${productData.title}.jpg`);
+          formData.append("upload_preset", "esybulk");
+          formData.append("cloud_name", "dv5daoaut");
+          const cloudinaryResponse = await axios.post(
+            "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
+            formData
+          );
+          uploadedImageUrls.push(cloudinaryResponse.data.secure_url);
+        } else {
+          uploadedImageUrls.push(image); // Add existing image URLs directly
+        }
       }
-      const productResponse = await axios.post(
-        "http://localhost:5000/api/companyregisterproduct",
-        {
-          title,
-          about,
-          images: uploadedImageUrls,
-          mrp,
-        },
-        { headers: { Authorization: `${access_token}` } }
-      );
-      console.log("productResponse", productResponse);
-      const productId = productResponse.data._id;
+      const productPayload = {
+        title: productData.title,
+        about: productData.about,
+        images: uploadedImageUrls,
+        mrp: productData.mrp,
+      };
 
-      const priceResponse = await axios.post(
-        "http://localhost:5000/api/distributor_or_company_add_quantity",
-        {
-          product: productId,
-          price: buyOptions.map((option) => ({
-            quantity: option.quantity,
-            price: option.price,
-          })),
-          quantity,
-        },
-        { headers: { Authorization: `${access_token}` } }
-      );
+      if (selectedProduct) {
+        console.log(selectedProduct);
+        await axios.post(
+          `http://localhost:5000/api/companyregisterproductedit/${selectedProduct.id}`,
+          productPayload,
+          { headers: { Authorization: `${access_token}` } }
+        );
+        await axios.post(
+          "http://localhost:5000/api/distributor_or_company_add_quantity",
+          {
+            product: selectedProduct.id,
+            price: productData.buyOptions.map((option) => ({
+              quantity: option.quantity,
+              price: option.price,
+            })),
+            quantity: productData.quantity,
+          },
+          { headers: { Authorization: `${access_token}` } }
+        );
+        toast.success("Product updated successfully.");
+      } else {
+        // Add new product
+        const productResponse = await axios.post(
+          "http://localhost:5000/api/companyregisterproduct",
+          productPayload,
+          { headers: { Authorization: `${access_token}` } }
+        );
+        const productId = productResponse.data._id;
+        await axios.post(
+          "http://localhost:5000/api/distributor_or_company_add_quantity",
+          {
+            product: productId,
+            price: productData.buyOptions.map((option) => ({
+              quantity: option.quantity,
+              price: option.price,
+            })),
+            quantity: productData.quantity,
+          },
+          { headers: { Authorization: `${access_token}` } }
+        );
+        toast.success("Product updated successfully.");
+      }
       loadcompanyProducts();
-      console.log("Price Response", priceResponse);
       closeModal();
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error adding or updating product:", error);
     }
   };
 
   const addBuyOption = () => {
-    const lastOption = buyOptions[buyOptions.length - 1];
+    const lastOption =
+      productData.buyOptions[productData.buyOptions.length - 1];
     if (lastOption && !lastOption.quantity && !lastOption.price) {
       toast.warn("Please fill in the previous option before adding a new one.");
       return;
     }
-    setBuyOptions([...buyOptions, { quantity: "", price: "" }]);
+    setProductData((prevData) => ({
+      ...prevData,
+      buyOptions: [...prevData.buyOptions, { quantity: "", price: "" }],
+    }));
   };
 
   const updateBuyOption = (
@@ -103,15 +169,29 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     key: "quantity" | "price",
     value: string
   ) => {
-    const updatedOptions = [...buyOptions];
+    const updatedOptions = [...productData.buyOptions];
     updatedOptions[index][key] = value;
-    setBuyOptions(updatedOptions);
+    setProductData((prevData) => ({
+      ...prevData,
+      buyOptions: updatedOptions,
+    }));
   };
 
   const handleDeleteOption = (index: number) => {
-    const updatedOptions = buyOptions.filter((_, i) => i !== index);
-    setBuyOptions(updatedOptions);
+    const updatedOptions = productData.buyOptions.filter((_, i) => i !== index);
+    setProductData((prevData) => ({
+      ...prevData,
+      buyOptions: updatedOptions,
+    }));
   };
+
+  const removeImage = (index: number) => {
+    setProductData((prevData) => ({
+      ...prevData,
+      images: prevData.images.filter((_, i) => i !== index),
+    }));
+  };
+
   return (
     <Modal
       visible={isOpen}
@@ -124,30 +204,42 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <Text style={styles.modalTitle}>Add Product</Text>
           <Pressable style={styles.imageButton} onPress={pickImages}>
             <Text style={styles.buttonText}>
-              {images.length > 0
-                ? `${images.length} Images Selected`
+              {productData.images.length > 0
+                ? `${productData.images.length} Images Selected`
                 : "Pick Images"}
             </Text>
           </Pressable>
           <FlatList
             horizontal
-            data={images}
-            renderItem={({ item }) => (
-              <Image source={{ uri: item }} style={styles.imageThumbnail} />
+            data={productData.images}
+            renderItem={({ item, index }) => (
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: item }} style={styles.imageThumbnail} />
+                <Pressable
+                  style={styles.deleteImageButton}
+                  onPress={() => removeImage(index)}
+                >
+                  <Ionicons name="close-circle" size={24} color="white" />
+                </Pressable>
+              </View>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
           <TextInput
             style={styles.input}
             placeholder="Product Name"
-            value={title}
-            onChangeText={setTitle}
+            value={productData.title}
+            onChangeText={(value) =>
+              setProductData((prevData) => ({ ...prevData, title: value }))
+            }
           />
           <TextInput
             style={styles.input}
             placeholder="About Product"
-            value={about}
-            onChangeText={setAbout}
+            value={productData.about}
+            onChangeText={(value) =>
+              setProductData((prevData) => ({ ...prevData, about: value }))
+            }
             multiline
             numberOfLines={3}
           />
@@ -155,20 +247,24 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <TextInput
             style={styles.input}
             placeholder="MRP"
-            value={mrp}
+            value={productData.mrp}
             keyboardType="decimal-pad"
-            onChangeText={setMrp}
+            onChangeText={(value) =>
+              setProductData((prevData) => ({ ...prevData, mrp: value }))
+            }
           />
           <TextInput
             style={styles.input}
             placeholder="Quantity Available"
-            value={quantity}
+            value={productData.quantity}
             keyboardType="numeric"
-            onChangeText={setQuantity}
+            onChangeText={(value) =>
+              setProductData((prevData) => ({ ...prevData, quantity: value }))
+            }
           />
 
           <Text style={styles.subTitle}>Sell Options</Text>
-          {buyOptions.map((option, index) => (
+          {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
               <TextInput
                 style={styles.buyOptionInput}
@@ -209,7 +305,11 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               style={[styles.fullButton, styles.addButton]}
               onPress={handleAddProduct}
             >
-              <Text style={styles.buttonText}>Add</Text>
+              {!selectedProduct ? (
+                <Text style={styles.buttonText}>Add</Text>
+              ) : (
+                <Text style={styles.buttonText}>Update</Text>
+              )}
             </Pressable>
           </View>
         </View>
@@ -308,6 +408,17 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  imageContainer: {
+    position: "relative",
+    marginRight: 10,
+  },
+  deleteImageButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    borderRadius: 12,
   },
 });
 

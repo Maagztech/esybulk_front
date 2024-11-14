@@ -1,24 +1,21 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
 import { useAuth } from "@/context/authContext";
+import { useProduct } from "@/context/productContext";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
 export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const { access_token, loadcompanyProducts, distributorCompanyStocks }: any =
-    useAuth();
-  console.log(access_token);
+  const { access_token }: any = useAuth();
+  const {
+    loadcompanyProducts,
+    distributorCompanyStocks,
+    setSelectedProduct,
+  }: any = useProduct();
   useEffect(() => {
     loadcompanyProducts();
   }, []);
-
-  const handleProductClick = (product: any) => {
-    setSelectedProduct(product);
-    setIsOpen(true);
-  };
 
   return (
     <View style={styles.container}>
@@ -29,13 +26,11 @@ export const CompanyProducts = () => {
             <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
         </View>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView style={styles.scrollContainer}>
           {distributorCompanyStocks.map((order: any) => (
-            <Pressable key={order.id} onPress={() => handleProductClick(order)}>
-              <ItemCard product={order} />
-            </Pressable>
+            <ItemCard product={order} key={order.id} />
           ))}
-          {products.length === 0 && (
+          {distributorCompanyStocks.length === 0 && (
             <Text>You do not have any products yet.</Text>
           )}
         </ScrollView>
@@ -54,6 +49,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: "100%",
     maxWidth: 800,
+    flex: 1,
   },
   header: {
     flexDirection: "row",
@@ -74,7 +70,10 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "#fff",
   },
-  scrollContent: {
-    flexGrow: 1,
+  scrollContainer: {
+    flex: 1,
+    paddingBottom: 20,
   },
 });
+
+export default CompanyProducts;

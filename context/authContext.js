@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const navigation = useNavigation();
   const [access_token, setAccessToken] = useState(null);
   const [role, setRole] = useState("");
-  const [distributorCompanyStocks, setDistributorCompanyStocks] = useState([]);
+
 
   const currentPathname = useNavigationState((state) => {
     return state.routes[state.index] ? state.routes[state.index].name : null;
@@ -31,14 +31,19 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (userInfo) return;
     const fetchUser = async () => {
-      const refresh_token = await getLocalUser();
-      if (!refresh_token) router.push("/")
-      if (refresh_token) {
-        const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
-        setUserInfo(response.data.user)
-        setAccessToken(response.data.access_token)
-        await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
-      } else {
+      try {
+        const refresh_token = await getLocalUser();
+        if (!refresh_token) router.push("/")
+        if (refresh_token) {
+          const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
+          setUserInfo(response.data.user)
+          console.log(response.data.access_token)
+          setAccessToken(response.data.access_token)
+          await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
+        } else {
+          router.push("/");
+        }
+      } catch (error) {
         router.push("/");
       }
     };
@@ -114,18 +119,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const loadcompanyProducts = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/api/distributor_company_stocks",
-      {
-        headers: { Authorization: `${access_token}` },
-      }
-    );
-    setDistributorCompanyStocks(response.data);
-  };
+
 
   return (
-    <AuthContext.Provider value={{ distributorCompanyStocks, handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
+    <AuthContext.Provider value={{ handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
       {children}
     </AuthContext.Provider>
   );
