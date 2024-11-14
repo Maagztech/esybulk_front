@@ -9,7 +9,6 @@ import {
   View,
 } from "react-native";
 
-
 interface Product {
   id: string;
   productName: string;
@@ -20,14 +19,10 @@ interface Product {
   imageUrl: string;
 }
 
-interface ItemCardProps {
-  product: Product;
-}
-
-const ItemCard: React.FC<ItemCardProps> = ({ product }) => {
+const ItemCard = (product: any) => {
   const [quantities, setQuantities] = useState<{
     [expiryDate: string]: number;
-  }>(product.expiryDates);
+  }>(product?.expiryDates);
   const router = useRouter();
   const incrementQuantity = (expiryDate: string) => {
     setQuantities((prev) => ({
@@ -56,20 +51,20 @@ const ItemCard: React.FC<ItemCardProps> = ({ product }) => {
     <View style={styles.card}>
       <View style={styles.header_more}>
         <View style={styles.header}>
-          <Image source={{ uri: product.imageUrl }} style={styles.image} />
-          <Text style={styles.cardTitle}>{product.productName}</Text>
+          <Image source={{ uri: product?.imageUrl }} style={styles.image} />
+          <Text style={styles.cardTitle}>{product?.title}</Text>
         </View>
       </View>
       <Text style={styles.cardText}>
-        Price: <Text style={styles.highlight}>${product.price}</Text>
+        Price: <Text style={styles.highlight}>${product?.price}</Text>
       </Text>
       <Text style={styles.cardText}>
-        Cost: <Text style={styles.highlight}>${product.cost}</Text>
+        Cost: <Text style={styles.highlight}>${product?.cost}</Text>
       </Text>
       <Text style={styles.cardText}>
-        Total Sold: <Text style={styles.highlight}>{product.totalSold}</Text>
+        Total Sold: <Text style={styles.highlight}>{product?.totalSold}</Text>
       </Text>
-      {Object.keys(product.expiryDates).map((expiryDate) => {
+      {Object.keys(product?.expiryDates).map((expiryDate) => {
         return (
           <View key={expiryDate} style={styles.expirySection}>
             <Text style={styles.expiryDate}>

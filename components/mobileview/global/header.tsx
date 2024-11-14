@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Tooltip } from "react-native-paper";
 
 const Header = () => {
   const navigation = useNavigation();
@@ -11,6 +12,7 @@ const Header = () => {
   const { userInfo, handleLogout, role }: any = useAuth();
   const [user, setUser] = useState(null);
   const router = useRouter();
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
       setCanGoBack(navigation.canGoBack());
@@ -39,23 +41,30 @@ const Header = () => {
           source={require("../../../assets/images/namelogo-w.png")}
           style={styles.image}
         />
-        <View style={styles.textContainer}>
-          {/* <Text style={styles.title}>{auth?.type}</Text> */}
-        </View>
+        <View style={styles.textContainer}></View>
       </View>
       {userInfo && (
-        <View style={styles.rightcontainer}>
+        <View style={styles.rightContainer}>
           {userInfo.role != "company" && (
-            <Pressable onPress={handleCartPress} style={styles.iconContainer}>
-              <Ionicons name="heart" size={28} color="#000" />
-            </Pressable>
+            <>
+              <Tooltip title="Cart">
+                <Pressable onPress={handleCartPress}>
+                  <Ionicons name="heart" size={28} color="#000" />
+                </Pressable>
+              </Tooltip>
+
+              <Tooltip title="Search">
+                <Pressable onPress={handleSearchPress}>
+                  <Ionicons name="search" size={28} color="#000" />
+                </Pressable>
+              </Tooltip>
+            </>
           )}
-          <Pressable onPress={handleSearchPress} style={styles.iconContainer}>
-            <Ionicons name="search" size={28} color="#000" />
-          </Pressable>
-          <Pressable style={styles.iconContainer} onPress={handleLogout}>
-            <Ionicons name="log-out" size={28} color="#000" />
-          </Pressable>
+          <Tooltip title="Logout">
+            <Pressable onPress={handleLogout}>
+              <Ionicons name="log-out" size={28} color="#000" />
+            </Pressable>
+          </Tooltip>
         </View>
       )}
     </View>
@@ -81,7 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderBottomColor: "#ddd",
   },
-  rightcontainer: {
+  rightContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

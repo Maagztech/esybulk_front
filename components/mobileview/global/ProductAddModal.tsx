@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/authContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
@@ -15,12 +16,12 @@ import {
 import { toast } from "react-toastify";
 
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
-  const [name, setName] = useState("");
+  const { access_token, loadcompanyProducts }: any = useAuth();
+  const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [quantity, setQuantity] = useState("");
   const [mrp, setMrp] = useState("");
-  const [cost, setCost] = useState("");
   const [buyOptions, setBuyOptions] = useState([{ quantity: "", price: "" }]);
 
   const closeModal = () => setIsOpen(false);
@@ -55,30 +56,33 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         );
         uploadedImageUrls.push(cloudinaryResponse.data.secure_url);
       }
-      console.log(uploadedImageUrls);
       const productResponse = await axios.post(
         "http://localhost:5000/api/companyregisterproduct",
         {
-          name,
+          title,
           about,
           images: uploadedImageUrls,
-        }
+          mrp,
+        },
+        { headers: { Authorization: `${access_token}` } }
       );
+      console.log("productResponse", productResponse);
+      const productId = productResponse.data._id;
 
-      const productId = productResponse.data.productId;
-
-      await axios.post(
+      const priceResponse = await axios.post(
         "http://localhost:5000/api/distributor_or_company_add_quantity",
         {
-          productId,
-          quantity: buyOptions.map((option) => ({
+          product: productId,
+          price: buyOptions.map((option) => ({
             quantity: option.quantity,
             price: option.price,
           })),
-        }
+          quantity,
+        },
+        { headers: { Authorization: `${access_token}` } }
       );
-
-      console.log("Product added successfully!");
+      loadcompanyProducts();
+      console.log("Price Response", priceResponse);
       closeModal();
     } catch (error) {
       console.error("Error adding product:", error);
@@ -136,8 +140,8 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <TextInput
             style={styles.input}
             placeholder="Product Name"
-            value={name}
-            onChangeText={setName}
+            value={title}
+            onChangeText={setTitle}
           />
           <TextInput
             style={styles.input}

@@ -4,8 +4,7 @@ import { useAuth } from "@/context/authContext";
 import React from "react";
 import { CompanyProducts } from "./../../components/mobileview/company/yourProducts";
 const profile = () => {
-  const { role, userInfo }: any = useAuth();
-  console.log(userInfo);
+  const { userInfo }: any = useAuth();
   return (
     <>
       {userInfo?.role === "company" && <CompanyProducts />}

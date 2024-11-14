@@ -1,6 +1,5 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
 import { useAuth } from "@/context/authContext";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
@@ -9,20 +8,12 @@ export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState<any[]>([]);
-  const { access_token } = useAuth();
+  const { access_token, loadcompanyProducts, distributorCompanyStocks }: any =
+    useAuth();
+  console.log(access_token);
   useEffect(() => {
     loadcompanyProducts();
   }, []);
-
-  const loadcompanyProducts = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/api/distributor_company_stocks",
-      {
-        headers: { Authorization: `${access_token}` },
-      }
-    );
-    setProducts(response.data);
-  };
 
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
@@ -39,7 +30,7 @@ export const CompanyProducts = () => {
           </Pressable>
         </View>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {products.map((order) => (
+          {distributorCompanyStocks.map((order: any) => (
             <Pressable key={order.id} onPress={() => handleProductClick(order)}>
               <ItemCard product={order} />
             </Pressable>

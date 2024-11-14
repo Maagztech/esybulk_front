@@ -12,6 +12,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -45,16 +46,24 @@ export default function RootLayout() {
               style={styles.container}
               edges={["top", "bottom", "left", "right"]}
             >
-              <Header />
-              <ToastContainer />
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </Stack>
+              <PaperProvider>
+                <Header />
+                <ToastContainer />
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                  }}
+                >
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </PaperProvider>
             </SafeAreaView>
           </View>
         </ThemeProvider>

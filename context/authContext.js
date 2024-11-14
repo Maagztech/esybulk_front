@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const navigation = useNavigation();
   const [access_token, setAccessToken] = useState(null);
   const [role, setRole] = useState("");
-
+  const [distributorCompanyStocks, setDistributorCompanyStocks] = useState([]);
 
   const currentPathname = useNavigationState((state) => {
     return state.routes[state.index] ? state.routes[state.index].name : null;
@@ -22,7 +22,11 @@ export const AuthProvider = ({ children }) => {
     if (!userInfo && currentPathname && currentPathname !== "index") {
       router.push("/");
     }
+    if (userInfo && currentPathname === "index") {
+      router.push("/home");
+    }
   }, [currentPathname, userInfo, router]);
+
 
   useEffect(() => {
     if (userInfo) return;
@@ -66,7 +70,6 @@ export const AuthProvider = ({ children }) => {
         setRole(user.user.role);
         router.push("/home");
       } else {
-        console.log("Redirecting to /selectRole due to missing role or pincode.");
         router.push("/selectRole");
       }
     } catch (error) {
@@ -111,8 +114,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loadcompanyProducts = async () => {
+    const response = await axios.get(
+      "http://localhost:5000/api/distributor_company_stocks",
+      {
+        headers: { Authorization: `${access_token}` },
+      }
+    );
+    setDistributorCompanyStocks(response.data);
+  };
+
   return (
-    <AuthContext.Provider value={{ handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
+    <AuthContext.Provider value={{ distributorCompanyStocks, handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
       {children}
     </AuthContext.Provider>
   );
