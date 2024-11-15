@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#966440",
   },
   vehicleButtonText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
   },
 });

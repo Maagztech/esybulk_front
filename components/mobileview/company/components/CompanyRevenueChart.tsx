@@ -1,86 +1,55 @@
 import {
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    Title,
-    Tooltip,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
 } from "chart.js";
-import React, { useState } from "react";
-import { Bar } from "react-chartjs-2";
+import React from "react";
+import { Line } from "react-chartjs-2";
 
-// Register components
+// Register chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
   Legend
 );
 
-// Function to generate random colors
-const generateRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
+interface RevenueChartProps {
+  data: number[];
+}
 
-// Generate an array of random colors based on the number of products
-const generateColors = (num: number) =>
-  Array.from({ length: num }, () => generateRandomColor());
-
-const RevenueChart = () => {
-  const [period, setPeriod] = useState("daily");
-
-  // Dynamic product data
-  const products = [
-    "Product A",
-    "Product B",
-    "Product C",
-    "Product D",
-    "Product E",
-    "Product F",
-    "Product G",
-    "Product H",
-  ];
-
-  // Simulated revenue data for different periods
-  const getData = () => {
-    const randomRevenue = products.map(
-      () => Math.floor(Math.random() * 5000) + 1000
-    ); // Generate random revenue data
-
-    return {
-      labels: products, // Product names as labels
-      datasets: [
-        {
-          label: `Revenue Collected (${
-            period.charAt(0).toUpperCase() + period.slice(1)
-          })`,
-          data: randomRevenue, // Dynamic revenue data
-          backgroundColor: generateColors(products.length), // Random colors for each product
-          borderColor: generateColors(products.length),
-          borderWidth: 2,
-          barThickness: 20, // Control bar thickness
-        },
-      ],
-    };
+const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
+  const chartData = {
+    labels: ["Last 3 Days", "Last 3 Weeks", "Last 3 Months"], // Assuming data is for those time periods
+    datasets: [
+      {
+        label: "Total Revenue ($)",
+        data,
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        fill: true,
+        tension: 0.4,
+      },
+    ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top" as const,
       },
       title: {
-        display: false, // Inline title with buttons
+        display: true,
+        text: "Company Revenue Over Time",
       },
     },
     scales: {
@@ -94,92 +63,13 @@ const RevenueChart = () => {
       x: {
         title: {
           display: true,
-          text: "Products",
-        },
-        ticks: {
-          autoSkip: false, // Show all products on the x-axis
+          text: "Time Period",
         },
       },
     },
   };
 
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "500px",
-        overflowX: "scroll",
-        overflowY: "scroll",
-        textAlign: "center",
-      }}
-    >
-      {/* Heading and Buttons Container */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        {/* Chart Title */}
-        <h2 style={{ margin: 0 }}>Revenue Collected</h2>
-
-        {/* Buttons for selecting time period */}
-        <div>
-          <button
-            onClick={() => setPeriod("daily")}
-            style={{
-              margin: "5px",
-              padding: "10px",
-              cursor: "pointer",
-              backgroundColor: period === "daily" ? "#FF5733" : "#f0f0f0",
-              color: period === "daily" ? "#fff" : "#000",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Day
-          </button>
-          <button
-            onClick={() => setPeriod("weekly")}
-            style={{
-              margin: "5px",
-              padding: "10px",
-              cursor: "pointer",
-              backgroundColor: period === "weekly" ? "#FF5733" : "#f0f0f0",
-              color: period === "weekly" ? "#fff" : "#000",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Week
-          </button>
-          <button
-            onClick={() => setPeriod("monthly")}
-            style={{
-              margin: "5px",
-              padding: "10px",
-              cursor: "pointer",
-              backgroundColor: period === "monthly" ? "#FF5733" : "#f0f0f0",
-              color: period === "monthly" ? "#fff" : "#000",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Month
-          </button>
-        </div>
-      </div>
-
-      {/* Bar Chart */}
-      <div style={{ width: `${products.length * 120}px`, height: "85%" }}>
-        {" "}
-        {/* Adjust width based on product count */}
-        <Bar data={getData()} options={options} />
-      </div>
-    </div>
-  );
+  return <Line data={chartData} options={options} />;
 };
 
 export default RevenueChart;

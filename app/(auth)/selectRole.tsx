@@ -9,7 +9,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { useDispatch } from "react-redux";
 
 // Paths to your images
 const companyImage = require("@/assets/images/company.webp");
@@ -18,8 +17,7 @@ const shopkeeperImage = require("@/assets/images/shopkeeper.jpg");
 
 const SelectRoleScreen = () => {
   const { selectRole }: any = useAuth();
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
+  const navigation = useNavigation(); 
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginHorizontal: 10,
+    gap: 15,
   },
   iconContainer: {
     padding: 5,
