@@ -1,10 +1,32 @@
 import { useAuth } from "@/context/authContext";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
 
 const ShopKeeperSignUp = () => {
   const { activeAccount, userInfo }: any = useAuth();
+  const categories = [
+    "Grocery",
+    "Clothing and Apparel",
+    "Electronics and Technology",
+    "Home and Furniture",
+    "Pharmacy and Health",
+    "Beauty and Personal Care",
+    "Bookstores and Stationery",
+    "Sports",
+    "Automotive and Transportation",
+  ];
+  const [showDropdown, setShowDropdown] = useState(false);
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
     phoneNumber: userInfo?.phoneNumber || "",
@@ -16,6 +38,7 @@ const ShopKeeperSignUp = () => {
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
     designation: userInfo?.designation || "owner",
+    categories: userInfo?.categories || [],
   });
 
   const canSignUp = () => {
@@ -25,6 +48,7 @@ const ShopKeeperSignUp = () => {
       accountDetails.phoneNumber &&
       accountDetails.landmark &&
       accountDetails.village_city &&
+      accountDetails.categories.length > 0 &&
       accountDetails.pinCode &&
       accountDetails.block &&
       accountDetails.district &&
@@ -38,8 +62,22 @@ const ShopKeeperSignUp = () => {
     }
     await activeAccount(accountDetails);
   };
+
+  const handleTypeChange = (type: string) => {
+    setAccountDetails((prevData) => {
+      const updatedCategories = prevData.categories.includes(type)
+        ? prevData.categories.filter((category: string) => category !== type)
+        : [...prevData.categories, type];
+      return { ...prevData, categories: updatedCategories };
+    });
+  };
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Profile</Text>
         <TextInput
@@ -71,6 +109,41 @@ const ShopKeeperSignUp = () => {
           keyboardType="phone-pad"
           style={styles.input}
         />
+        <TouchableOpacity
+          onPress={handleDropdownToggle}
+          style={[styles.dropdownBox, styles.input]}
+        >
+          <Text>
+            {accountDetails.categories.length > 0
+              ? accountDetails.categories.join(", ")
+              : "Shop types"}
+          </Text>
+          <Ionicons
+            name={showDropdown ? "arrow-up" : "arrow-down"}
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+
+        {showDropdown && (
+          <ScrollView style={styles.dropdown}>
+            {categories.map((type) => (
+              <View key={type} style={styles.checkboxContainer}>
+                <Checkbox
+                  status={
+                    accountDetails.categories.includes(type)
+                      ? "checked"
+                      : "unchecked"
+                  }
+                  onPress={() => handleTypeChange(type)}
+                />
+                <Text>{type}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
         <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
           Shop Address{" "}
           <Text style={{ fontSize: 12, color: "#966440" }}>
@@ -146,7 +219,7 @@ const ShopKeeperSignUp = () => {
           </Pressable>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -159,6 +232,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     zIndex: 1,
+    marginTop: 120,
   },
   innerContainer: {
     width: "100%",
@@ -241,6 +315,34 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Add this line
     justifyContent: "space-between",
     gap: 10,
+  },
+  dropdownBox: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 4,
+    width: "100%",
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  dropdown: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 4,
+    maxHeight: 200,
+    width: "100%",
+    marginBottom: 10,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  icon: {
+    marginLeft: 10,
   },
 });
 
