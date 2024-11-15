@@ -1,6 +1,6 @@
 import Header from "@/components/mobileview/global/header";
 import { AuthProvider } from "@/context/authContext";
-import { ProductProvider } from "@/context/productContext";
+import { ProductProvider } from "@/context/companyContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   DarkTheme,

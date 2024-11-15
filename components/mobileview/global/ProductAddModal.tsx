@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/authContext";
-import { useProduct } from "@/context/productContext";
+import { useProduct } from "@/context/companyContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";

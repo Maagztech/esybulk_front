@@ -1,4 +1,4 @@
-import { useProduct } from "@/context/productContext";
+import { useProduct } from "@/context/companyContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import {

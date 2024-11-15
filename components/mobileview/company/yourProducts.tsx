@@ -1,6 +1,6 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
 import { useAuth } from "@/context/authContext";
-import { useProduct } from "@/context/productContext";
+import { useProduct } from "@/context/companyContext";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
