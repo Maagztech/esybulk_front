@@ -34,7 +34,7 @@ const CompanyStatistics = () => {
   // Fetch order statistics from backend API
   const fetchOrderStats = async () => {
     try {
-      const response = await axios.get("/api/company-stats");
+      const response = await axios.get("http://localhost:5000/api/company/stats");
       const data: OrderStats[] = response.data;
       setOrderStats(data);
 
