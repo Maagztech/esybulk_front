@@ -9,22 +9,37 @@ import {
   Image,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
+import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
 
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const { access_token }: any = useAuth();
   const { loadcompanyProducts, setSelectedProduct, selectedProduct }: any =
     useProduct();
-
+  const [showDropdown, setShowDropdown] = useState(false);
+  const types = [
+    "Grocery",
+    "Clothing and Apparel",
+    "Electronics and Technology",
+    "Home and Furniture",
+    "Pharmacy and Health",
+    "Beauty and Personal Care",
+    "Bookstores and Stationery",
+    "Sports",
+    "Automotive and Transportation",
+  ];
   const [productData, setProductData] = useState({
     title: "",
     about: "",
     images: [] as string[],
+    type: [] as string[],
     quantity: "",
     mrp: "",
     buyOptions: [{ quantity: "", price: "" }],
@@ -38,6 +53,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         images: selectedProduct.images,
         quantity: selectedProduct.quantity,
         mrp: selectedProduct.mrp,
+        type: selectedProduct.type,
         buyOptions: selectedProduct.buyOptions || [{ quantity: "", price: "" }],
       });
     } else {
@@ -45,6 +61,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         title: "",
         about: "",
         images: [],
+        type: [],
         quantity: "",
         mrp: "",
         buyOptions: [{ quantity: "", price: "" }],
@@ -100,6 +117,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         about: productData.about,
         images: uploadedImageUrls,
         mrp: productData.mrp,
+        type: productData.type,
       };
 
       if (selectedProduct) {
@@ -192,6 +210,19 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     }));
   };
 
+  const handleTypeChange = (type: string) => {
+    setProductData((prevData) => {
+      const updatedTypes = prevData.type.includes(type)
+        ? prevData.type.filter((t) => t !== type)
+        : [...prevData.type, type];
+      return { ...prevData, type: updatedTypes };
+    });
+  };
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
   return (
     <Modal
       visible={isOpen}
@@ -199,7 +230,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <View style={styles.modalOverlay}>
+      <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Product</Text>
           <Pressable style={styles.imageButton} onPress={pickImages}>
@@ -243,7 +274,38 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             multiline
             numberOfLines={3}
           />
+          <TouchableOpacity
+            onPress={handleDropdownToggle}
+            style={styles.dropdownBox}
+          >
+            <Text>
+              {productData.type.length > 0
+                ? productData.type.join(", ")
+                : "Select types"}
+            </Text>
+            <Ionicons
+              name={showDropdown ? "arrow-up" : "arrow-down"}
+              size={24}
+              color="black"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
 
+          {showDropdown && (
+            <ScrollView style={styles.dropdown}>
+              {types.map((type) => (
+                <View key={type} style={styles.checkboxContainer}>
+                  <Checkbox
+                    status={
+                      productData.type.includes(type) ? "checked" : "unchecked"
+                    }
+                    onPress={() => handleTypeChange(type)}
+                  />
+                  <Text>{type}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          )}
           <TextInput
             style={styles.input}
             placeholder="MRP"
@@ -313,7 +375,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             </Pressable>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </Modal>
   );
 };
@@ -419,6 +481,34 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 12,
+  },
+  dropdownBox: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 4,
+    width: "100%",
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  dropdown: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 4,
+    maxHeight: 200,
+    width: "100%",
+    marginBottom: 10,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  icon: {
+    marginLeft: 10,
   },
 });
 

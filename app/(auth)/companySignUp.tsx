@@ -18,14 +18,17 @@ const CompanySignUp = () => {
     companyName: userInfo?.companyName || "",
     designation: userInfo?.designation || "",
   });
+  const [hasVehicleAccess, setHasVehicleAccess] = useState<boolean | null>(null);
   const navigation = useNavigation();
+
   const canSignUp = () => {
     return (
+      hasVehicleAccess === true && // Only allow sign-up if user has vehicle access
       accountDetails.name &&
       accountDetails.designation &&
       accountDetails.companyName &&
       accountDetails.landmark &&
-      accountDetails.village_city && // Check village_city correctly
+      accountDetails.village_city &&
       accountDetails.pinCode &&
       accountDetails.block &&
       accountDetails.district &&
@@ -41,6 +44,7 @@ const CompanySignUp = () => {
     }
     await activeAccount(accountDetails);
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -99,8 +103,8 @@ const CompanySignUp = () => {
             style={styles.input}
           />
           <TextInput
-            placeholder="Village / city"
-            value={accountDetails.village_city} // Corrected field
+            placeholder="Village / City"
+            value={accountDetails.village_city}
             onChangeText={(text) =>
               setAccountDetails({ ...accountDetails, village_city: text })
             }
@@ -144,6 +148,33 @@ const CompanySignUp = () => {
           />
         </View>
 
+        {/* Vehicle Access Section */}
+        <Text style={styles.vehicleAccessText}>Do you have a vehicle for transporting goods?</Text>
+        <View style={styles.vehicleAccessContainer}>
+          <Pressable
+            style={[
+              styles.vehicleButton,
+              hasVehicleAccess === true && styles.selectedButton,
+            ]}
+            onPress={() => setHasVehicleAccess(true)}
+          >
+            <Text style={styles.vehicleButtonText}>Yes</Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.vehicleButton,
+              hasVehicleAccess === false && styles.selectedButton,
+            ]}
+            onPress={() => {
+              toast.error("Please arrange a vehicle first");
+              setHasVehicleAccess(false);
+            }}
+          >
+            <Text style={styles.vehicleButtonText}>No</Text>
+          </Pressable>
+        </View>
+
+        {/* Sign Up Button */}
         <View style={styles.PressableContainer}>
           <Pressable
             style={[
@@ -151,7 +182,6 @@ const CompanySignUp = () => {
               { backgroundColor: canSignUp() ? "#966440" : "#aaa" },
             ]}
             onPress={handleSignUp}
-            // disabled={!canSignUp()}
           >
             <Text style={styles.signUpButtonText}>Sign Up</Text>
           </Pressable>
@@ -169,7 +199,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
-    zIndex: 1,
   },
   innerContainer: {
     width: "100%",
@@ -195,7 +224,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   input50: {
-    width: "50%",
+    width: "48%",
     padding: 15,
     marginBottom: 15,
     borderRadius: 8,
@@ -203,17 +232,6 @@ const styles = StyleSheet.create({
     borderColor: "#966440",
     borderWidth: 1,
     color: "#000",
-  },
-  otpButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    alignItems: "center",
-    width: "100%",
-  },
-  otpButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
   PressableContainer: {
     flexDirection: "row",
@@ -236,6 +254,32 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 10,
+  },
+  vehicleAccessText: {
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  vehicleAccessContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginBottom: 15,
+  },
+  vehicleButton: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#966440",
+    width: "45%",
+    alignItems: "center",
+  },
+  selectedButton: {
+    backgroundColor: "#966440",
+  },
+  vehicleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

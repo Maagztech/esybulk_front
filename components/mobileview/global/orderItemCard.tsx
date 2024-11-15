@@ -9,13 +9,14 @@ import {
   Text,
   View,
 } from "react-native";
+import { toast } from "react-toastify";
 
-export const ItemCard = ({ product }: any) => {
-  const [status, setStatus] = useState("ordered"); // Initialize status to "Ordered"
+export const ItemCard = ({ order }: any) => {
+  const [status, setStatus] = useState(order.status);
 
   const handleContactManager = () => {
-    const phoneUrl = `tel:${product.contact}`;
-    Linking.openURL(phoneUrl).catch((err) =>
+    const phoneUrl = `tel:${order.contact}`;
+    Linking.openURL(phoneUrl).catch(() =>
       Alert.alert("Error", "Unable to open dialer.")
     );
   };
@@ -31,67 +32,71 @@ export const ItemCard = ({ product }: any) => {
         : null;
 
     if (!url) {
-      Alert.alert("Error", "Invalid status.");
+      toast.error("Invalid status.");
       return;
     }
 
     axios
       .post(url, {
-        orderId: product.id,
+        orderId: order.id,
       })
       .then((response) => {
         if (response.status === 200) {
           setStatus(newStatus);
+          toast.success("Status updated successfully.");
         } else {
-          Alert.alert("Error", "Unable to update status.");
+          toast.error("Unable to update status.");
         }
       })
-      .catch((error) => {
-        Alert.alert("Error", "Unable to connect to server.");
+      .catch(() => {
+        toast.error("Unable to update status.");
       });
   };
+
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-      <Text style={styles.productName}>{product.productName}</Text>
+    <View
+      style={[
+        styles.card,
+        status === "completed" && styles.completedCard,
+        status === "cancelled" && styles.cancelledCard,
+      ]}
+    >
+      <Image source={{ uri: order.imageUrl }} style={styles.productImage} />
+      <Text style={styles.productName}>{order.productName}</Text>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>
-            Quantity to Deliver:{" "}
-            <Text style={styles.quantity}>{product.quantityToDeliver}</Text>
+            Quantity Deliver:{" "}
+            <Text style={styles.quantity}>{order.quantityToDeliver}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Price: <Text style={styles.price}>${product.price}</Text>
+            Price: <Text style={styles.price}>${order.price}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Total Collectible:{" "}
-            <Text style={styles.price}>
-              {product.price * product.quantityToDeliver}
-            </Text>
+            Shop: <Text style={styles.shop}>{order.companyName}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Shop: <Text style={styles.shop}>{product.shopName}</Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Location: <Text style={styles.location}>{product.location}</Text>
+            Location: <Text style={styles.location}>{order.location}</Text>
           </Text>
         </View>
-        <View style={styles.buttons}>
-          {product.status === "ordered" && (
+        {status !== "completed" && status !== "cancelled" && (
+          <View style={styles.buttons}>
+            {status === "ordered" && (
+              <Pressable
+                style={styles.complete_button}
+                onPress={() => updateStatus("cancelled")}
+              >
+                <Text style={styles.addButtonText}>Cancel Order</Text>
+              </Pressable>
+            )}
             <Pressable
               style={styles.complete_button}
-              onPress={() => updateStatus("cancelled")}
+              onPress={handleContactManager}
             >
-              <Text style={styles.addButtonText}>Cancel Order</Text>
+              <Text style={styles.addButtonText}>Contact</Text>
             </Pressable>
-          )}
-          <Pressable
-            style={styles.complete_button}
-            onPress={handleContactManager}
-          >
-            <Text style={styles.addButtonText}>Contact</Text>
-          </Pressable>
-        </View>
+          </View>
+        )}
       </View>
 
       {/* Delivery process (status circles) */}
@@ -124,37 +129,39 @@ export const ItemCard = ({ product }: any) => {
       </View>
 
       {/* Delivery status buttons */}
-      <View style={styles.deliveryProcessButtons}>
-        <Pressable
-          style={
-            status === "Ordered"
-              ? styles.complete_button
-              : styles.incomplete_button
-          }
-        >
-          <Text style={styles.addButtonText}>Ordered</Text>
-        </Pressable>
-        <Pressable
-          style={
-            status === "shipped"
-              ? styles.complete_button
-              : styles.incomplete_button
-          }
-          onPress={() => updateStatus("shipped")}
-        >
-          <Text style={styles.addButtonText}>Shipped</Text>
-        </Pressable>
-        <Pressable
-          style={
-            status === "delivered"
-              ? styles.complete_button
-              : styles.incomplete_button
-          }
-          onPress={() => updateStatus("delivered")}
-        >
-          <Text style={styles.addButtonText}>Delivered</Text>
-        </Pressable>
-      </View>
+      {status !== "completed" && status !== "cancelled" && (
+        <View style={styles.deliveryProcessButtons}>
+          <Pressable
+            style={
+              status === "Ordered"
+                ? styles.complete_button
+                : styles.incomplete_button
+            }
+          >
+            <Text style={styles.addButtonText}>Ordered</Text>
+          </Pressable>
+          <Pressable
+            style={
+              status === "shipped"
+                ? styles.complete_button
+                : styles.incomplete_button
+            }
+            onPress={() => updateStatus("shipped")}
+          >
+            <Text style={styles.addButtonText}>Shipped</Text>
+          </Pressable>
+          <Pressable
+            style={
+              status === "delivered"
+                ? styles.complete_button
+                : styles.incomplete_button
+            }
+            onPress={() => updateStatus("delivered")}
+          >
+            <Text style={styles.addButtonText}>Delivered</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 };
@@ -172,6 +179,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+  },
+  completedCard: {
+    borderColor: "green",
+    borderWidth: 2,
+  },
+  cancelledCard: {
+    borderColor: "red",
+    borderWidth: 2,
   },
   productImage: {
     width: "100%",

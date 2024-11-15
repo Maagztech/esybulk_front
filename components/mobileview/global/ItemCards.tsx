@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import AddProductModal from "./ProductAddModal";
+
 const ProductDetails = ({ product }: any) => {
   const { setSelectedProduct }: any = useProduct();
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +19,14 @@ const ProductDetails = ({ product }: any) => {
       <Text style={styles.title}>{product.title}</Text>
       <Image source={{ uri: product.images[0] }} style={styles.image} />
       <Text style={styles.about}>{product.about}</Text>
+
+      {/* Display product types above MRP */}
+      {product.type && product.type.length > 0 && (
+        <Text style={styles.productTypes}>
+          Categories: {product.type.join(", ")}
+        </Text>
+      )}
+
       <Text style={styles.mrp}>MRP: {product.mrp} Rs.</Text>
       <Text style={styles.quantity}>
         Available Quantity: {product.quantity}
@@ -77,6 +86,11 @@ const styles = StyleSheet.create({
   about: {
     fontSize: 16,
     marginBottom: 10,
+  },
+  productTypes: {
+    fontSize: 16,
+    marginBottom: 10,
+    fontWeight: "600",
   },
   mrp: {
     fontSize: 18,

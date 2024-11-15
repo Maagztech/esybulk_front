@@ -18,6 +18,10 @@ const DistributorSignUp = () => {
     designation: userInfo?.designation || "",
   });
 
+  const [hasVehicleAccess, setHasVehicleAccess] = useState<boolean | null>(
+    null
+  );
+
   const handleSignUp = async () => {
     if (!canSignUp()) {
       toast.error("Please fill out all fields");
@@ -32,6 +36,7 @@ const DistributorSignUp = () => {
 
   const canSignUp = () => {
     return (
+      hasVehicleAccess === true &&
       accountDetails.name &&
       accountDetails.phoneNumber &&
       accountDetails.landmark &&
@@ -135,6 +140,34 @@ const DistributorSignUp = () => {
             }
             style={styles.input50}
           />
+        </View>
+
+        {/* Vehicle Access Section */}
+        <Text style={styles.vehicleAccessText}>
+          Do you have a vehicle for transporting goods?
+        </Text>
+        <View style={styles.vehicleAccessContainer}>
+          <Pressable
+            style={[
+              styles.vehicleButton,
+              hasVehicleAccess === true && styles.selectedButton,
+            ]}
+            onPress={() => setHasVehicleAccess(true)}
+          >
+            <Text style={styles.vehicleButtonText}>Yes</Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.vehicleButton,
+              hasVehicleAccess === false && styles.selectedButton,
+            ]}
+            onPress={() => {
+              toast.error("Please arrange a vehicle first");
+              setHasVehicleAccess(false);
+            }}
+          >
+            <Text style={styles.vehicleButtonText}>No</Text>
+          </Pressable>
         </View>
 
         <View style={styles.PressableContainer}>
@@ -255,6 +288,32 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Add this line
     justifyContent: "space-between",
     gap: 10,
+  },
+  vehicleAccessText: {
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  vehicleAccessContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginBottom: 15,
+  },
+  vehicleButton: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#966440",
+    width: "45%",
+    alignItems: "center",
+  },
+  selectedButton: {
+    backgroundColor: "#966440",
+  },
+  vehicleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 
