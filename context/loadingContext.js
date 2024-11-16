@@ -20,3 +20,5 @@ export const useLoading = () => {
     }
     return context;
 };
+
+export default LoadingContext;

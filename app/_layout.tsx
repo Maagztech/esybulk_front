@@ -1,6 +1,7 @@
 import Header from "@/components/mobileview/global/header";
 import { AuthProvider } from "@/context/authContext";
-import { ProductProvider } from "@/context/companyContext";
+import { CompanyProvider } from "@/context/companyContext";
+import { DistributorProvider } from "@/context/distributorContext";
 import { LoadingProvider } from "@/context/loadingContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
@@ -38,37 +39,39 @@ export default function RootLayout() {
   return (
     <LoadingProvider>
       <AuthProvider>
-        <ProductProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <View style={styles.overlay}>
-              <SafeAreaView
-                style={styles.container}
-                edges={["top", "bottom", "left", "right"]}
-              >
-                <PaperProvider>
-                  <Header />
-                  <ToastContainer />
-                  <Stack
-                    screenOptions={{
-                      headerShown: false,
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                  </Stack>
-                </PaperProvider>
-              </SafeAreaView>
-            </View>
-          </ThemeProvider>
-        </ProductProvider>
+        <CompanyProvider>
+          <DistributorProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <View style={styles.overlay}>
+                <SafeAreaView
+                  style={styles.container}
+                  edges={["top", "bottom", "left", "right"]}
+                >
+                  <PaperProvider>
+                    <Header />
+                    <ToastContainer />
+                    <Stack
+                      screenOptions={{
+                        headerShown: false,
+                      }}
+                    >
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                    </Stack>
+                  </PaperProvider>
+                </SafeAreaView>
+              </View>
+            </ThemeProvider>
+          </DistributorProvider>
+        </CompanyProvider>
       </AuthProvider>
     </LoadingProvider>
   );

@@ -1,23 +1,22 @@
 import axios from 'axios';
 import React, { createContext, useContext, useState } from 'react';
-import { useAuth } from './authContext.js';
 
-const ProductContext = createContext(undefined);
+const CompanyContext = createContext(undefined);
 
-export const ProductProvider = ({ children }) => {
+export const CompanyProvider = ({ children }) => {
   const { access_token } = useAuth();
-  const [products, setProducts] = useState([]);
+  const [products, setCompanys] = useState([]);
   const [distributorCompanyStocks, setDistributorCompanyStocks] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
-  const loadOrderedProducts = async () => {
+  const loadOrderedCompanys = async () => {
     const response = await axios.get("http://localhost:5000/api/products", {
       headers: { Authorization: `${access_token}` },
     });
-    setProducts(response.data);
+    setCompanys(response.data);
   }
 
-  const loadcompanyProducts = async () => {
+  const loadcompanyCompanys = async () => {
     const response = await axios.get(
       "http://localhost:5000/api/distributor_company_stocks",
       {
@@ -29,20 +28,18 @@ export const ProductProvider = ({ children }) => {
 
 
   return (
-    <ProductContext.Provider value={{ selectedProduct, setSelectedProduct, loadcompanyProducts, distributorCompanyStocks, loadOrderedProducts, products }}>
+    <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany, loadcompanyCompanys, distributorCompanyStocks, loadOrderedCompanys, products }}>
       {children}
-    </ProductContext.Provider>
+    </CompanyContext.Provider>
   );
 };
 
-
-
-export const useProduct = () => {
-  const context = useContext(ProductContext);
+export const useCompany = () => {
+  const context = useContext(CompanyContext);
   if (!context) {
-    throw new Error("useProduct must be used within an ProductProvider");
+    throw new Error("useCompany must be used within an CompanyProvider");
   }
   return context;
 };
 
-export default ProductContext;
+export default CompanyContext;

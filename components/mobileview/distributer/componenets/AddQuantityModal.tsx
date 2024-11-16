@@ -18,8 +18,8 @@ import {
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
-import LabeledInput from "./labeledInput";
-import LabeledMultilineInput from "./LabeledMultilineInput";
+import LabeledInput from "../../global/labeledInput";
+import LabeledMultilineInput from "../../global/LabeledMultilineInput";
 
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const { access_token }: any = useAuth();

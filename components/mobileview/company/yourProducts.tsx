@@ -1,6 +1,6 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
 import { useAuth } from "@/context/authContext";
-import { useProduct } from "@/context/companyContext";
+import { useCompany } from "@/context/companyContext";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
@@ -12,7 +12,7 @@ export const CompanyProducts = () => {
     loadcompanyProducts,
     distributorCompanyStocks,
     setSelectedProduct,
-  }: any = useProduct();
+  }: any = useCompany();
   useEffect(() => {
     loadcompanyProducts();
   }, []);

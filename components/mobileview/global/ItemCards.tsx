@@ -1,4 +1,4 @@
-import { useProduct } from "@/context/companyContext";
+import { useCompany } from "@/context/companyContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import {
@@ -12,7 +12,7 @@ import {
 import AddProductModal from "./ProductAddModal";
 
 const ProductDetails = ({ product }: any) => {
-  const { setSelectedProduct }: any = useProduct();
+  const { setSelectedProduct }: any = useCompany();
   const [isOpen, setIsOpen] = useState(false);
   return (
     <View style={styles.container}>
