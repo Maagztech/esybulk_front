@@ -1,15 +1,8 @@
+import LabeledInput from "@/components/mobileview/global/labeledInput";
 import { useAuth } from "@/context/authContext";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
 
@@ -26,6 +19,7 @@ const CompanySignUp = () => {
     "Sports",
     "Automotive and Transportation",
   ];
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
@@ -46,7 +40,7 @@ const CompanySignUp = () => {
 
   const canSignUp = () => {
     return (
-      hasVehicleAccess === true && // Only allow sign-up if user has vehicle access
+      hasVehicleAccess === true &&
       accountDetails.name &&
       accountDetails.designation &&
       accountDetails.companyName &&
@@ -66,9 +60,9 @@ const CompanySignUp = () => {
       toast.error("Please fill out all fields");
       return;
     }
-    console.log(accountDetails);
     await activeAccount(accountDetails);
   };
+
   const handleTypeChange = (type: string) => {
     setAccountDetails((prevData) => {
       const updatedCategories = prevData.categories.includes(type)
@@ -86,47 +80,40 @@ const CompanySignUp = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Profile</Text>
-
-        <TextInput
-          placeholder="Your Name"
+        <LabeledInput
+          label="Your Name"
           value={accountDetails.name}
-          onChangeText={(text) =>
+          onChangeText={(text: string) =>
             setAccountDetails({ ...accountDetails, name: text })
           }
-          style={styles.input}
         />
-        <TextInput
-          placeholder="Company Name"
+        <LabeledInput
+          label="Company Name"
           value={accountDetails.companyName}
-          onChangeText={(text) =>
+          onChangeText={(text: string) =>
             setAccountDetails({ ...accountDetails, companyName: text })
           }
-          style={styles.input}
         />
-        <TextInput
-          placeholder="Designation"
+        <LabeledInput
+          label="Designation"
           value={accountDetails.designation}
-          onChangeText={(text) =>
+          onChangeText={(text: string) =>
             setAccountDetails({ ...accountDetails, designation: text })
           }
-          style={styles.input}
         />
-        <TextInput
-          placeholder="Phone Number"
+        <LabeledInput
+          label="Phone Number"
           value={accountDetails.phoneNumber}
-          onChangeText={(text) =>
+          onChangeText={(text: string) =>
             setAccountDetails({
               ...accountDetails,
               phoneNumber: text.replace(/[^0-9]/g, ""),
             })
           }
           keyboardType="phone-pad"
-          style={styles.input}
         />
-        <TouchableOpacity
-          onPress={handleDropdownToggle}
-          style={[styles.dropdownBox, styles.input]}
-        >
+
+        <Pressable onPress={handleDropdownToggle} style={[styles.dropdownBox]}>
           <Text>
             {accountDetails.categories.length > 0
               ? accountDetails.categories.join(", ")
@@ -138,7 +125,7 @@ const CompanySignUp = () => {
             color="black"
             style={styles.icon}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         {showDropdown && (
           <ScrollView style={styles.dropdown}>
@@ -164,63 +151,51 @@ const CompanySignUp = () => {
             (Fill it correctly)
           </Text>
         </Text>
+        <LabeledInput
+          label="Landmark"
+          value={accountDetails.landmark}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, landmark: text })
+          }
+        />
+        <LabeledInput
+          label="Village / City"
+          value={accountDetails.village_city}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, village_city: text })
+          }
+        />
+        <LabeledInput
+          label="Pin Code"
+          value={accountDetails.pinCode}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, pinCode: text })
+          }
+          keyboardType="number-pad"
+        />
+        <LabeledInput
+          label="Block"
+          value={accountDetails.block}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, block: text })
+          }
+        />
 
-        <View style={styles.address}>
-          <TextInput
-            placeholder="Landmark"
-            value={accountDetails.landmark}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, landmark: text })
-            }
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Village / City"
-            value={accountDetails.village_city}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, village_city: text })
-            }
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.address}>
-          <TextInput
-            placeholder="Pin Code"
-            value={accountDetails.pinCode}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, pinCode: text })
-            }
-            style={styles.input50}
-          />
-          <TextInput
-            placeholder="Block"
-            value={accountDetails.block}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, block: text })
-            }
-            style={styles.input50}
-          />
-        </View>
-        <View style={styles.address}>
-          <TextInput
-            placeholder="District"
-            value={accountDetails.district}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, district: text })
-            }
-            style={styles.input50}
-          />
-          <TextInput
-            placeholder="State"
-            value={accountDetails.state}
-            onChangeText={(text) =>
-              setAccountDetails({ ...accountDetails, state: text })
-            }
-            style={styles.input50}
-          />
-        </View>
+        <LabeledInput
+          label="District"
+          value={accountDetails.district}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, district: text })
+          }
+        />
+        <LabeledInput
+          label="State"
+          value={accountDetails.state}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, state: text })
+          }
+        />
 
-        {/* Vehicle Access Section */}
         <Text style={styles.vehicleAccessText}>
           Do you have a vehicle for transporting goods?
         </Text>
@@ -248,7 +223,6 @@ const CompanySignUp = () => {
           </Pressable>
         </View>
 
-        {/* Sign Up Button */}
         <View style={styles.PressableContainer}>
           <Pressable
             style={[
@@ -273,7 +247,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
-    marginTop: 120,
+    marginTop: 300,
   },
   innerContainer: {
     width: "100%",
@@ -298,16 +272,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: "#000",
   },
+  address: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
   input50: {
     width: "48%",
-    padding: 15,
     marginBottom: 15,
+    paddingVertical: 10, // Adjust vertical padding for better fit
+    paddingHorizontal: 12, // Optional: horizontal padding
     borderRadius: 8,
     backgroundColor: "#f0f0f0",
     borderColor: "#966440",
     borderWidth: 1,
     color: "#000",
   },
+
   PressableContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -323,12 +305,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  address: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
   },
   vehicleAccessText: {
     fontWeight: "bold",
@@ -358,9 +334,9 @@ const styles = StyleSheet.create({
   },
   dropdownBox: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 4,
+    borderColor: "#966440",
+    padding: 13,
+    borderRadius: 7,
     width: "100%",
     marginBottom: 10,
     flexDirection: "row",

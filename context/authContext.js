@@ -5,8 +5,10 @@ import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useLoading } from "./loadingContext";
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
+  const { loadinf, setIsLoading } = useLoading();
   const [userInfo, setUserInfo] = useState(null);
   const navigation = useNavigation();
   const [access_token, setAccessToken] = useState(null);
@@ -29,7 +31,9 @@ export const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
+
     if (userInfo) return;
+    setIsLoading(true);
     const fetchUser = async () => {
       try {
         const refresh_token = await getLocalUser();
@@ -38,6 +42,11 @@ export const AuthProvider = ({ children }) => {
           const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
           setUserInfo(response.data.user)
           console.log(response.data.access_token)
+          if (response.data.user.role && response.data.user.pinCode) {
+            router.push("/home");
+          } else {
+            router.push("/selectRole");
+          }
           setAccessToken(response.data.access_token)
           await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
         } else {
@@ -48,6 +57,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     fetchUser();
+    setIsLoading(false);
   }, [])
 
   const getLocalUser = async () => {
@@ -57,6 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getUserInfo = async (token) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:5000/api/login",
@@ -81,6 +92,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error during login:", error);
       toast.error("Failed Try again!");
     }
+    setIsLoading(false);
   };
 
 

@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/authContext";
 import { useProduct } from "@/context/companyContext";
+import { useLoading } from "@/context/loadingContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
@@ -13,14 +14,16 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
+import LabeledInput from "./labeledInput";
+import LabeledMultilineInput from "./LabeledMultilineInput";
 
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const { access_token }: any = useAuth();
+  const { setIsLoading }: any = useLoading();
   const { loadcompanyProducts, setSelectedProduct, selectedProduct }: any =
     useProduct();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -91,7 +94,27 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     }
   };
 
+  const canSignUp = () => {
+    return (
+      productData.title &&
+      productData.images.length > 0 &&
+      !isNaN(Number(productData.mrp)) && // Ensure MRP is a valid number
+      Number(productData.mrp) > 0 &&
+      productData.type.length > 0 &&
+      !isNaN(Number(productData.quantity)) && // Ensure Quantity is a valid number
+      Number(productData.quantity) > 0 &&
+      productData.buyOptions.every((option) => option.quantity && option.price)
+    );
+  };
+
   const handleAddProduct = async () => {
+    // Call canSignUp function to properly check if all fields are filled
+    setIsLoading(true);
+    if (!canSignUp()) {
+      toast.error("Please fill out all fields.");
+      return;
+    }
+    toast.info("Please wait while we add your product.");
     try {
       const uploadedImageUrls = [];
       for (const image of productData.images) {
@@ -160,13 +183,15 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           },
           { headers: { Authorization: `${access_token}` } }
         );
-        toast.success("Product updated successfully.");
+        toast.success("Product added successfully.");
       }
       loadcompanyProducts();
       closeModal();
     } catch (error) {
       console.error("Error adding or updating product:", error);
+      toast.error("Something went wrong. Please try again.");
     }
+    setIsLoading(false);
   };
 
   const addBuyOption = () => {
@@ -256,32 +281,29 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             )}
             keyExtractor={(item, index) => index.toString()}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Product Name"
+          <LabeledInput
+            label="Product Name"
             value={productData.title}
-            onChangeText={(value) =>
+            onChangeText={(value: string) =>
               setProductData((prevData) => ({ ...prevData, title: value }))
             }
           />
-          <TextInput
-            style={styles.input}
-            placeholder="About Product"
+          <LabeledMultilineInput
+            label="About Product (optional)"
             value={productData.about}
-            onChangeText={(value) =>
+            onChangeText={(value: string) =>
               setProductData((prevData) => ({ ...prevData, about: value }))
             }
-            multiline
-            numberOfLines={3}
+            multiline={3}
           />
-          <TouchableOpacity
+          <Pressable
             onPress={handleDropdownToggle}
-            style={styles.dropdownBox}
+            style={[styles.dropdownBox]}
           >
             <Text>
               {productData.type.length > 0
                 ? productData.type.join(", ")
-                : "Select types"}
+                : "Product Category"}
             </Text>
             <Ionicons
               name={showDropdown ? "arrow-up" : "arrow-down"}
@@ -289,7 +311,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               color="black"
               style={styles.icon}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {showDropdown && (
             <ScrollView style={styles.dropdown}>
@@ -306,21 +328,19 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               ))}
             </ScrollView>
           )}
-          <TextInput
-            style={styles.input}
-            placeholder="MRP"
+          <LabeledInput
+            label="MRP"
             value={productData.mrp}
             keyboardType="decimal-pad"
-            onChangeText={(value) =>
+            onChangeText={(value: any) =>
               setProductData((prevData) => ({ ...prevData, mrp: value }))
             }
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Quantity Available"
+          <LabeledInput
+            label="Quantity Available"
             value={productData.quantity}
             keyboardType="numeric"
-            onChangeText={(value) =>
+            onChangeText={(value: any) =>
               setProductData((prevData) => ({ ...prevData, quantity: value }))
             }
           />
@@ -404,7 +424,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#966440",
     borderRadius: 5,
     marginBottom: 15,
   },
@@ -455,8 +475,8 @@ const styles = StyleSheet.create({
   },
   buyOptionInput: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
+    borderColor: "#966440",
+    padding: 15,
     borderRadius: 5,
     marginRight: 10,
     flex: 1,
@@ -484,9 +504,9 @@ const styles = StyleSheet.create({
   },
   dropdownBox: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 4,
+    borderColor: "#966440",
+    padding: 13,
+    borderRadius: 7,
     width: "100%",
     marginBottom: 10,
     flexDirection: "row",
