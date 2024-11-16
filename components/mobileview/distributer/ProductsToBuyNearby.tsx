@@ -43,7 +43,6 @@ export const ProductsToBuyNearbydistributor = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products Available Nearby</Text>
       <FlatList
         showsVerticalScrollIndicator={false}
         data={nearbyProducts}

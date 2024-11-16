@@ -115,6 +115,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       return;
     }
     toast.info("Please wait while we add your product.");
+    setIsOpen(false);
     try {
       const uploadedImageUrls = [];
       for (const image of productData.images) {
@@ -142,7 +143,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         mrp: productData.mrp,
         type: productData.type,
       };
-
       if (selectedProduct) {
         console.log(selectedProduct);
         await axios.post(
@@ -185,12 +185,12 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         );
         toast.success("Product added successfully.");
       }
-      loadcompanyProducts();
-      closeModal();
     } catch (error) {
       console.error("Error adding or updating product:", error);
       toast.error("Something went wrong. Please try again.");
     }
+    loadcompanyProducts();
+    closeModal();
     setIsLoading(false);
   };
 
