@@ -1,13 +1,11 @@
 import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
+import { useDistributor } from "@/context/distributorContext";
 import { useLoading } from "@/context/loadingContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
-import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
-  FlatList,
-  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -16,91 +14,47 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
 import LabeledInput from "../../global/labeledInput";
-import LabeledMultilineInput from "../../global/LabeledMultilineInput";
 
-const AddProductModal = ({ isOpen, setIsOpen }: any) => {
+const AddQuantityModal = ({ visible, setVisible }: any) => {
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
-  const { loadcompanyProducts, setSelectedProduct, selectedProduct }: any =
-    useCompany();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const types = [
-    "Grocery",
-    "Clothing and Apparel",
-    "Electronics and Technology",
-    "Home and Furniture",
-    "Pharmacy and Health",
-    "Beauty and Personal Care",
-    "Bookstores and Stationery",
-    "Sports",
-    "Automotive and Transportation",
-  ];
+  const { selectForSell, setSelectForSell }: any = useDistributor();
+  const { setDistributorCompanyStocks }: any = useCompany();
   const [productData, setProductData] = useState({
-    title: "",
-    about: "",
-    images: [] as string[],
-    type: [] as string[],
     quantity: "",
-    mrp: "",
     buyOptions: [{ quantity: "", price: "" }],
   });
 
   useEffect(() => {
-    if (selectedProduct) {
+    if (selectForSell) fetchSellOptions();
+  }, [selectForSell]);
+
+  const fetchSellOptions = async () => {
+    const response = await axios.get(
+      `http://localhost:5000/api/distributor_or_company_get_quantity/${selectForSell?.id}`,
+      { headers: { Authorization: `${access_token}` } }
+    );
+    const options = response.data;
+    if (options.quantity && options.price.length != 0) {
       setProductData({
-        title: selectedProduct.title,
-        about: selectedProduct.about,
-        images: selectedProduct.images,
-        quantity: selectedProduct.quantity,
-        mrp: selectedProduct.mrp,
-        type: selectedProduct.type,
-        buyOptions: selectedProduct.buyOptions || [{ quantity: "", price: "" }],
-      });
-    } else {
-      setProductData({
-        title: "",
-        about: "",
-        images: [],
-        type: [],
-        quantity: "",
-        mrp: "",
-        buyOptions: [{ quantity: "", price: "" }],
+        quantity: options.quantity,
+        buyOptions: options.price.map((option: any) => ({
+          quantity: option.quantity,
+          price: option.price,
+        })),
       });
     }
-  }, [selectedProduct]);
-
-  const closeModal = () => {
-    setSelectedProduct(null);
-    setIsOpen(false);
   };
 
-  const pickImages = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      allowsMultipleSelection: true,
-    });
-    if (!result.canceled && result.assets) {
-      const selectedImages = result.assets.map((asset) => asset.uri);
-      setProductData((prevData) => ({
-        ...prevData,
-        images: [...prevData.images, ...selectedImages],
-      }));
-    }
+  const closeModal = () => {
+    setSelectForSell(null);
+    setVisible(false);
   };
 
   const canSignUp = () => {
     return (
-      productData.title &&
-      productData.images.length > 0 &&
-      !isNaN(Number(productData.mrp)) && // Ensure MRP is a valid number
-      Number(productData.mrp) > 0 &&
-      productData.type.length > 0 &&
       !isNaN(Number(productData.quantity)) && // Ensure Quantity is a valid number
       Number(productData.quantity) > 0 &&
       productData.buyOptions.every((option) => option.quantity && option.price)
@@ -108,88 +62,38 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   };
 
   const handleAddProduct = async () => {
-    // Call canSignUp function to properly check if all fields are filled
     setIsLoading(true);
     if (!canSignUp()) {
       toast.error("Please fill out all fields.");
       return;
     }
     toast.info("Please wait while we add your product.");
-    setIsOpen(false);
+    setVisible(false);
     try {
-      const uploadedImageUrls = [];
-      for (const image of productData.images) {
-        if (!image.startsWith("http")) {
-          // Only upload new images, skip existing ones
-          const formData = new FormData();
-          const response = await fetch(image);
-          const blob = await response.blob();
-          formData.append("file", blob, `${productData.title}.jpg`);
-          formData.append("upload_preset", "esybulk");
-          formData.append("cloud_name", "dv5daoaut");
-          const cloudinaryResponse = await axios.post(
-            "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
-            formData
-          );
-          uploadedImageUrls.push(cloudinaryResponse.data.secure_url);
-        } else {
-          uploadedImageUrls.push(image); // Add existing image URLs directly
-        }
-      }
-      const productPayload = {
-        title: productData.title,
-        about: productData.about,
-        images: uploadedImageUrls,
-        mrp: productData.mrp,
-        type: productData.type,
-      };
-      if (selectedProduct) {
-        console.log(selectedProduct);
-        await axios.post(
-          `http://localhost:5000/api/companyregisterproductedit/${selectedProduct.id}`,
-          productPayload,
-          { headers: { Authorization: `${access_token}` } }
-        );
-        await axios.post(
-          "http://localhost:5000/api/distributor_or_company_add_quantity",
-          {
-            product: selectedProduct.id,
-            price: productData.buyOptions.map((option) => ({
-              quantity: option.quantity,
-              price: option.price,
-            })),
-            quantity: productData.quantity,
-          },
-          { headers: { Authorization: `${access_token}` } }
-        );
-        toast.success("Product updated successfully.");
-      } else {
-        // Add new product
-        const productResponse = await axios.post(
-          "http://localhost:5000/api/companyregisterproduct",
-          productPayload,
-          { headers: { Authorization: `${access_token}` } }
-        );
-        const productId = productResponse.data._id;
-        await axios.post(
-          "http://localhost:5000/api/distributor_or_company_add_quantity",
-          {
-            product: productId,
-            price: productData.buyOptions.map((option) => ({
-              quantity: option.quantity,
-              price: option.price,
-            })),
-            quantity: productData.quantity,
-          },
-          { headers: { Authorization: `${access_token}` } }
-        );
-        toast.success("Product added successfully.");
-      }
+      await axios.post(
+        "http://localhost:5000/api/distributor_or_company_add_quantity",
+        {
+          product: selectForSell?.id,
+          price: productData.buyOptions.map((option) => ({
+            quantity: option.quantity,
+            price: option.price,
+          })),
+          quantity: productData.quantity,
+        },
+        { headers: { Authorization: `${access_token}` } }
+      );
+      toast.success("Sell option updated successfully.");
     } catch (error) {
       console.error("Error adding or updating product:", error);
       toast.error("Something went wrong. Please try again.");
     }
-    loadcompanyProducts();
+    const response = await axios.get(
+      "http://localhost:5000/api/distributor_company_stocks",
+      {
+        headers: { Authorization: `${access_token}` },
+      }
+    );
+    setDistributorCompanyStocks(response.data);
     closeModal();
     setIsLoading(false);
   };
@@ -228,114 +132,21 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     }));
   };
 
-  const removeImage = (index: number) => {
-    setProductData((prevData) => ({
-      ...prevData,
-      images: prevData.images.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleTypeChange = (type: string) => {
-    setProductData((prevData) => {
-      const updatedTypes = prevData.type.includes(type)
-        ? prevData.type.filter((t) => t !== type)
-        : [...prevData.type, type];
-      return { ...prevData, type: updatedTypes };
-    });
-  };
-
-  const handleDropdownToggle = () => {
-    setShowDropdown(!showDropdown);
-  };
-
   return (
     <Modal
-      visible={isOpen}
+      visible={visible}
       transparent={true}
       animationType="slide"
       onRequestClose={closeModal}
     >
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Add Product</Text>
-          <Pressable style={styles.imageButton} onPress={pickImages}>
-            <Text style={styles.buttonText}>
-              {productData.images.length > 0
-                ? `${productData.images.length} Images Selected`
-                : "Pick Images"}
-            </Text>
-          </Pressable>
-          <FlatList
-            horizontal
-            data={productData.images}
-            renderItem={({ item, index }) => (
-              <View style={styles.imageContainer}>
-                <Image source={{ uri: item }} style={styles.imageThumbnail} />
-                <Pressable
-                  style={styles.deleteImageButton}
-                  onPress={() => removeImage(index)}
-                >
-                  <Ionicons name="close-circle" size={24} color="white" />
-                </Pressable>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-          <LabeledInput
-            label="Product Name"
-            value={productData.title}
-            onChangeText={(value: string) =>
-              setProductData((prevData) => ({ ...prevData, title: value }))
-            }
-          />
-          <LabeledMultilineInput
-            label="About Product (optional)"
-            value={productData.about}
-            onChangeText={(value: string) =>
-              setProductData((prevData) => ({ ...prevData, about: value }))
-            }
-            multiline={3}
-          />
-          <Pressable
-            onPress={handleDropdownToggle}
-            style={[styles.dropdownBox]}
-          >
-            <Text>
-              {productData.type.length > 0
-                ? productData.type.join(", ")
-                : "Product Category"}
-            </Text>
-            <Ionicons
-              name={showDropdown ? "arrow-up" : "arrow-down"}
-              size={24}
-              color="black"
-              style={styles.icon}
-            />
-          </Pressable>
-
-          {showDropdown && (
-            <ScrollView style={styles.dropdown}>
-              {types.map((type) => (
-                <View key={type} style={styles.checkboxContainer}>
-                  <Checkbox
-                    status={
-                      productData.type.includes(type) ? "checked" : "unchecked"
-                    }
-                    onPress={() => handleTypeChange(type)}
-                  />
-                  <Text>{type}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-          <LabeledInput
-            label="MRP"
-            value={productData.mrp}
-            keyboardType="decimal-pad"
-            onChangeText={(value: any) =>
-              setProductData((prevData) => ({ ...prevData, mrp: value }))
-            }
-          />
+          <Text style={styles.modalTitle}>Update Quantity</Text>
+          <Text style={styles.subTitle}>{selectForSell?.title}</Text>
+          <Text style={styles.subAbout} numberOfLines={3} ellipsizeMode="tail">
+            {selectForSell?.about}
+          </Text>
+          <Text style={{ marginBottom: 20 }}>MRP:{selectForSell?.mrp}</Text>
           <LabeledInput
             label="Quantity Available"
             value={productData.quantity}
@@ -344,7 +155,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               setProductData((prevData) => ({ ...prevData, quantity: value }))
             }
           />
-
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
@@ -372,7 +182,10 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               </Pressable>
             </View>
           ))}
-          <Pressable onPress={addBuyOption} style={{ marginBottom: 20 }}>
+          <Pressable
+            onPress={addBuyOption}
+            style={{ alignItems: "center", marginBottom: 20 }}
+          >
             <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
           </Pressable>
 
@@ -387,7 +200,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               style={[styles.fullButton, styles.addButton]}
               onPress={handleAddProduct}
             >
-              {!selectedProduct ? (
+              {!selectForSell ? (
                 <Text style={styles.buttonText}>Add</Text>
               ) : (
                 <Text style={styles.buttonText}>Update</Text>
@@ -411,14 +224,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    alignItems: "center",
     width: "95%",
     maxWidth: 700,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#333",
+    marginBottom: 15,
+    textAlign: "center",
   },
   input: {
     width: "100%",
@@ -466,6 +280,10 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginVertical: 3,
+  },
+  subAbout: {
+    fontSize: 18,
     marginVertical: 10,
   },
   buyOptionContainer: {
@@ -532,4 +350,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddProductModal;
+export default AddQuantityModal;

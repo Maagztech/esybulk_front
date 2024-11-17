@@ -87,17 +87,10 @@ const ShopKeeperSignUp = () => {
           }
         />
         <LabeledInput
-          label="Company Name"
+          label="Shop Name"
           value={accountDetails.companyName}
           onChangeText={(text: string) =>
             setAccountDetails({ ...accountDetails, companyName: text })
-          }
-        />
-        <LabeledInput
-          label="Designation"
-          value={accountDetails.designation}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, designation: text })
           }
         />
         <LabeledInput
@@ -116,7 +109,7 @@ const ShopKeeperSignUp = () => {
           <Text>
             {accountDetails.categories.length > 0
               ? accountDetails.categories.join(", ")
-              : "Industry Type"}
+              : "Shop Type"}
           </Text>
           <Ionicons
             name={showDropdown ? "arrow-up" : "arrow-down"}

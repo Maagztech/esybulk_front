@@ -1,4 +1,6 @@
+import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
+import { useDistributor } from "@/context/distributorContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import {
@@ -12,15 +14,15 @@ import {
 import AddProductModal from "./ProductAddModal";
 
 const ProductDetails = ({ product }: any) => {
+  const { userInfo }: any = useAuth();
   const { setSelectedProduct }: any = useCompany();
+  const { selectForSell, setSelectForSell }: any = useDistributor();
   const [isOpen, setIsOpen] = useState(false);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{product.title}</Text>
       <Image source={{ uri: product.images[0] }} style={styles.image} />
       <Text style={styles.about}>{product.about}</Text>
-
-      {/* Display product types above MRP */}
       {product.type && product.type.length > 0 && (
         <Text style={styles.productTypes}>
           Categories: {product.type.join(", ")}
@@ -32,7 +34,7 @@ const ProductDetails = ({ product }: any) => {
         Available Quantity: {product.quantity}
       </Text>
 
-      <Text style={styles.buyOptionsTitle}>Buy Options:</Text>
+      <Text style={styles.buyOptionsTitle}>Sell Options:</Text>
       <FlatList
         data={product.buyOptions}
         keyExtractor={(item) => item._id}
@@ -47,14 +49,17 @@ const ProductDetails = ({ product }: any) => {
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => {
-          setSelectedProduct(product);
+          if (product.admin === userInfo._id) setSelectedProduct(product);
+          else setSelectForSell(product);
           setIsOpen(true);
         }}
       >
         <Ionicons name="create-outline" size={24} color="#FFF" />
         <Text style={styles.editButtonText}>Edit</Text>
       </TouchableOpacity>
-      <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {product.admin === userInfo._id && (
+        <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      )}
     </View>
   );
 };

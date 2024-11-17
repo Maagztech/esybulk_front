@@ -12,7 +12,6 @@ export const CompanyProducts = () => {
   const {
     setDistributorCompanyStocks,
     distributorCompanyStocks,
-    setSelectedProduct,
   }: any = useCompany();
 
   

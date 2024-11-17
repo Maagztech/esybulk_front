@@ -51,7 +51,10 @@ export default function RootLayout() {
                 >
                   <PaperProvider>
                     <Header />
-                    <ToastContainer />
+                    <ToastContainer
+                      style={{ fontSize: "14px", zIndex: 99999 }}
+                      autoClose={3000}
+                    />
                     <Stack
                       screenOptions={{
                         headerShown: false,

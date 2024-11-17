@@ -2,7 +2,7 @@ import { useAuth } from "@/context/authContext";
 import { useDistributor } from "@/context/distributorContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -11,10 +11,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 
 const BuySellButton = ({ item }: { item: any }) => {
   const { userInfo }: any = useAuth();
-  const { cart, addToCart }: any = useDistributor();
+  const { cart, addToCart, selectForSell, setSelectForSell }: any =
+    useDistributor();
+
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (selectForSell) {
+      setVisible(true);
+    }
+  }, [selectForSell]);
+
   return (
     <View style={styles.productCard}>
       <TouchableOpacity>
@@ -44,13 +55,14 @@ const BuySellButton = ({ item }: { item: any }) => {
           {userInfo.role === "distributor" && (
             <Pressable
               style={styles.button}
-              onPress={() => router.push(`product/${item._id}` as never)}
+              onPress={() => setSelectForSell(item)}
             >
               <Text style={styles.buttonText}>Sell</Text>
             </Pressable>
           )}
         </View>
       </View>
+      <AddQuantityModal visible={visible} setVisible={setVisible} />
     </View>
   );
 };

@@ -11,6 +11,7 @@ export const DistributorProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [selectForSell, setSelectForSell] = useState(null);
 
   useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
 
@@ -43,7 +44,6 @@ export const DistributorProvider = ({ children }) => {
 
   const addToCart = async (product) => {
     try {
-      console.log(product);
       const response = await axios.post("http://localhost:5000/api/distributor/addremovecart",
         { product },
         { headers: { Authorization: `${access_token}` } });
@@ -55,7 +55,7 @@ export const DistributorProvider = ({ children }) => {
   }
 
   return (
-    <DistributorContext.Provider value={{ addToCart, products, cart, totalPages, currentPage, loading }}>
+    <DistributorContext.Provider value={{ selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
       {children}
     </DistributorContext.Provider>
   );
