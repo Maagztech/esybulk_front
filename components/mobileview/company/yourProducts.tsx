@@ -14,9 +14,13 @@ export const CompanyProducts = () => {
     distributorCompanyStocks,
     setSelectedProduct,
   }: any = useCompany();
+
+  
   useEffect(() => {
     loadcompanyProducts();
   }, []);
+
+
   const loadcompanyProducts = async () => {
     const response = await axios.get(
       "http://localhost:5000/api/distributor_company_stocks",
