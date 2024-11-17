@@ -1,4 +1,4 @@
-import ProductDetails from "@/components/mobileview/shopkeeper/components/productDetails";
+import ProductDetails from "@/components/mobileview/global/productDetails";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { ScrollView } from "react-native";
 

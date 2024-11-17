@@ -5,12 +5,12 @@ const CompanyContext = createContext(undefined);
 export const CompanyProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [distributorCompanyStocks, setDistributorCompanyStocks] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
 
 
   return (
-    <CompanyContext.Provider value={{ setDistributorCompanyStocks, selectedCompany, setSelectedCompany, distributorCompanyStocks, products }}>
+    <CompanyContext.Provider value={{ setDistributorCompanyStocks, selectedProduct, setSelectedProduct, distributorCompanyStocks, products, setProducts }}>
       {children}
     </CompanyContext.Provider>
   );

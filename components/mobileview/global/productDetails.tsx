@@ -1,151 +1,257 @@
-import React, { useState } from "react";
+import { useAuth } from "@/context/authContext";
+import axios from "axios";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  FlatList,
   Image,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { toast } from "react-toastify";
+import RadioButton from "../shopkeeper/components/radioButton";
+import BuyNowConfirmModal from "./BuyNowConfirmModal";
 
-const ProductDetails = () => {
-  const images = [
-    { uri: "https://example.com/image1.jpg" },
-    { uri: "https://example.com/image2.jpg" },
-    { uri: "https://example.com/image3.jpg" },
-  ];
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(images[0]);
-
-  const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+export default function ProductDetails({ id }: { id: string }) {
+  const { userInfo, access_token }: any = useAuth();
+  type ProductDetailsType = {
+    images: string[];
+    title: string;
+    mrp: number;
+    about: string;
   };
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+  const [productDetails, setProductDetails] =
+    useState<ProductDetailsType | null>(null);
+
+  type BuyOptionType = {
+    companyName: string;
+    companyUserId: string;
+    price: { quantity: number; price: number }[];
   };
 
+  const [buyOptions, setBuyOptions] = useState<BuyOptionType[]>([]);
+
+  useEffect(() => {
+    if (access_token) fetchProductDetails();
+  }, [id, access_token]);
+
+  const fetchProductDetails = async () => {
+    const response = await axios.get(
+      `http://localhost:5000/api/distributor/buyoptions?product=${id}`,
+      { headers: { Authorization: `${access_token}` } }
+    );
+    setProductDetails(response.data.product);
+    setBuyOptions(response.data.buyOptions);
+  };
+
+  type SelectedOption = {
+    quantity: number;
+    price: number;
+    order_from: string;
+    product: string;
+  } | null;
+
+  const [selectedOption, setSelectedOption] = useState<SelectedOption>(null);
+
+  const handleSelectOption = (option: any) => setSelectedOption(option);
+
+  const [confirmModal, setConfirmModal] = useState(false);
+
+  const handleBuyNow = () => {
+    try {
+      const reponse = axios.post(
+        `http://localhost:5000/api/distributor/addorder`,
+        selectedOption,
+        { headers: { Authorization: `${access_token}` } }
+      );
+      toast.success("Order placed successfully");
+      setConfirmModal(false);
+      router.push("/orders");
+    } catch (error) {
+      toast.error("Failed to place order");
+    }
+  };
+
+  if (!productDetails && !buyOptions)
+    return <ActivityIndicator size="small" color="#0000ff" />;
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.imageSection}>
-        <Image source={selectedImage} style={styles.mainImage} />
-        <View style={styles.imageGallery}>
-          {images.map((image, index) => (
-            <Pressable key={index} onPress={() => setSelectedImage(image)}>
-              <Image source={image} style={styles.thumbnail} />
-            </Pressable>
-          ))}
+    <View style={styles.container}>
+      <FlatList
+        data={productDetails?.images}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <Image source={{ uri: item }} style={styles.productImage} />
+        )}
+        contentContainerStyle={styles.flatListContainer}
+      />
+      <View style={styles.infoContainer}>
+        <Text style={styles.productName}>{productDetails?.title}</Text>
+        <Text style={styles.productPrice}>MRP: {productDetails?.mrp} Rs.</Text>
+        <Text style={styles.productDescription}>{productDetails?.about}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={[styles.address, { marginBottom: 10 }]}>
+            Delivery Address: {userInfo?.landmark}, {userInfo?.village_city},{" "}
+            {userInfo?.block}, {userInfo?.district}, {userInfo?.state} -{" "}
+            {userInfo?.pinCode}
+          </Text>
+          <Pressable
+            onPress={() => {
+              router.push("/profile");
+            }}
+          >
+            <Text
+              style={{ color: "#966440", fontSize: 16, fontWeight: "bold" }}
+            >
+              Change Address
+            </Text>
+          </Pressable>
         </View>
-      </View>
-
-      <View style={styles.detailsSection}>
-        <Text style={styles.productTitle}>Amazing Product Title</Text>
-        <Text style={styles.productPrice}>$299.99</Text>
-        <Text style={styles.productDescription}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-          tristique velit at ipsum facilisis, nec facilisis orci auctor.
-          Praesent accumsan ut felis id consequat.
-        </Text>
-
-        <View style={styles.quantitySection}>
-          <Text style={styles.quantityLabel}>Quantity:</Text>
-          <View style={styles.quantityControl}>
-            <Pressable onPress={decreaseQuantity}>
-              <Text style={styles.quantityButton}>-</Text>
-            </Pressable>
-            <Text style={styles.quantityValue}>{quantity}</Text>
-            <Pressable onPress={increaseQuantity}>
-              <Text style={styles.quantityButton}>+</Text>
-            </Pressable>
+        <Text style={styles.buyOptions}>Buy Options</Text>
+        {buyOptions.map((option, index) => (
+          <View key={index} style={styles.distributorSection}>
+            <Text style={styles.distributorName}>{option.companyName}</Text>
+            {option.price.map((priceOption, priceIndex) => (
+              <View key={priceIndex} style={styles.optionContainer}>
+                <RadioButton
+                  selected={
+                    selectedOption?.order_from === option.companyUserId &&
+                    selectedOption?.quantity === priceOption.quantity
+                  }
+                  onPress={() =>
+                    handleSelectOption({
+                      order_from: option.companyUserId,
+                      product: id,
+                      quantity: priceOption.quantity,
+                      price: priceOption.price,
+                    })
+                  }
+                />
+                <Text style={styles.optionText}>
+                  Quantity: {priceOption.quantity}, Price: Rs.{" "}
+                  {priceOption.price} ,profit: Rs.
+                  {(productDetails?.mrp ?? 0) * priceOption.quantity -
+                    priceOption.price}
+                </Text>
+              </View>
+            ))}
           </View>
-        </View>
-
-        <Pressable onPress={() => alert("Added to Cart")}>
-          <Text style={styles.buttonText}>Add to Cart</Text>
-        </Pressable>
-        <Pressable onPress={() => alert("Proceed to Checkout")} style={styles.buyNowButton}>
+        ))}
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={[
+            styles.button,
+            selectedOption ? styles.buttonEnabled : styles.buttonDisabled,
+          ]}
+          onPress={() => setConfirmModal(true)}
+          disabled={!selectedOption}
+        >
           <Text style={styles.buttonText}>Buy Now</Text>
         </Pressable>
       </View>
-    </ScrollView>
+      <BuyNowConfirmModal
+        visible={confirmModal}
+        onConfirm={handleBuyNow}
+        onCancel={() => setConfirmModal(false)}
+      />
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
+    paddingBottom: 20,
+    backgroundColor: "#f3f3f3",
   },
-  imageSection: {
-    alignItems: "center",
-    margin: 10,
+  flatListContainer: {
+    paddingVertical: 10,
   },
-  mainImage: {
+  productImage: {
     width: 300,
     height: 300,
-    resizeMode: "contain",
+    marginHorizontal: 5,
+    borderRadius: 10,
   },
-  imageGallery: {
-    flexDirection: "row",
-    marginVertical: 10,
-  },
-  thumbnail: {
-    width: 60,
-    height: 60,
-    margin: 5,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  detailsSection: {
+  infoContainer: {
     padding: 15,
   },
-  productTitle: {
-    fontSize: 24,
+  productName: {
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 10,
+    color: "#333",
+    marginVertical: 10,
   },
   productPrice: {
     fontSize: 20,
     color: "#B12704",
-    marginBottom: 15,
+    marginVertical: 5,
+  },
+  address: {
+    fontSize: 15,
+    color: "black",
+    marginVertical: 5,
+    fontWeight: "bold",
   },
   productDescription: {
     fontSize: 16,
-    color: "#555",
-    marginBottom: 20,
+    color: "#333",
+    marginVertical: 10,
   },
-  quantitySection: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
+  buyOptions: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginVertical: 10,
   },
-  quantityLabel: {
+  distributorSection: {
+    marginVertical: 10,
+    marginLeft: 20,
+  },
+  distributorName: {
     fontSize: 16,
-    marginRight: 10,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
   },
-  quantityControl: {
+  optionContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginVertical: 5,
   },
-  quantityButton: {
-    fontSize: 18,
-    paddingHorizontal: 10,
+  optionText: {
+    fontSize: 16,
+    color: "#333",
+    marginLeft: 10,
   },
-  quantityValue: {
-    fontSize: 18,
-    paddingHorizontal: 10,
+  buttonContainer: {
+    padding: 10,
   },
-buttonText: {
-  fontSize: 16,
-  color: "#fff",
-  textAlign: "center",
-  padding: 10,
-},
-buyNowButton: {
-  backgroundColor: "#FF9900",
-  marginTop: 10,
-},
+  button: {
+    padding: 15,
+    borderRadius: 8,
+  },
+  buttonEnabled: {
+    backgroundColor: "#966440",
+  },
+  buttonDisabled: {
+    backgroundColor: "gray",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 20,
+  },
 });
-
-export default ProductDetails;

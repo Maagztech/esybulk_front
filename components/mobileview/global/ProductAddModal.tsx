@@ -24,8 +24,13 @@ import LabeledMultilineInput from "./LabeledMultilineInput";
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
-  const { loadcompanyProducts, setSelectedProduct, selectedProduct }: any =
-    useCompany();
+  const {
+    products,
+    setProducts,
+    setDistributorCompanyStocks,
+    setSelectedProduct,
+    selectedProduct,
+  }: any = useCompany();
   const [showDropdown, setShowDropdown] = useState(false);
   const types = [
     "Grocery",
@@ -189,7 +194,13 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       console.error("Error adding or updating product:", error);
       toast.error("Something went wrong. Please try again.");
     }
-    loadcompanyProducts();
+    const response = await axios.get(
+      "http://localhost:5000/api/distributor_company_stocks",
+      {
+        headers: { Authorization: `${access_token}` },
+      }
+    );
+    setDistributorCompanyStocks(response.data);
     closeModal();
     setIsLoading(false);
   };
