@@ -1,6 +1,7 @@
 import ItemCard from "@/components/mobileview/global/ItemCards";
 import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
@@ -9,14 +10,22 @@ export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { access_token }: any = useAuth();
   const {
-    loadcompanyProducts,
+    setDistributorCompanyStocks,
     distributorCompanyStocks,
     setSelectedProduct,
   }: any = useCompany();
   useEffect(() => {
     loadcompanyProducts();
   }, []);
-
+  const loadcompanyProducts = async () => {
+    const response = await axios.get(
+      "http://localhost:5000/api/distributor_company_stocks",
+      {
+        headers: { Authorization: `${access_token}` },
+      }
+    );
+    setDistributorCompanyStocks(response.data);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>

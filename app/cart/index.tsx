@@ -1,15 +1,26 @@
+import BuySellButton from "@/components/mobileview/global/BuySellButton";
+import { useDistributor } from "@/context/distributorContext";
 import React from "react";
-import { StyleSheet, Text } from "react-native"; // or 'react-native-web'
+import { ScrollView, StyleSheet } from "react-native";
 
-const cart = () => {
-  return <Text>Cart</Text>;
+const Cart = () => {
+  const { cart }: any = useDistributor();
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      {cart.map((item: any) => (
+        <BuySellButton item={item.product} key={item.product._id} />
+      ))}
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    padding: 10,
+    backgroundColor: "#f3f3f3",
   },
 });
-export default cart;
+
+export default Cart;

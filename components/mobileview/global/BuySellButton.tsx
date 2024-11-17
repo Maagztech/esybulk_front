@@ -1,4 +1,6 @@
+import { useAuth } from "@/context/authContext";
 import { useDistributor } from "@/context/distributorContext";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -11,7 +13,8 @@ import {
 } from "react-native";
 
 const BuySellButton = ({ item }: { item: any }) => {
-  const { cart } = useDistributor();
+  const { userInfo }: any = useAuth();
+  const { cart, addToCart }: any = useDistributor();
   return (
     <View style={styles.productCard}>
       <TouchableOpacity>
@@ -21,12 +24,16 @@ const BuySellButton = ({ item }: { item: any }) => {
         <Text style={styles.productName}>{item.title}</Text>
         <Text style={styles.productPrice}>MRP: {item.mrp}</Text>
         <View style={styles.buttonContainer}>
-          <Pressable onPress={() => {}} style={styles.button}>
-            {/* {cart.includes(item._id) ? (
-              <Ionicons name="heart" size={24} color="red" />
+          <Pressable
+            onPress={() => {
+              addToCart(item._id);
+            }}
+          >
+            {cart.find((cartItem: any) => cartItem.product._id === item._id) ? (
+              <Ionicons name="heart" size={24} color="#966440" />
             ) : (
-              <Ionicons name="heart" size={24} color="white" />
-            )} */}
+              <Ionicons name="heart-outline" size={24} color="#966440" />
+            )}
           </Pressable>
           <Pressable
             style={styles.button}
@@ -34,12 +41,14 @@ const BuySellButton = ({ item }: { item: any }) => {
           >
             <Text style={styles.buttonText}>Buy</Text>
           </Pressable>
-          <Pressable
-            style={styles.button}
-            onPress={() => router.push(`product/${item._id}` as never)}
-          >
-            <Text style={styles.buttonText}>Sell</Text>
-          </Pressable>
+          {userInfo.role === "distributor" && (
+            <Pressable
+              style={styles.button}
+              onPress={() => router.push(`product/${item._id}` as never)}
+            >
+              <Text style={styles.buttonText}>Sell</Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </View>
@@ -83,6 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 10,
     width: "100%",
+    gap: 10,
   },
   button: {
     flex: 1,

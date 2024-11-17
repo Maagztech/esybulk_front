@@ -1,5 +1,6 @@
 import ProductDetails from "@/components/mobileview/shopkeeper/components/productDetails";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { ScrollView } from "react-native";
 
 type RouteParams = {
   params: {
@@ -12,10 +13,9 @@ const ProductPage = () => {
   const { id } = route.params;
   const navigation = useNavigation();
   return (
-    <div>
-      {/* <h1>Product ID: {id}</h1> */}
+    <ScrollView>
       <ProductDetails id={id} />
-    </div>
+    </ScrollView>
   );
 };
 

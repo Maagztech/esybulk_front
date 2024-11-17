@@ -1,3 +1,5 @@
+import { useAuth } from "@/context/authContext";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -5,9 +7,9 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
-import RadioButton from "./radioButton"; // import RadioButton component or use any custom solution
+import RadioButton from "./radioButton";
 
 const productDetails = {
   id: "1",
@@ -42,6 +44,7 @@ const buyOptions = [
 ];
 
 export default function ProductDetails({ id }: { id: string }) {
+  const { userInfo }: any = useAuth();
   type SelectedOption = {
     DistributorCompany: string;
     quantity: number;
@@ -54,9 +57,7 @@ export default function ProductDetails({ id }: { id: string }) {
 
   const handleBuyNow = () => {
     if (selectedOption) {
-      // Navigate to the product page with selected option
       console.log("Selected Option:", selectedOption);
-      // navigation.navigate('/product', { selectedOption }); // example navigation
     }
   };
 
@@ -70,11 +71,36 @@ export default function ProductDetails({ id }: { id: string }) {
         renderItem={({ item }) => (
           <Image source={{ uri: item }} style={styles.productImage} />
         )}
+        contentContainerStyle={styles.flatListContainer}
       />
       <View style={styles.infoContainer}>
         <Text style={styles.productName}>{productDetails.name}</Text>
         <Text style={styles.productPrice}>MRP: {productDetails.price} Rs.</Text>
         <Text style={styles.productDescription}>{productDetails.about}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={[styles.address, { marginBottom: 10 }]}>
+            Delivery Address: {userInfo?.landmark}, {userInfo?.village_city},{" "}
+            {userInfo?.block}, {userInfo?.district}, {userInfo?.state} -{" "}
+            {userInfo?.pinCode}
+          </Text>
+          <Pressable
+            onPress={() => {
+              router.push("/profile");
+            }}
+          >
+            <Text
+              style={{ color: "#966440", fontSize: 16, fontWeight: "bold" }}
+            >
+              Change Address
+            </Text>
+          </Pressable>
+        </View>
         <Text style={styles.buyOptions}>Buy Options</Text>
         {buyOptions.map((option, index) => (
           <View key={index} style={styles.distributorSection}>
@@ -126,12 +152,11 @@ export default function ProductDetails({ id }: { id: string }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    position: "static",
+    paddingBottom: 20,
     backgroundColor: "#f3f3f3",
   },
-  scrollContainer: {
-    paddingBottom: 120,
+  flatListContainer: {
+    paddingVertical: 10,
   },
   productImage: {
     width: 300,
@@ -152,6 +177,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#B12704",
     marginVertical: 5,
+  },
+  address: {
+    fontSize: 15,
+    color: "black",
+    marginVertical: 5,
+    fontWeight: "bold",
   },
   productDescription: {
     fontSize: 16,
@@ -185,14 +216,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   buttonContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#f3f3f3",
     padding: 10,
-    borderTopWidth: 1,
-    borderColor: "#ddd",
   },
   button: {
     padding: 15,
