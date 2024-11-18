@@ -40,12 +40,22 @@ export default function ProductDetails({ id }: { id: string }) {
   }, [id, access_token]);
 
   const fetchProductDetails = async () => {
-    const response = await axios.get(
-      `http://localhost:5000/api/distributor/buyoptions?product=${id}`,
-      { headers: { Authorization: `${access_token}` } }
-    );
-    setProductDetails(response.data.product);
-    setBuyOptions(response.data.buyOptions);
+    try {
+      let response;
+      if (userInfo?.role === "distributor") {
+        response = await axios.get(
+          `http://localhost:5000/api/distributor/buyoptions?product=${id}`,
+          { headers: { Authorization: `${access_token}` } }
+        );
+      } else {
+        response = await axios.get(
+          `http://localhost:5000/api/distributor/buyoptionsshopkeeper?product=${id}`,
+          { headers: { Authorization: `${access_token}` } }
+        );
+      }
+      setProductDetails(response.data.product);
+      setBuyOptions(response.data.buyOptions);
+    } catch (error) {}
   };
 
   type SelectedOption = {
