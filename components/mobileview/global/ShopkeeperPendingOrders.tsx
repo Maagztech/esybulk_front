@@ -5,9 +5,6 @@ import { OrderNotChangeCard } from "./OrderNotChangeCard";
 const ShopkeeperPendingOrders = ({ orders }: any) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerTitle}>
-        *Please update here about order ststus.
-      </Text>
       <View style={styles.innerContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.cardContainer}>

@@ -67,7 +67,7 @@ export const ItemCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image source={{ uri: order.imageUrl[0] }} style={styles.productImage} />a{" "}
+      <Image source={{ uri: order.imageUrl[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{order.productName}</Text>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
@@ -99,7 +99,7 @@ export const ItemCard = ({ order }: any) => {
           <View style={styles.buttons}>
             {status === "ordered" && (
               <Pressable
-                style={styles.complete_button}
+                style={styles.cancelbutton}
                 onPress={() => updateStatus("cancelled")}
               >
                 <Text style={styles.addButtonText}>Cancel Order</Text>
@@ -107,7 +107,7 @@ export const ItemCard = ({ order }: any) => {
             )}
             {status != "delivered" && (
               <Pressable
-                style={styles.complete_button}
+                style={styles.cancelbutton}
                 onPress={handleContactManager}
               >
                 <Text style={styles.addButtonText}>Contact</Text>
@@ -250,23 +250,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     justifyContent: "center",
     alignItems: "center",
+    marginVertical: 5,
   },
   incomplete_button: {
     backgroundColor: "gray",
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     borderRadius: 5,
     marginHorizontal: 5,
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
   },
+  cancelbutton: {
+    backgroundColor: "#966440",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 5,
+  },
   infoContainer: {
     flex: 1,
   },
   buttons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginTop: 10,
   },
   deliveryProcess: {

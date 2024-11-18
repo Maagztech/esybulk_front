@@ -1,17 +1,23 @@
+import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { toast } from "react-toastify";
 
 export const OrderNotChangeCard = ({ order }: any) => {
+  const { access_token } = useAuth();
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
     const url = "http://localhost:5000/api/ordercancel";
     axios
-      .post(url, {
-        orderId: order.id,
-      })
+      .post(
+        url,
+        {
+          orderId: order.id,
+        },
+        { headers: { Authorization: `${access_token}` } }
+      )
       .then((response) => {
         if (response.status === 200) {
           setStatus("cancelled");
@@ -33,16 +39,16 @@ export const OrderNotChangeCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image
-        source={{ uri: product.images[0] }}
-        style={styles.productImage}
-      />
+      <Image source={{ uri: product.images[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{product.title}</Text>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>
             Quantity Deliver:{" "}
             <Text style={styles.quantity}>{order.quantity}</Text>
+          </Text>
+          <Text style={styles.productInfo}>
+            Cost: <Text style={styles.quantity}>{order.price}</Text>
           </Text>
         </View>
         {status !== "completed" && status !== "cancelled" && (
@@ -87,14 +93,11 @@ export const OrderNotChangeCard = ({ order }: any) => {
           }
         />
       </View>
-
-      {status !== "completed" && status !== "cancelled" && (
-        <View style={styles.deliveryProcessButtons}>
-          <Text style={styles.addButtonText}>Ordered</Text>
-          <Text style={styles.addButtonText}>Shipped</Text>
-          <Text style={styles.addButtonText}>Delivered</Text>
-        </View>
-      )}
+      <View style={styles.deliveryProcessButtons}>
+        <Text style={styles.addButtonText}>Ordered</Text>
+        <Text style={styles.addButtonText}>Shipped</Text>
+        <Text style={styles.addButtonText}>Delivered</Text>
+      </View>
     </View>
   );
 };
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
     maxWidth: 350,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -218,9 +221,10 @@ const styles = StyleSheet.create({
   deliveryProcessButtons: {
     width: "100%",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   addButtonText: {
-    color: "#fff",
+    color: "black",
     fontWeight: "600",
   },
 });
