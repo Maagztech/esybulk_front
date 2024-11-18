@@ -38,8 +38,8 @@ const Header = () => {
   }, [navigation]);
 
   const handleSearchPress = () => {
-    router.push("/search" as never);
     setSearchVisible(!searchVisible);
+    router.push("/search" as never);
   };
 
   const handleClosePress = () => {
