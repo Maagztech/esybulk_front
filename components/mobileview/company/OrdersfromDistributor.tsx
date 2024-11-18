@@ -31,7 +31,7 @@ const PendingOrders = () => {
     setCompletedOrders(
       orders.filter(
         (order: any) =>
-          order.status === "completed" || order.status === "cancelled"
+          order.status === "delivered" || order.status === "cancelled"
       )
     );
   };

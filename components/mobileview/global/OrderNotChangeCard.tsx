@@ -1,54 +1,21 @@
-import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
-import {
-  Alert,
-  Image,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { toast } from "react-toastify";
 
-export const ItemCard = ({ order }: any) => {
-  const { access_token } = useAuth();
+export const OrderNotChangeCard = ({ order }: any) => {
+  console.log("order", order);
   const [status, setStatus] = useState(order.status);
 
-  const handleContactManager = () => {
-    const phoneUrl = `tel:${order.contact}`;
-    Linking.openURL(phoneUrl).catch(() =>
-      Alert.alert("Error", "Unable to open dialer.")
-    );
-  };
-
-  const updateStatus = (newStatus: string) => {
-    const url =
-      newStatus === "shipped"
-        ? "http://localhost:5000/api/shipped"
-        : newStatus === "delivered"
-        ? "http://localhost:5000/api/delivered"
-        : newStatus === "cancelled"
-        ? "http://localhost:5000/api/ordercancel"
-        : null;
-
-    if (!url) {
-      toast.error("Invalid status.");
-      return;
-    }
-
+  const cancelOrder = () => {
+    const url = "http://localhost:5000/api/ordercancel";
     axios
-      .post(
-        url,
-        {
-          orderId: order.id,
-        },
-        { headers: { Authorization: `${access_token}` } }
-      )
+      .post(url, {
+        orderId: order.id,
+      })
       .then((response) => {
         if (response.status === 200) {
-          setStatus(newStatus);
+          setStatus("cancelled");
           toast.success("Status updated successfully.");
         } else {
           toast.error("Unable to update status.");
@@ -67,7 +34,7 @@ export const ItemCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image source={{ uri: order.imageUrl[0] }} style={styles.productImage} />a{" "}
+      <Image source={{ uri: order.imageUrl }} style={styles.productImage} />
       <Text style={styles.productName}>{order.productName}</Text>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
@@ -76,23 +43,13 @@ export const ItemCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantityToDeliver}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Price to collect: <Text style={styles.price}>{order.cost} Rs.</Text>
+            Price: <Text style={styles.price}>${order.price}</Text>
           </Text>
           <Text style={styles.productInfo}>
             Shop: <Text style={styles.shop}>{order.companyName}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Location:{" "}
-            <Text style={styles.location}>
-              {order.landmark},{order.village_city},{order.block},
-              {order.district},{order.state}
-            </Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Pincode: <Text style={styles.location}>{order.pincode}</Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Contact: <Text style={styles.location}>{order.contact}</Text>
+            Location: <Text style={styles.location}>{order.location}</Text>
           </Text>
         </View>
         {status !== "completed" && status !== "cancelled" && (
@@ -100,22 +57,15 @@ export const ItemCard = ({ order }: any) => {
             {status === "ordered" && (
               <Pressable
                 style={styles.complete_button}
-                onPress={() => updateStatus("cancelled")}
+                onPress={() => cancelOrder()}
               >
                 <Text style={styles.addButtonText}>Cancel Order</Text>
-              </Pressable>
-            )}
-            {status != "delivered" && (
-              <Pressable
-                style={styles.complete_button}
-                onPress={handleContactManager}
-              >
-                <Text style={styles.addButtonText}>Contact</Text>
               </Pressable>
             )}
           </View>
         )}
       </View>
+
       {/* Delivery process (status circles) */}
       <View style={styles.deliveryProcess}>
         <View style={styles.circleFilled} />
@@ -128,9 +78,7 @@ export const ItemCard = ({ order }: any) => {
         />
         <View
           style={
-            status === "shipped" || status === "delivered"
-              ? styles.circleFilled
-              : styles.circleVacant
+            status === "shipped" ? styles.circleFilled : styles.circleVacant
           }
         />
         <View
@@ -146,38 +94,12 @@ export const ItemCard = ({ order }: any) => {
           }
         />
       </View>
-      {/* Delivery status buttons */}
+
       {status !== "completed" && status !== "cancelled" && (
         <View style={styles.deliveryProcessButtons}>
-          <Pressable
-            style={
-              status === "ordered"
-                ? styles.complete_button
-                : styles.incomplete_button
-            }
-          >
-            <Text style={styles.addButtonText}>Ordered</Text>
-          </Pressable>
-          <Pressable
-            style={
-              status === "shipped"
-                ? styles.complete_button
-                : styles.incomplete_button
-            }
-            onPress={() => updateStatus("shipped")}
-          >
-            <Text style={styles.addButtonText}>Shipped</Text>
-          </Pressable>
-          <Pressable
-            style={
-              status === "delivered"
-                ? styles.complete_button
-                : styles.incomplete_button
-            }
-            onPress={() => updateStatus("delivered")}
-          >
-            <Text style={styles.addButtonText}>Delivered</Text>
-          </Pressable>
+          <Text style={styles.addButtonText}>Ordered</Text>
+          <Text style={styles.addButtonText}>Shipped</Text>
+          <Text style={styles.addButtonText}>Delivered</Text>
         </View>
       )}
     </View>
@@ -245,11 +167,13 @@ const styles = StyleSheet.create({
   complete_button: {
     backgroundColor: "#2A7EFF",
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     borderRadius: 5,
     marginHorizontal: 5,
+    marginVertical: 5,
     justifyContent: "center",
     alignItems: "center",
+    flex: 1,
   },
   incomplete_button: {
     backgroundColor: "gray",
