@@ -15,7 +15,6 @@ export const DistributorProvider = ({ children }) => {
   const [searchText, setSearchText] = useState("");
   const [flag, setFlag] = useState(false);
 
-
   useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
 
   const fetchProducts = async (page) => {
@@ -26,14 +25,15 @@ export const DistributorProvider = ({ children }) => {
       });
       setProducts((prev) => [...prev, ...response.data.products]);
       setCurrentPage(response.data.currentPage);
+      setSearchProducts(response.data.products);
       setTotalPages(response.data.totalPages);
       setLoading(false);
-
     } catch (error) {
       setLoading(false);
       toast.error("Error fetching products");
     }
   };
+  
   const [searchcurrentPage, setSearchCurrentPage] = useState(1);
   const [searchtotalPages, setSearchTotalPages] = useState(0);
   const [searchproducts, setSearchProducts] = useState([]);

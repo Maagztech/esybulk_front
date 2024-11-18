@@ -2,7 +2,7 @@ import { useAuth } from "@/context/authContext";
 import { useDistributor } from "@/context/distributorContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Image,
   Pressable,
@@ -19,12 +19,6 @@ const BuySellButton = ({ item }: { item: any }) => {
     useDistributor();
 
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (selectForSell) {
-      setVisible(true);
-    }
-  }, [selectForSell]);
 
   return (
     <View style={styles.productCard}>
@@ -55,7 +49,10 @@ const BuySellButton = ({ item }: { item: any }) => {
           {userInfo?.role === "distributor" && (
             <Pressable
               style={styles.button}
-              onPress={() => setSelectForSell(item)}
+              onPress={() => {
+                setSelectForSell(item);
+                setVisible(true);
+              }}
             >
               <Text style={styles.buttonText}>Sell</Text>
             </Pressable>

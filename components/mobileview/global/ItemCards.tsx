@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 import AddProductModal from "./ProductAddModal";
 
 const ProductDetails = ({ product }: any) => {
@@ -57,8 +58,10 @@ const ProductDetails = ({ product }: any) => {
         <Ionicons name="create-outline" size={24} color="#FFF" />
         <Text style={styles.editButtonText}>Edit</Text>
       </TouchableOpacity>
-      {product.admin === userInfo?._id && (
+      {product.admin === userInfo?._id ? (
         <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      ) : (
+        <AddQuantityModal visible={isOpen} setVisible={setIsOpen} />
       )}
     </View>
   );
