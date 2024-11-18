@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -16,16 +17,57 @@ import AddProductModal from "../global/ProductAddModal";
 export const ProductsToBuyNearbydistributor = () => {
   const { access_token } = useAuth();
   const [visible, setVisible] = useState(false);
-  const { products, loading, fetchProducts, currentPage, totalPages }: any =
-    useDistributor();
+  const {
+    products,
+    loading,
+    fetchProducts,
+    currentPage,
+    totalPages,
+    setQuery,
+  }: any = useDistributor();
   const handleLoadMore = () => {
     if (!loading && currentPage < totalPages) {
       fetchProducts(currentPage + 1);
     }
   };
-
+  const types = [
+    "Grocery",
+    "Clothing and Apparel",
+    "Electronics and Technology",
+    "Home and Furniture",
+    "Pharmacy and Health",
+    "Beauty and Personal Care",
+    "Bookstores and Stationery",
+    "Sports",
+    "Automotive and Transportation",
+  ];
   return (
     <>
+      <View style={styles.scrollViewContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.flatListContainer}
+          style={styles.scrollView} // Apply height constraint here
+        >
+          {types.map((item) => (
+            <Pressable
+              onPress={() => setQuery(item)}
+              style={{
+                margin: 5,
+                backgroundColor: "gray",
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+                borderRadius: 50,
+              }}
+              key={item}
+            >
+              <Text style={{ color: "white", fontSize: 15 }}>{item}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
       <FlatList
         data={products}
         keyExtractor={(item) => item._id}
@@ -65,4 +107,15 @@ export const ProductsToBuyNearbydistributor = () => {
 const styles = StyleSheet.create({
   container: { padding: 10, backgroundColor: "#f3f3f3" },
   loadingContainer: { paddingVertical: 10, alignItems: "center" },
+  flatListContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  scrollView: {
+    height: 2, // Fixed height to prevent taking extra vertical space
+  },
+  scrollViewContainer: {
+    height: 50,
+  },
 });

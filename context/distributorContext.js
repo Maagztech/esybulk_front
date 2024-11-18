@@ -14,13 +14,12 @@ export const DistributorProvider = ({ children }) => {
   const [selectForSell, setSelectForSell] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [flag, setFlag] = useState(false);
-
-  useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
+  const [query, setQuery] = useState("");
 
   const fetchProducts = async (page) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/distributor/products?page=${page}`, {
+      const response = await axios.get(`http://localhost:5000/api/distributor/products?page=${page}&query=${query}`, {
         headers: { Authorization: `${access_token}` },
       });
       setProducts((prev) => [...prev, ...response.data.products]);
@@ -33,11 +32,19 @@ export const DistributorProvider = ({ children }) => {
       toast.error("Error fetching products");
     }
   };
-  
+
+  useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
+
+
+
+
+  useEffect(() => { setProducts([]); fetchProducts() }, [query])
+
   const [searchcurrentPage, setSearchCurrentPage] = useState(1);
   const [searchtotalPages, setSearchTotalPages] = useState(0);
   const [searchproducts, setSearchProducts] = useState([]);
   const [previousSearchText, setPreviousSearchText] = useState("");
+
   const handleSearchSubmit = async () => {
     try {
       if (previousSearchText != searchText) {
@@ -88,7 +95,7 @@ export const DistributorProvider = ({ children }) => {
 
 
   return (
-    <DistributorContext.Provider value={{ searchproducts, setSearchProducts, searchcurrentPage, setSearchCurrentPage, searchtotalPages, setSearchTotalPages, setCurrentPage, setProducts, searchText, setSearchText, handleSearchSubmit, selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
+    <DistributorContext.Provider value={{ setQuery, searchproducts, setSearchProducts, searchcurrentPage, setSearchCurrentPage, searchtotalPages, setSearchTotalPages, setCurrentPage, setProducts, searchText, setSearchText, handleSearchSubmit, selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
       {children}
     </DistributorContext.Provider>
   );
