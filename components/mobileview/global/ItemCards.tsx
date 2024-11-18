@@ -49,7 +49,7 @@ const ProductDetails = ({ product }: any) => {
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => {
-          if (product.admin === userInfo._id) setSelectedProduct(product);
+          if (product.admin === userInfo?._id) setSelectedProduct(product);
           else setSelectForSell(product);
           setIsOpen(true);
         }}
@@ -57,7 +57,7 @@ const ProductDetails = ({ product }: any) => {
         <Ionicons name="create-outline" size={24} color="#FFF" />
         <Text style={styles.editButtonText}>Edit</Text>
       </TouchableOpacity>
-      {product.admin === userInfo._id && (
+      {product.admin === userInfo?._id && (
         <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
     </View>

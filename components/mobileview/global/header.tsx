@@ -1,28 +1,49 @@
 import { useAuth } from "@/context/authContext";
+import { useDistributor } from "@/context/distributorContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Tooltip } from "react-native-paper";
 
 const Header = () => {
   const navigation = useNavigation();
   const [canGoBack, setCanGoBack] = useState(false);
   const { userInfo, handleLogout, role }: any = useAuth();
-  const [user, setUser] = useState(null);
+  const {
+    handleSearchSubmit,
+    searchText,
+    setSearchText,
+    setSearchCurrentPage,
+  }: any = useDistributor();
   const router = useRouter();
+  const [searchVisible, setSearchVisible] = useState(false);
+
+  const currentPathname = useNavigationState((state) => {
+    return state.routes[state.index] ? state.routes[state.index].name : null;
+  });
+
+  useEffect(() => {
+    if (currentPathname && currentPathname !== "/home") {
+      setSearchVisible(false);
+    }
+  }, [currentPathname, router]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
       setCanGoBack(navigation.canGoBack());
     });
-
     return unsubscribe;
   }, [navigation]);
 
   const handleSearchPress = () => {
     router.push("/search" as never);
+    setSearchVisible(!searchVisible);
+  };
+
+  const handleClosePress = () => {
+    setSearchVisible(false);
   };
 
   const handleCartPress = () => {
@@ -30,44 +51,71 @@ const Header = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        {canGoBack && (
-          <Pressable onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="black" />
-          </Pressable>
-        )}
-        <Image
-          source={require("../../../assets/images/namelogo-w.png")}
-          style={styles.image}
-        />
-        <View style={styles.textContainer}></View>
-      </View>
-      {userInfo && (
-        <View style={styles.rightContainer}>
-          {userInfo.role != "company" && (
-            <>
-              <Tooltip title="Cart">
-                <Pressable onPress={handleCartPress}>
-                  <Ionicons name="heart" size={28} color="#000" />
-                </Pressable>
-              </Tooltip>
+    <>
+      {!searchVisible ? (
+        <View style={styles.container}>
+          <View style={styles.innerContainer}>
+            {canGoBack && (
+              <Pressable onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={24} color="black" />
+              </Pressable>
+            )}
+            <Image
+              source={require("../../../assets/images/namelogo-w.png")}
+              style={styles.image}
+            />
+          </View>
+          {userInfo && (
+            <View style={styles.rightContainer}>
+              {userInfo?.role != "company" && (
+                <>
+                  <Tooltip title="Cart">
+                    <Pressable onPress={handleCartPress}>
+                      <Ionicons name="heart" size={28} color="#000" />
+                    </Pressable>
+                  </Tooltip>
 
-              <Tooltip title="Search">
-                <Pressable onPress={handleSearchPress}>
-                  <Ionicons name="search" size={28} color="#000" />
+                  <Tooltip title="Search">
+                    <Pressable onPress={handleSearchPress}>
+                      <Ionicons name="search" size={28} color="#000" />
+                    </Pressable>
+                  </Tooltip>
+                </>
+              )}
+              <Tooltip title="Logout">
+                <Pressable onPress={handleLogout}>
+                  <Ionicons name="log-out" size={28} color="#000" />
                 </Pressable>
               </Tooltip>
-            </>
+            </View>
           )}
-          <Tooltip title="Logout">
-            <Pressable onPress={handleLogout}>
-              <Ionicons name="log-out" size={28} color="#000" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search products..."
+            value={searchText}
+            onChangeText={(e) => {
+              console.log(e);
+              setSearchText(e);
+            }}
+            onSubmitEditing={() => handleSearchSubmit()}
+            autoFocus
+          />
+          <Tooltip title="Search">
+            <Pressable onPress={() => handleSearchSubmit()}>
+              <Ionicons name="search" size={28} color="#000" />
+            </Pressable>
+          </Tooltip>
+          <Tooltip title="Close">
+            <Pressable onPress={() => handleClosePress()}>
+              <Ionicons name="close" size={28} color="#000" />
             </Pressable>
           </Tooltip>
         </View>
       )}
-    </View>
+    </>
   );
 };
 
@@ -81,6 +129,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     zIndex: 2,
+    gap: 10,
   },
   innerContainer: {
     flexDirection: "row",
@@ -112,6 +161,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 13,
     fontWeight: "bold",
+  },
+  searchInput: {
+    padding: 10,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "#f9f9f9",
+    marginVertical: 10,
+    width: "90%",
   },
 });
 

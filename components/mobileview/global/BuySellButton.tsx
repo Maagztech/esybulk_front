@@ -52,7 +52,7 @@ const BuySellButton = ({ item }: { item: any }) => {
           >
             <Text style={styles.buttonText}>Buy</Text>
           </Pressable>
-          {userInfo.role === "distributor" && (
+          {userInfo?.role === "distributor" && (
             <Pressable
               style={styles.button}
               onPress={() => setSelectForSell(item)}

@@ -1,8 +1,17 @@
+import BuySellButton from "@/components/mobileview/global/BuySellButton";
+import { useDistributor } from "@/context/distributorContext";
 import React from "react";
-import { Text } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const search = () => {
-  return <Text>Search</Text>;
+  const { searchproducts }: any = useDistributor();
+  return (
+    <ScrollView>
+      {searchproducts?.map((product: any) => (
+        <BuySellButton key={product.id} item={product} />
+      ))}
+    </ScrollView>
+  );
 };
 
 export default search;

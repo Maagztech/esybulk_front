@@ -148,6 +148,11 @@ export default function ProductDetails({ id }: { id: string }) {
             ))}
           </View>
         ))}
+        {buyOptions.length === 0 && (
+          <Text style={{ fontSize: 14, textAlign: "center" }}>
+            No buy options available in your region.
+          </Text>
+        )}
       </View>
       <View style={styles.buttonContainer}>
         <Pressable

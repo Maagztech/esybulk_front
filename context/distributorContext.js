@@ -12,6 +12,9 @@ export const DistributorProvider = ({ children }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectForSell, setSelectForSell] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [flag, setFlag] = useState(false);
+
 
   useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
 
@@ -25,12 +28,40 @@ export const DistributorProvider = ({ children }) => {
       setCurrentPage(response.data.currentPage);
       setTotalPages(response.data.totalPages);
       setLoading(false);
+
     } catch (error) {
       setLoading(false);
       toast.error("Error fetching products");
     }
   };
-
+  const [searchcurrentPage, setSearchCurrentPage] = useState(1);
+  const [searchtotalPages, setSearchTotalPages] = useState(0);
+  const [searchproducts, setSearchProducts] = useState([]);
+  const [previousSearchText, setPreviousSearchText] = useState("");
+  const handleSearchSubmit = async () => {
+    try {
+      if (previousSearchText != searchText) {
+        setSearchProducts([]);
+        setSearchCurrentPage(1);
+        setPreviousSearchText(searchText);
+      }
+      setLoading(true);
+      console.log(searchText);
+      const response = await axios.get(
+        `http://localhost:5000/api/search?search=${searchText}&page=${currentPage}`,
+        {
+          headers: { Authorization: `${access_token}` },
+        }
+      );
+      setSearchProducts(response.data.products);
+      setSearchCurrentPage(response.data.currentPage + 1);
+      setSearchTotalPages(response.data.totalPages);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast.error("Error fetching products");
+    }
+  };
 
   const fetchCart = async () => {
     try {
@@ -54,8 +85,10 @@ export const DistributorProvider = ({ children }) => {
 
   }
 
+
+
   return (
-    <DistributorContext.Provider value={{ selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
+    <DistributorContext.Provider value={{ searchproducts, setSearchProducts, searchcurrentPage, setSearchCurrentPage, searchtotalPages, setSearchTotalPages, setCurrentPage, setProducts, searchText, setSearchText, handleSearchSubmit, selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
       {children}
     </DistributorContext.Provider>
   );
