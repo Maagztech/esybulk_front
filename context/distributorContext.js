@@ -18,6 +18,7 @@ export const DistributorProvider = ({ children }) => {
 
   const fetchProducts = async (page) => {
     try {
+      if (!access_token) return;
       setLoading(true);
       const response = await axios.get(`http://localhost:5000/api/distributor/products?page=${page}&query=${query}`, {
         headers: { Authorization: `${access_token}` },
