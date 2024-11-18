@@ -1,16 +1,19 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { ItemCard } from "../../global/orderItemCard";
+import { OrderNotChangeCard } from "./OrderNotChangeCard";
 
-export const CompletedOrders = ({ orders }: any) => {
+const ShopkeeperPendingOrders = ({ orders }: any) => {
   return (
     <View style={styles.container}>
+      <Text style={styles.headerTitle}>
+        *Please update here about order ststus.
+      </Text>
       <View style={styles.innerContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.cardContainer}>
             {orders.map((order: any, index: number) => (
               <View style={styles.row} key={order.id}>
-                <ItemCard order={order} />
+                <OrderNotChangeCard order={order} />
               </View>
             ))}
             {orders.length === 0 && (
@@ -54,4 +57,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompletedOrders;
+export default ShopkeeperPendingOrders;

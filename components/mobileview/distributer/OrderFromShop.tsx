@@ -2,9 +2,10 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CompnayPendingOrders } from "../company/components/CompanyPendingOrders";
-import CompletedOrders from "../company/components/CompletedOrders";
-import { OrderNotChangeCard } from "../global/OrderNotChangeCard";
+import CompletedOrders from "../global/CompletedOrders";
+import ShopkeeperCompletedOrders from "../global/ShopkeeperCompletedOrders";
+import ShopkeeperPendingOrders from "../global/shopkeeperPendingOrders";
+import { CompnayPendingOrders } from "./../shopkeeper/components/CompanyPendingOrders";
 
 const OrderFromShop = () => {
   const [activeTab, setActiveTab] = useState("Sell");
@@ -136,16 +137,16 @@ const OrderFromShop = () => {
 
         <View style={styles.content}>
           {activeTab === "Sell" && pending === "Pending" && (
-            <CompnayPendingOrders order={pendingSell} />
+            <CompnayPendingOrders orders={pendingSell} />
           )}
           {activeTab === "Sell" && pending === "Completed" && (
-            <CompletedOrders order={completedSell} />
+            <CompletedOrders orders={completedSell} />
           )}
           {activeTab === "Buy" && pending === "Pending" && (
-            <OrderNotChangeCard order={pendingBuy} />
+            <ShopkeeperPendingOrders orders={pendingBuy} />
           )}
           {activeTab === "Buy" && pending === "Completed" && (
-            <CompletedOrders order={completedBuy} />
+            <ShopkeeperCompletedOrders orders={completedBuy} />
           )}
         </View>
       </View>

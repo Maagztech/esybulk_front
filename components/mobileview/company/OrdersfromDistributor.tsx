@@ -2,8 +2,8 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { CompnayPendingOrders } from "./components/CompanyPendingOrders";
-import CompletedOrders from "./components/CompletedOrders";
+import { CompnayPendingOrders } from "../global/CompanyPendingOrders";
+import CompletedOrders from "../global/CompletedOrders";
 
 const PendingOrders = () => {
   const [activeTab, setActiveTab] = useState("Pending");

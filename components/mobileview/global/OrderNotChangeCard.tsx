@@ -4,9 +4,8 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { toast } from "react-toastify";
 
 export const OrderNotChangeCard = ({ order }: any) => {
-  console.log("order", order);
   const [status, setStatus] = useState(order.status);
-
+  const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
     const url = "http://localhost:5000/api/ordercancel";
     axios
@@ -16,7 +15,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
       .then((response) => {
         if (response.status === 200) {
           setStatus("cancelled");
-          toast.success("Status updated successfully.");
+          toast.success("Ordered cancelled successfully.");
         } else {
           toast.error("Unable to update status.");
         }
@@ -34,22 +33,16 @@ export const OrderNotChangeCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image source={{ uri: order.imageUrl }} style={styles.productImage} />
-      <Text style={styles.productName}>{order.productName}</Text>
+      <Image
+        source={{ uri: product.images[0] }}
+        style={styles.productImage}
+      />
+      <Text style={styles.productName}>{product.title}</Text>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>
             Quantity Deliver:{" "}
-            <Text style={styles.quantity}>{order.quantityToDeliver}</Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Price: <Text style={styles.price}>${order.price}</Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Shop: <Text style={styles.shop}>{order.companyName}</Text>
-          </Text>
-          <Text style={styles.productInfo}>
-            Location: <Text style={styles.location}>{order.location}</Text>
+            <Text style={styles.quantity}>{order.quantity}</Text>
           </Text>
         </View>
         {status !== "completed" && status !== "cancelled" && (
