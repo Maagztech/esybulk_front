@@ -3,8 +3,6 @@ import { useNavigation, useNavigationState } from "@react-navigation/native";
 import axios from 'axios';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 import { useLoading } from "./loadingContext";
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
@@ -89,8 +87,11 @@ export const AuthProvider = ({ children }) => {
         router.push("/selectRole");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      toast.error("Failed Try again!");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed Try again!'
+      });
     }
     setIsLoading(false);
   };
@@ -113,10 +114,18 @@ export const AuthProvider = ({ children }) => {
         data,
         { headers: { Authorization: `${access_token}` } })
       setUserInfo(response.data.user);
-      toast.success("Account created successfully");
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Account created successfully'
+      });
       navigation.navigate("(tabs)");
     } catch (error) {
-      toast.error("Errour occured, Try Again !")
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Errour occured, Try Again !'
+      });
     }
   }
 

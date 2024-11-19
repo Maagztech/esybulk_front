@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 
 const CompanySignUp = () => {
   const { activeAccount, userInfo }: any = useAuth();
@@ -57,7 +57,11 @@ const CompanySignUp = () => {
 
   const handleSignUp = async () => {
     if (!canSignUp()) {
-      toast.error("Please fill out all fields");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill out all fields.'
+      });
       return;
     }
     await activeAccount(accountDetails);
@@ -215,7 +219,11 @@ const CompanySignUp = () => {
               hasVehicleAccess === false && styles.selectedButton,
             ]}
             onPress={() => {
-              toast.error("Please arrange a vehicle first");
+              Toast.show({
+                type: 'error',
+                text1: 'Vehicle Required',
+                text2: 'Please arrange a vehicle first'
+              });
               setHasVehicleAccess(false);
             }}
           >

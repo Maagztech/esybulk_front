@@ -2,7 +2,7 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 
 export const OrderNotChangeCard = ({ order }: any) => {
   const { access_token } = useAuth();
@@ -21,13 +21,25 @@ export const OrderNotChangeCard = ({ order }: any) => {
       .then((response) => {
         if (response.status === 200) {
           setStatus("cancelled");
-          toast.success("Ordered cancelled successfully.");
+          Toast.show({
+            type: 'error',
+            text1: 'Success',
+            text2: 'Ordered cancelled successfully.'
+          });
         } else {
-          toast.error("Unable to update status.");
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Unable to update status.'
+          });
         }
       })
       .catch(() => {
-        toast.error("Unable to update status.");
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Unable to update status.'
+        });
       });
   };
 

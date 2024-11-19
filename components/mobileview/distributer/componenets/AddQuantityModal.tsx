@@ -6,15 +6,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 import LabeledInput from "../../global/labeledInput";
 
 const AddQuantityModal = ({ visible, setVisible }: any) => {
@@ -64,10 +64,13 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
   const handleAddProduct = async () => {
     setIsLoading(true);
     if (!canSignUp()) {
-      toast.error("Please fill out all fields.");
+      Toast.show({
+        type: "info",
+        text1: "Adding Product",
+        text2: "Please wait while we add your product.",
+      });
       return;
     }
-    toast.info("Please wait while we add your product.");
     setVisible(false);
     try {
       await axios.post(
@@ -82,10 +85,17 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
         },
         { headers: { Authorization: `${access_token}` } }
       );
-      toast.success("Sell option updated successfully.");
+      Toast.show({
+        type: "info",
+        text1: "Updated",
+        text2: "Sell option updated successfully.",
+      });
     } catch (error) {
-      console.error("Error adding or updating product:", error);
-      toast.error("Something went wrong. Please try again.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Something went wrong. Please try again.",
+      });
     }
     const response = await axios.get(
       "https://esybulk-back.onrender.com/api/distributor_company_stocks",
@@ -102,7 +112,11 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
     const lastOption =
       productData.buyOptions[productData.buyOptions.length - 1];
     if (lastOption && !lastOption.quantity && !lastOption.price) {
-      toast.warn("Please fill in the previous option before adding a new one.");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill in the previous option before adding a new one.'
+      });
       return;
     }
     setProductData((prevData) => ({

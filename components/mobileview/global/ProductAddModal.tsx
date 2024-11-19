@@ -6,18 +6,18 @@ import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  FlatList,
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 import LabeledInput from "./labeledInput";
 import LabeledMultilineInput from "./LabeledMultilineInput";
 
@@ -116,10 +116,18 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     // Call canSignUp function to properly check if all fields are filled
     setIsLoading(true);
     if (!canSignUp()) {
-      toast.error("Please fill out all fields.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill out all fields.",
+      });
       return;
     }
-    toast.info("Please wait while we add your product.");
+    Toast.show({
+      type: "info",
+      text1: "Wait",
+      text2: "Please wait while we add your product.",
+    });
     setIsOpen(false);
     try {
       const uploadedImageUrls = [];
@@ -167,7 +175,11 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           },
           { headers: { Authorization: `${access_token}` } }
         );
-        toast.success("Product updated successfully.");
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Product updated successfully.",
+        });
       } else {
         // Add new product
         const productResponse = await axios.post(
@@ -188,11 +200,18 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           },
           { headers: { Authorization: `${access_token}` } }
         );
-        toast.success("Product added successfully.");
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Product added successfully.",
+        });
       }
     } catch (error) {
-      console.error("Error adding or updating product:", error);
-      toast.error("Something went wrong. Please try again.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Something went wrong. Please try again.",
+      });
     }
     const response = await axios.get(
       "https://esybulk-back.onrender.com/api/distributor_company_stocks",
@@ -209,7 +228,11 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     const lastOption =
       productData.buyOptions[productData.buyOptions.length - 1];
     if (lastOption && !lastOption.quantity && !lastOption.price) {
-      toast.warn("Please fill in the previous option before adding a new one.");
+      Toast.show({
+        type: 'info',
+        text1: 'Error',
+        text2: 'Please fill in the previous option before adding a new one.'
+      });
       return;
     }
     setProductData((prevData) => ({

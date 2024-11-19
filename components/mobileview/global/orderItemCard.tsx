@@ -2,15 +2,15 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    Linking,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 
 export const ItemCard = ({ order }: any) => {
   const { access_token } = useAuth();
@@ -34,7 +34,11 @@ export const ItemCard = ({ order }: any) => {
         : null;
 
     if (!url) {
-      toast.error("Invalid status.");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Invalid status.'
+      });
       return;
     }
 
@@ -49,13 +53,25 @@ export const ItemCard = ({ order }: any) => {
       .then((response) => {
         if (response.status === 200) {
           setStatus(newStatus);
-          toast.success("Status updated successfully.");
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'Status updated successfully.'
+          });
         } else {
-          toast.error("Unable to update status.");
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Unable to update status.'
+          });
         }
       })
       .catch(() => {
-        toast.error("Unable to update status.");
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Unable to update status.'
+        });
       });
   };
 

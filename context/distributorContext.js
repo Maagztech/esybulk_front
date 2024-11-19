@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { Toast } from 'react-native-toast-message';
 import { useAuth } from './authContext.js';
 const DistributorContext = createContext(undefined);
 
@@ -30,7 +30,11 @@ export const DistributorProvider = ({ children }) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error("Error fetching products");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Error fetching products.'
+      });
     }
   };
 
@@ -67,7 +71,11 @@ export const DistributorProvider = ({ children }) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error("Error fetching products");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Error fetching products'
+      });
     }
   };
 
@@ -77,7 +85,11 @@ export const DistributorProvider = ({ children }) => {
         { headers: { Authorization: `${access_token}` } })
       setCart(response.data.cartItems);
     } catch (error) {
-      toast.error("Error fetching cart");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Error fetching cart'
+      });
     }
   }
 
@@ -88,7 +100,11 @@ export const DistributorProvider = ({ children }) => {
         { headers: { Authorization: `${access_token}` } });
       fetchCart();
     } catch (error) {
-      toast.error("Error adding or removing from cart");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Error adding or removing from cart'
+      });
     }
 
   }

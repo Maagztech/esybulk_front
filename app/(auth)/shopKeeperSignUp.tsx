@@ -10,7 +10,7 @@ import {
   View
 } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { toast } from "react-toastify";
+import Toast from "react-native-toast-message";
 
 const ShopKeeperSignUp = () => {
   const { activeAccount, userInfo }: any = useAuth();
@@ -56,7 +56,11 @@ const ShopKeeperSignUp = () => {
   };
   const handleSignUp = async () => {
     if (!canSignUp()) {
-      toast.error("Please fill out all fields");
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill out all fields'
+      });
       return;
     }
     await activeAccount(accountDetails);

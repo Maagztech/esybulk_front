@@ -17,7 +17,7 @@ import { StyleSheet, View } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ToastContainer } from "react-toastify";
+import Toast from "react-native-toast-message";
 import "react-toastify/dist/ReactToastify.css";
 SplashScreen.preventAutoHideAsync();
 
@@ -51,10 +51,7 @@ export default function RootLayout() {
                 >
                   <PaperProvider>
                     <Header />
-                    <ToastContainer
-                      style={{ fontSize: "14px", zIndex: 99999 }}
-                      autoClose={3000}
-                    />
+                    <Toast />
                     <Stack
                       screenOptions={{
                         headerShown: false,
