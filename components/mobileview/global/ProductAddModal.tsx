@@ -229,9 +229,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       productData.buyOptions[productData.buyOptions.length - 1];
     if (lastOption && !lastOption.quantity && !lastOption.price) {
       Toast.show({
-        type: 'info',
-        text1: 'Error',
-        text2: 'Please fill in the previous option before adding a new one.'
+        type: "info",
+        text1: "Error",
+        text2: "Please fill in the previous option before adding a new one.",
       });
       return;
     }
@@ -289,6 +289,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
+      <Toast />
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Product</Text>

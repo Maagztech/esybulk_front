@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import RadioButton from "../shopkeeper/components/RadioButton";
-import BuyNowConfirmModal from "./BuyNowConfirmModal";
+import BuyNowConfirmModal from "./ConfirmModal";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { userInfo, access_token }: any = useAuth();
@@ -79,17 +79,17 @@ export default function ProductDetails({ id }: { id: string }) {
         { headers: { Authorization: `${access_token}` } }
       );
       Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Order placed successfully'
+        type: "success",
+        text1: "Success",
+        text2: "Order placed successfully",
       });
       setConfirmModal(false);
       router.push("/orders");
     } catch (error) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to place order.'
+        type: "error",
+        text1: "Error",
+        text2: "Failed to place order.",
       });
     }
   };
@@ -188,6 +188,8 @@ export default function ProductDetails({ id }: { id: string }) {
         visible={confirmModal}
         onConfirm={handleBuyNow}
         onCancel={() => setConfirmModal(false)}
+        text1="Confirm Purchase"
+        text2="Are you sure you want to buy this item?"
       />
     </View>
   );

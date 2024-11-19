@@ -5,12 +5,16 @@ interface BuyNowConfirmModalProps {
   visible: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  text1: string;
+  text2: string;
 }
 
-const BuyNowConfirmModal: React.FC<BuyNowConfirmModalProps> = ({
+const ConfirmModal: React.FC<BuyNowConfirmModalProps> = ({
   visible,
   onConfirm,
   onCancel,
+  text1,
+  text2,
 }) => {
   return (
     <Modal
@@ -21,10 +25,8 @@ const BuyNowConfirmModal: React.FC<BuyNowConfirmModalProps> = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Confirm Purchase</Text>
-          <Text style={styles.modalMessage}>
-            Are you sure you want to buy this item?
-          </Text>
+          <Text style={styles.modalTitle}>{text1}</Text>
+          <Text style={styles.modalMessage}>{text2}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={onCancel}>
               <Text style={styles.buttonText}>Cancel</Text>
@@ -82,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BuyNowConfirmModal;
+export default ConfirmModal;

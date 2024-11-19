@@ -113,9 +113,9 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       productData.buyOptions[productData.buyOptions.length - 1];
     if (lastOption && !lastOption.quantity && !lastOption.price) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Please fill in the previous option before adding a new one.'
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in the previous option before adding a new one.",
       });
       return;
     }
@@ -153,6 +153,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
+      <Toast />
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Update Quantity</Text>

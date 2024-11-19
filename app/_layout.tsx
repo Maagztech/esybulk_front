@@ -18,7 +18,6 @@ import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import "react-toastify/dist/ReactToastify.css";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
