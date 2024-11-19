@@ -3,9 +3,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
+import ConfirmModal from "./ConfirmModal";
 
 export const OrderNotChangeCard = ({ order }: any) => {
   const { access_token } = useAuth();
+  const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
@@ -22,23 +24,23 @@ export const OrderNotChangeCard = ({ order }: any) => {
         if (response.status === 200) {
           setStatus("cancelled");
           Toast.show({
-            type: 'error',
-            text1: 'Success',
-            text2: 'Ordered cancelled successfully.'
+            type: "error",
+            text1: "Success",
+            text2: "Ordered cancelled successfully.",
           });
         } else {
           Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Unable to update status.'
+            type: "error",
+            text1: "Error",
+            text2: "Unable to update status.",
           });
         }
       })
       .catch(() => {
         Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Unable to update status.'
+          type: "error",
+          text1: "Error",
+          text2: "Unable to update status.",
         });
       });
   };
@@ -68,7 +70,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
             {status === "ordered" && (
               <Pressable
                 style={styles.complete_button}
-                onPress={() => cancelOrder()}
+                onPress={() => setVisible(true)}
               >
                 <Text style={styles.addButtonText}>Cancel Order</Text>
               </Pressable>
@@ -76,6 +78,15 @@ export const OrderNotChangeCard = ({ order }: any) => {
           </View>
         )}
       </View>
+      <ConfirmModal
+        text1="Cancel Order"
+        text2="Are you sure you want to cancel this order?"
+        onConfirm={() => cancelOrder()}
+        onCancel={() => {
+          setVisible(false);
+        }}
+        visible={visible}
+      />
 
       {/* Delivery process (status circles) */}
       <View style={styles.deliveryProcess}>

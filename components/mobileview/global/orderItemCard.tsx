@@ -11,11 +11,12 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import ConfirmModal from "./ConfirmModal";
 
 export const ItemCard = ({ order }: any) => {
   const { access_token } = useAuth();
   const [status, setStatus] = useState(order.status);
-
+  const [visible, setVisible] = useState(false);
   const handleContactManager = () => {
     const phoneUrl = `tel:${order.contact}`;
     Linking.openURL(phoneUrl).catch(() =>
@@ -35,9 +36,9 @@ export const ItemCard = ({ order }: any) => {
 
     if (!url) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Invalid status.'
+        type: "error",
+        text1: "Error",
+        text2: "Invalid status.",
       });
       return;
     }
@@ -54,23 +55,23 @@ export const ItemCard = ({ order }: any) => {
         if (response.status === 200) {
           setStatus(newStatus);
           Toast.show({
-            type: 'success',
-            text1: 'Success',
-            text2: 'Status updated successfully.'
+            type: "success",
+            text1: "Success",
+            text2: "Status updated successfully.",
           });
         } else {
           Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Unable to update status.'
+            type: "error",
+            text1: "Error",
+            text2: "Unable to update status.",
           });
         }
       })
       .catch(() => {
         Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Unable to update status.'
+          type: "error",
+          text1: "Error",
+          text2: "Unable to update status.",
         });
       });
   };
@@ -116,11 +117,20 @@ export const ItemCard = ({ order }: any) => {
             {status === "ordered" && (
               <Pressable
                 style={styles.cancelbutton}
-                onPress={() => updateStatus("cancelled")}
+                onPress={() => setVisible(true)}
               >
                 <Text style={styles.addButtonText}>Cancel Order</Text>
               </Pressable>
             )}
+            <ConfirmModal
+              text1="Cancel Order"
+              text2="Are you sure you want to cancel this order?"
+              onConfirm={() => updateStatus("cancelled")}
+              onCancel={() => {
+                setVisible(false);
+              }}
+              visible={visible}
+            />
             {status != "delivered" && (
               <Pressable
                 style={styles.cancelbutton}
