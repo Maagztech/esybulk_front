@@ -1,4 +1,4 @@
-import Header from "@/components/mobileview/global/header";
+import Header from "@/components/mobileview/global/Header";
 import { AuthProvider } from "@/context/authContext";
 import { CompanyProvider } from "@/context/companyContext";
 import { DistributorProvider } from "@/context/distributorContext";
@@ -64,10 +64,10 @@ export default function RootLayout() {
                         name="(auth)"
                         options={{ headerShown: false }}
                       />
-                      <Stack.Screen
+                      {/* <Stack.Screen
                         name="(tabs)"
                         options={{ headerShown: false }}
-                      />
+                      /> */}
                     </Stack>
                   </PaperProvider>
                 </SafeAreaView>

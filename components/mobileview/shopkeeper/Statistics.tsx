@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import RevenueChart from "./components/CompanyRevenueChart";
-import ProductSalesChart from "./components/productSoldChart";
+import ProductSalesChart from "./components/ProductSoldChart";
 
 // Types for the company stats data
 interface OrderStats {

@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { toast } from "react-toastify";
-import RadioButton from "../shopkeeper/components/radioButton";
+import RadioButton from "../shopkeeper/components/RadioButton";
 import BuyNowConfirmModal from "./BuyNowConfirmModal";
 
 export default function ProductDetails({ id }: { id: string }) {

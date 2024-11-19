@@ -1,4 +1,4 @@
-import ProductSalesChart from "@/components/mobileview/company/components/productSoldChart";
+import ProductSalesChart from "@/components/mobileview/company/components/ProductSoldChart";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
