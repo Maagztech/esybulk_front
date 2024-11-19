@@ -22,7 +22,7 @@ export const CompanyProducts = () => {
 
   const loadcompanyProducts = async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_company_stocks",
+      "https://esybulk-back.onrender.com/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

@@ -2,13 +2,13 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import {
-  Alert,
-  Image,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    Image,
+    Linking,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { toast } from "react-toastify";
 
@@ -26,11 +26,11 @@ export const ItemCard = ({ order }: any) => {
   const updateStatus = (newStatus: string) => {
     const url =
       newStatus === "shipped"
-        ? "http://localhost:5000/api/shipped"
+        ? "https://esybulk-back.onrender.com/api/shipped"
         : newStatus === "delivered"
-        ? "http://localhost:5000/api/delivered"
+        ? "https://esybulk-back.onrender.com/api/delivered"
         : newStatus === "cancelled"
-        ? "http://localhost:5000/api/ordercancel"
+        ? "https://esybulk-back.onrender.com/api/ordercancel"
         : null;
 
     if (!url) {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import CompletedOrders from "../global/CompletedOrders";
 import ShopkeeperCompletedOrders from "../global/ShopkeeperCompletedOrders";
-import ShopkeeperPendingOrders from "../global/shopkeeperPendingOrders";
+import ShopkeeperPendingOrders from "../global/ShopkeeperPendingOrders";
 import { CompnayPendingOrders } from "./../shopkeeper/components/CompanyPendingOrders";
 
 const OrderFromShop = () => {
@@ -23,7 +23,7 @@ const OrderFromShop = () => {
 
   const loadSellOrdered = async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_or_company_orders",
+      "https://esybulk-back.onrender.com/api/distributor_or_company_orders",
       {
         headers: { Authorization: `${access_token}` },
       }
@@ -45,7 +45,7 @@ const OrderFromShop = () => {
 
   const loadBuyOrdered = async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_or_shopkeeper_orders",
+      "https://esybulk-back.onrender.com/api/distributor_or_shopkeeper_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

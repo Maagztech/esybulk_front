@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         const refresh_token = await getLocalUser();
         if (!refresh_token) router.push("/")
         if (refresh_token) {
-          const response = await axios.post("http://localhost:5000/api/refresh_token", { refresh_token });
+          const response = await axios.post("https://esybulk-back.onrender.com/api/refresh_token", { refresh_token });
           setUserInfo(response.data.user)
           console.log(response.data.access_token)
           if (response.data.user.role && response.data.user.pinCode) {
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/login",
+        "https://esybulk-back.onrender.com/api/login",
         {},
         {
           headers: { Authorization: `${token}` },
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   const selectRole = async (role) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/selectRole", { role }, {
+      const response = await axios.post("https://esybulk-back.onrender.com/api/selectRole", { role }, {
         headers: { Authorization: `${access_token}` },
       });
     } catch (error) {
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }) => {
 
   const activeAccount = async (data) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/active",
+      const response = await axios.post("https://esybulk-back.onrender.com/api/active",
         data,
         { headers: { Authorization: `${access_token}` } })
       setUserInfo(response.data.user);

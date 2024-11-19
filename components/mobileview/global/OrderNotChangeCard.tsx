@@ -9,7 +9,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
-    const url = "http://localhost:5000/api/ordercancel";
+    const url = "https://esybulk-back.onrender.com/api/ordercancel";
     axios
       .post(
         url,

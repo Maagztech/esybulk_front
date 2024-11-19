@@ -6,15 +6,15 @@ import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
-  FlatList,
-  Image,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    FlatList,
+    Image,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { toast } from "react-toastify";
@@ -151,12 +151,12 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       if (selectedProduct) {
         console.log(selectedProduct);
         await axios.post(
-          `http://localhost:5000/api/companyregisterproductedit/${selectedProduct.id}`,
+          `https://esybulk-back.onrender.com/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         await axios.post(
-          "http://localhost:5000/api/distributor_or_company_add_quantity",
+          "https://esybulk-back.onrender.com/api/distributor_or_company_add_quantity",
           {
             product: selectedProduct.id,
             price: productData.buyOptions.map((option) => ({
@@ -171,13 +171,13 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       } else {
         // Add new product
         const productResponse = await axios.post(
-          "http://localhost:5000/api/companyregisterproduct",
+          "https://esybulk-back.onrender.com/api/companyregisterproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         const productId = productResponse.data._id;
         await axios.post(
-          "http://localhost:5000/api/distributor_or_company_add_quantity",
+          "https://esybulk-back.onrender.com/api/distributor_or_company_add_quantity",
           {
             product: productId,
             price: productData.buyOptions.map((option) => ({
@@ -195,7 +195,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       toast.error("Something went wrong. Please try again.");
     }
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_company_stocks",
+      "https://esybulk-back.onrender.com/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

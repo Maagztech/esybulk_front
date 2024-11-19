@@ -3,13 +3,13 @@ import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { toast } from "react-toastify";
 import RadioButton from "../shopkeeper/components/radioButton";
@@ -44,12 +44,12 @@ export default function ProductDetails({ id }: { id: string }) {
       let response;
       if (userInfo?.role === "distributor") {
         response = await axios.get(
-          `http://localhost:5000/api/distributor/buyoptions?product=${id}`,
+          `https://esybulk-back.onrender.com/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else {
         response = await axios.get(
-          `http://localhost:5000/api/distributor/buyoptionsshopkeeper?product=${id}`,
+          `https://esybulk-back.onrender.com/api/distributor/buyoptionsshopkeeper?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       }
@@ -74,7 +74,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const handleBuyNow = () => {
     try {
       const reponse = axios.post(
-        `http://localhost:5000/api/distributor/addorder`,
+        `https://esybulk-back.onrender.com/api/distributor/addorder`,
         selectedOption,
         { headers: { Authorization: `${access_token}` } }
       );

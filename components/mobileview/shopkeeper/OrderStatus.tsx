@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import ShopkeeperCompletedOrders from "../global/ShopkeeperCompletedOrders";
-import ShopkeeperPendingOrders from "../global/shopkeeperPendingOrders";
+import ShopkeeperPendingOrders from "../global/ShopkeeperPendingOrders";
 
 const OrderFromShop = () => {
   const [pending, setPending] = useState("Pending");
@@ -17,7 +17,7 @@ const OrderFromShop = () => {
 
   const loadBuyOrdered = async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_or_shopkeeper_orders",
+      "https://esybulk-back.onrender.com/api/distributor_or_shopkeeper_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

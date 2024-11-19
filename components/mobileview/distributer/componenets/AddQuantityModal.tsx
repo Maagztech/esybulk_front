@@ -6,13 +6,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { toast } from "react-toastify";
 import LabeledInput from "../../global/labeledInput";
@@ -33,7 +33,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
 
   const fetchSellOptions = async () => {
     const response = await axios.get(
-      `http://localhost:5000/api/distributor_or_company_get_quantity/${selectForSell?.id}`,
+      `https://esybulk-back.onrender.com/api/distributor_or_company_get_quantity/${selectForSell?.id}`,
       { headers: { Authorization: `${access_token}` } }
     );
     const options = response.data;
@@ -71,7 +71,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
     setVisible(false);
     try {
       await axios.post(
-        "http://localhost:5000/api/distributor_or_company_add_quantity",
+        "https://esybulk-back.onrender.com/api/distributor_or_company_add_quantity",
         {
           product: selectForSell?.id,
           price: productData.buyOptions.map((option) => ({
@@ -88,7 +88,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       toast.error("Something went wrong. Please try again.");
     }
     const response = await axios.get(
-      "http://localhost:5000/api/distributor_company_stocks",
+      "https://esybulk-back.onrender.com/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }
