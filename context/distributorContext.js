@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Toast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import { useAuth } from './authContext.js';
 const DistributorContext = createContext(undefined);
 

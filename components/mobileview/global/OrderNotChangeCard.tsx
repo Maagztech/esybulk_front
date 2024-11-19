@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "./BuyNowConfirmModal";
 
 export const OrderNotChangeCard = ({ order }: any) => {
   const { access_token } = useAuth();

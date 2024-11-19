@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "./BuyNowConfirmModal";
 
 export const ItemCard = ({ order }: any) => {
   const { access_token } = useAuth();

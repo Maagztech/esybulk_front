@@ -18,6 +18,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+// import Toast from "react-native-toast-message";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -36,43 +37,46 @@ export default function RootLayout() {
     return null;
   }
   return (
-    <LoadingProvider>
-      <AuthProvider>
-        <CompanyProvider>
-          <DistributorProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <View style={styles.overlay}>
-                <SafeAreaView
-                  style={styles.container}
-                  edges={["top", "bottom", "left", "right"]}
-                >
-                  <PaperProvider>
-                    <Header />
-                    <Toast />
-                    <Stack
-                      screenOptions={{
-                        headerShown: false,
-                      }}
-                    >
-                      <Stack.Screen
-                        name="(auth)"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(tabs)"
-                        options={{ headerShown: false }}
-                      />
-                    </Stack>
-                  </PaperProvider>
-                </SafeAreaView>
-              </View>
-            </ThemeProvider>
-          </DistributorProvider>
-        </CompanyProvider>
-      </AuthProvider>
-    </LoadingProvider>
+    <>
+      <LoadingProvider>
+        <AuthProvider>
+          <CompanyProvider>
+            <DistributorProvider>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              >
+                <View style={styles.overlay}>
+                  <SafeAreaView
+                    style={styles.container}
+                    edges={["top", "bottom", "left", "right"]}
+                  >
+                    <PaperProvider>
+                      <Header />
+
+                      <Stack
+                        screenOptions={{
+                          headerShown: false,
+                        }}
+                      >
+                        <Stack.Screen
+                          name="(auth)"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(tabs)"
+                          options={{ headerShown: false }}
+                        />
+                      </Stack>
+                    </PaperProvider>
+                  </SafeAreaView>
+                </View>
+              </ThemeProvider>
+            </DistributorProvider>
+          </CompanyProvider>
+        </AuthProvider>
+      </LoadingProvider>
+      <Toast />
+    </>
   );
 }
 

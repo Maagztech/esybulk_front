@@ -249,13 +249,11 @@ const CompanySignUp = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
-    marginTop: 300,
   },
   innerContainer: {
     width: "100%",

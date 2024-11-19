@@ -41,9 +41,9 @@ const DistributorSignUp = () => {
   const handleSignUp = async () => {
     if (!canSignUp()) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Please fill out all fields'
+        type: "error",
+        text1: "Error",
+        text2: "Please fill out all fields",
       });
       return;
     }
@@ -222,9 +222,9 @@ const DistributorSignUp = () => {
             ]}
             onPress={() => {
               Toast.show({
-                type: 'error',
-                text1: 'Vehicle Required',
-                text2: 'Please arrange a vehicle first'
+                type: "error",
+                text1: "Vehicle Required",
+                text2: "Please arrange a vehicle first",
               });
               setHasVehicleAccess(false);
             }}
@@ -251,14 +251,12 @@ const DistributorSignUp = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
     zIndex: 1,
-    marginTop: 300,
   },
   innerContainer: {
     width: "100%",

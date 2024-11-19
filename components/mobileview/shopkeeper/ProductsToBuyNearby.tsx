@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  ScrollView,
   Text,
   View,
 } from "react-native";
@@ -35,28 +36,30 @@ const ProductsToBuyNearby = () => {
   };
   return (
     <>
-      <FlatList
-        data={types}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => setQuery(item)} // Fix this to wrap `setQuery(item)` in a function.
-            style={{
-              margin: 5,
-              backgroundColor: "gray",
-              padding: 5,
-              borderRadius: 50,
-            }}
-          >
-            <Text style={{ color: "white" }}>{item}</Text>
-          </Pressable>
-        )}
-        contentContainerStyle={styles.flatListContainer}
-        style={{ height: 1 }} // Explicitly constrain the height
-      />
-
+      <View style={styles.scrollViewContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          // contentContainerStyle={styles.flatListContainer}
+          style={styles.scrollView} // Apply height constraint here
+        >
+          {types.map((item) => (
+            <Pressable
+              onPress={() => setQuery(item)}
+              style={{
+                margin: 5,
+                backgroundColor: "gray",
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+                borderRadius: 50,
+              }}
+              key={item}
+            >
+              <Text style={{ color: "white", fontSize: 15 }}>{item}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
       <FlatList
         data={products}
         keyExtractor={(item) => item._id}
@@ -80,8 +83,15 @@ const styles = {
   container: { padding: 10, backgroundColor: "#f3f3f3" },
   loadingContainer: { paddingVertical: 10, alignItems: "center" as "center" },
   flatListContainer: {
-    padding: 10,
-    backgroundColor: "#f3f3f3",
+    flexDirection: "row",
+    alignItems: "center" as "center",
+    justifyContent: "flex-start",
+  },
+  scrollView: {
+    height: 2, // Fixed height to prevent taking extra vertical space
+  },
+  scrollViewContainer: {
+    height: 50,
   },
 };
 

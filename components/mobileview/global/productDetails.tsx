@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import RadioButton from "../shopkeeper/components/RadioButton";
-import BuyNowConfirmModal from "./ConfirmModal";
+import BuyNowConfirmModal from "./BuyNowConfirmModal";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { userInfo, access_token }: any = useAuth();

@@ -3,6 +3,7 @@ import { useNavigation, useNavigationState } from "@react-navigation/native";
 import axios from 'axios';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import Toast from "react-native-toast-message";
 import { useLoading } from "./loadingContext";
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
@@ -26,7 +27,6 @@ export const AuthProvider = ({ children }) => {
       router.push("/home");
     }
   }, [currentPathname, userInfo, router]);
-
 
   useEffect(() => {
 

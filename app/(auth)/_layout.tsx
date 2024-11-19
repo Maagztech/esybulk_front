@@ -9,8 +9,6 @@ export default function AuthLayout() {
       <Stack.Screen name="companySignUp" options={{ headerShown: false }} />
       <Stack.Screen name="distributorSignUp" options={{ headerShown: false }} />
       <Stack.Screen name="shopKeeperSignUp" options={{ headerShown: false }} />
-      <Stack.Screen name="cart" options={{ headerShown: false }} />
-      <Stack.Screen name="search" options={{ headerShown: false }} />
     </Stack>
   );
 }
