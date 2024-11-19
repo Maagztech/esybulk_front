@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { ItemCard } from "../../global/orderItemCard";
+import { ItemCard } from "../../global/OrderItemCard";
 
 export const CompnayPendingOrders = ({ orders }: any) => {
   return (

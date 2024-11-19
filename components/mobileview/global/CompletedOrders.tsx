@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { ItemCard } from "./orderItemCard";
+import { ItemCard } from "./OrderItemCard";
 
 export const CompletedOrders = ({ orders }: any) => {
   return (
