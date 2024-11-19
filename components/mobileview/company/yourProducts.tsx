@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
-export const CompanyProducts = () => {
+ const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { access_token }: any = useAuth();
   const {
