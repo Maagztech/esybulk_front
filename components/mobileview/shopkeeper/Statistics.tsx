@@ -65,7 +65,7 @@ const CompanyStatistics = () => {
 
       <View style={{ marginBottom: 30 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
-          Company Revenue
+          Shop Revenue
         </Text>
         <RevenueChart data={orderStats} />
       </View>
