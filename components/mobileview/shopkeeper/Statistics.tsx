@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -35,7 +34,9 @@ const CompanyStatistics = () => {
   // Fetch order statistics from backend API
   const fetchOrderStats = async () => {
     try {
-      const response = await axios.get("https://esybulk-back.onrender.com/api/shopkeeper/stats");
+      const response = await axios.get(
+        "https://esybulk-back.onrender.com/api/shopkeeper/stats"
+      );
       const data: OrderStats[] = response.data;
       setOrderStats(data);
 
@@ -66,7 +67,7 @@ const CompanyStatistics = () => {
         <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
           Company Revenue
         </Text>
-        <RevenueChart data={revenueData} />
+        <RevenueChart data={orderStats} />
       </View>
     </ScrollView>
   );

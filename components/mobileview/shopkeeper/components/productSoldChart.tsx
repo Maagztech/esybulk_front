@@ -1,93 +1,149 @@
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  PointElement,
-  Title,
-  Tooltip,
-} from "chart.js";
-import React from "react";
-import { Bar } from "react-chartjs-2";
+import React, { useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 
-// Register chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-interface ProductSalesChartProps {
+interface ProductQuantityChartProps {
   data: {
     product: string;
-    totalOrders: number;
-    totalQuantity: number;
-    totalPrice: number;
-    ordersByDate: any[];
-    ordersByWeek: any[];
-    ordersByMonth: any[];
+    ordersByDate: { date: string; quantity: number }[];
+    ordersByWeek: { week: number; quantity: number }[];
+    ordersByMonth: { month: number; quantity: number }[];
   }[];
 }
 
-const ProductSalesChart: React.FC<ProductSalesChartProps> = ({ data }) => {
-  const labels = data.map((item) => item.product);
-  const quantities = data.map((item) => item.totalQuantity);
-  const prices = data.map((item) => item.totalPrice);
+const ProductQuantityChart: React.FC<ProductQuantityChartProps> = ({ data }) => {
+  const [view, setView] = useState<"daily" | "weekly" | "monthly">("daily");
+
+  const filteredData = data.map((item) => {
+    if (view === "daily") {
+      const lastThreeDays = item.ordersByDate.slice(-3);
+      return {
+        product: item.product,
+        quantities: lastThreeDays.map((entry) => entry.quantity),
+        labels: lastThreeDays.map((entry) => entry.date),
+      };
+    } else if (view === "weekly") {
+      const lastThreeWeeks = item.ordersByWeek.slice(-3);
+      return {
+        product: item.product,
+        quantities: lastThreeWeeks.map((entry) => entry.quantity),
+        labels: lastThreeWeeks.map((entry) => `Week ${entry.week}`),
+      };
+    } else if (view === "monthly") {
+      const lastThreeMonths = item.ordersByMonth.slice(-3);
+      return {
+        product: item.product,
+        quantities: lastThreeMonths.map((entry) => entry.quantity),
+        labels: lastThreeMonths.map((entry) => `Month ${entry.month}`),
+      };
+    }
+    return { product: "", quantities: [], labels: [] };
+  });
+
+  const chartLabels = filteredData[0]?.labels || [];
+  const datasets = filteredData.map((item) => ({
+    data: item.quantities,
+    color: () => "rgba(75, 192, 192, 1)",
+  }));
 
   const chartData = {
-    labels,
-    datasets: [
-      {
-        label: "Quantity Sold",
-        data: quantities,
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Total Sales ($)",
-        data: prices,
-        backgroundColor: "rgba(153, 102, 255, 0.2)",
-        borderColor: "rgba(153, 102, 255, 1)",
-        borderWidth: 1,
-      },
-    ],
+    labels: chartLabels,
+    datasets,
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Product Sales Statistics",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Quantity / Sales ($)",
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: "Products",
-        },
-      },
-    },
-  };
+  const screenWidth = Dimensions.get("window").width;
 
-  return <Bar data={chartData} options={options}/>;
+  return (
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        {["daily", "weekly", "monthly"].map((option) => (
+          <Pressable
+            key={option}
+            onPress={() => setView(option as "daily" | "weekly" | "monthly")}
+            style={[
+              styles.button,
+              view === option && styles.selectedButton,
+            ]}
+          >
+            <Text
+              style={[
+                styles.buttonText,
+                view === option && styles.selectedButtonText,
+              ]}
+            >
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      {chartLabels.length > 0 ? (
+        <BarChart
+          data={chartData}
+          width={screenWidth - 40}
+          height={300}
+          fromZero
+          showBarTops={false}
+          yAxisLabel=""
+          yAxisSuffix=""
+          chartConfig={{
+            backgroundColor: "#ffffff",
+            backgroundGradientFrom: "#f3f4f6",
+            backgroundGradientTo: "#e5e7eb",
+            color: (opacity = 1) => `rgba(75, 192, 192, ${opacity})`,
+            barPercentage: 0.5,
+            labelColor: () => "#374151",
+          }}
+          style={styles.chart}
+        />
+      ) : (
+        <Text style={styles.noDataText}>No data available</Text>
+      )}
+    </View>
+  );
 };
 
-export default ProductSalesChart;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    padding: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginBottom: 20,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    backgroundColor: "#e5e7eb",
+    marginHorizontal: 5,
+  },
+  selectedButton: {
+    backgroundColor: "#4CAF50",
+  },
+  buttonText: {
+    color: "#374151",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  selectedButtonText: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
+  chart: {
+    borderRadius: 10,
+    padding: 10,
+  },
+  noDataText: {
+    marginTop: 50,
+    color: "#9ca3af",
+    fontSize: 16,
+    textAlign: "center",
+  },
+});
+
+export default ProductQuantityChart;
