@@ -5,10 +5,12 @@ import {
   FlatList,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   View,
 } from "react-native";
 import BuySellButton from "../global/BuySellButton";
+
 const ProductsToBuyNearby = () => {
   const {
     products,
@@ -18,6 +20,7 @@ const ProductsToBuyNearby = () => {
     totalPages,
     setQuery,
   }: any = useDistributor();
+
   const types = [
     "Grocery",
     "Clothing and Apparel",
@@ -29,33 +32,29 @@ const ProductsToBuyNearby = () => {
     "Sports",
     "Automotive and Transportation",
   ];
+
   const handleLoadMore = () => {
     if (!loading && currentPage < totalPages) {
       fetchProducts(currentPage + 1);
     }
   };
+
   return (
     <>
       <View style={styles.scrollViewContainer}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          // contentContainerStyle={styles.flatListContainer}
-          style={styles.scrollView} // Apply height constraint here
+          contentContainerStyle={styles.flatListContainer}
+          style={styles.scrollView}
         >
           {types.map((item) => (
             <Pressable
               onPress={() => setQuery(item)}
-              style={{
-                margin: 5,
-                backgroundColor: "gray",
-                paddingHorizontal: 15,
-                paddingVertical: 5,
-                borderRadius: 50,
-              }}
+              style={styles.pressable}
               key={item}
             >
-              <Text style={{ color: "white", fontSize: 15 }}>{item}</Text>
+              <Text style={styles.text}>{item}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -79,20 +78,31 @@ const ProductsToBuyNearby = () => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: { padding: 10, backgroundColor: "#f3f3f3" },
-  loadingContainer: { paddingVertical: 10, alignItems: "center" as "center" },
+  loadingContainer: { paddingVertical: 10, alignItems: "center" },
   flatListContainer: {
     flexDirection: "row",
-    alignItems: "center" as "center",
+    alignItems: "center",
     justifyContent: "flex-start",
   },
   scrollView: {
-    height: 2, // Fixed height to prevent taking extra vertical space
+    height: 50,
   },
   scrollViewContainer: {
     height: 50,
   },
-};
+  pressable: {
+    margin: 5,
+    backgroundColor: "gray",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 50,
+  },
+  text: {
+    color: "white",
+    fontSize: 15,
+  },
+});
 
 export default ProductsToBuyNearby;

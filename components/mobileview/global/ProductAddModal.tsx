@@ -289,7 +289,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <Toast />
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Product</Text>
@@ -431,13 +430,13 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           </View>
         </View>
       </ScrollView>
+      <Toast />
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   modalOverlay: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
