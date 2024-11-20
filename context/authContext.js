@@ -29,13 +29,10 @@ export const AuthProvider = ({ children }) => {
   }, [currentPathname, userInfo, router]);
 
   useEffect(() => {
-
-    if (userInfo) return;
     setIsLoading(true);
     const fetchUser = async () => {
       try {
         const refresh_token = await getLocalUser();
-        if (!refresh_token) router.push("/")
         if (refresh_token) {
           const response = await axios.post("https://esybulk-back.onrender.com/api/refresh_token", { refresh_token });
           setUserInfo(response.data.user)
@@ -48,6 +45,7 @@ export const AuthProvider = ({ children }) => {
           setAccessToken(response.data.access_token)
           await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
         } else {
+          console.log("No user");
           router.push("/");
         }
       } catch (error) {
@@ -78,6 +76,14 @@ export const AuthProvider = ({ children }) => {
       const user = response.data;
       setAccessToken(user.access_token);
       await AsyncStorage.setItem("refresh_token", user.refresh_token);
+
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Sign In',
+        text2: 'Sing in successfully'
+      });
+
 
       if (user.user.role && user.user.pinCode) {
         setUserInfo(user.user);

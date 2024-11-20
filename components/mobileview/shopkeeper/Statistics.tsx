@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -28,6 +29,7 @@ interface OrderStats {
 }
 
 const CompanyStatistics = () => {
+  const { access_token }: any = useAuth();
   const [orderStats, setOrderStats] = useState<OrderStats[]>([]);
   const [revenueData, setRevenueData] = useState<number[]>([]);
 
@@ -35,7 +37,8 @@ const CompanyStatistics = () => {
   const fetchOrderStats = async () => {
     try {
       const response = await axios.get(
-        "https://esybulk-back.onrender.com/api/shopkeeper/stats"
+        "https://esybulk-back.onrender.com/api/shopkeeper/stats",
+        { headers: { Authorization: `${access_token}` } }
       );
       const data: OrderStats[] = response.data;
       setOrderStats(data);

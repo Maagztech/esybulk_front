@@ -1,4 +1,5 @@
 import ProductSalesChart from "@/components/mobileview/company/components/ProductSoldChart";
+import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -28,13 +29,17 @@ interface OrderStats {
 }
 
 const CompanyStatistics = () => {
+  const { access_token } = useAuth();
   const [orderStats, setOrderStats] = useState<OrderStats[]>([]);
   const [revenueData, setRevenueData] = useState<number[]>([]);
 
   // Fetch order statistics from backend API
   const fetchOrderStats = async () => {
     try {
-      const response = await axios.get("https://esybulk-back.onrender.com/api/company/stats");
+      const response = await axios.get(
+        "https://esybulk-back.onrender.com/api/company/stats",
+        { headers: { Authorization: `${access_token}` } }
+      );
       const data: OrderStats[] = response.data;
       setOrderStats(data);
 
