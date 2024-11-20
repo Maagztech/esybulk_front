@@ -36,19 +36,19 @@ export const AuthProvider = ({ children }) => {
         if (refresh_token) {
           const response = await axios.post("https://esybulk-back.onrender.com/api/refresh_token", { refresh_token });
           setUserInfo(response.data.user)
-          console.log(response.data.access_token)
           if (response.data.user.role && response.data.user.pinCode) {
             router.push("/home");
           } else {
             router.push("/selectRole");
           }
           setAccessToken(response.data.access_token)
-          await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
           Toast.show({
             type: 'success',
             text1: 'Sign In',
             text2: 'Sing in successfully'
           });
+
+          AsyncStorage.setItem("refresh_token", response.data.refresh_token);
         } else {
           router.push("/");
           Toast.show({
@@ -86,19 +86,13 @@ export const AuthProvider = ({ children }) => {
           headers: { Authorization: `${token}` },
         }
       );
-
       const user = response.data;
       setAccessToken(user.access_token);
-      await AsyncStorage.setItem("refresh_token", user.refresh_token);
-
-
       Toast.show({
         type: 'success',
         text1: 'Sign In',
         text2: 'Sing in successfully'
       });
-
-
       if (user.user.role && user.user.pinCode) {
         setUserInfo(user.user);
         setRole(user.user.role);
@@ -106,6 +100,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         router.push("/selectRole");
       }
+      AsyncStorage.setItem("refresh_token", user.refresh_token);
     } catch (error) {
       Toast.show({
         type: 'error',
