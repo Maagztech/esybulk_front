@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#f9f9f9",
     marginVertical: 10,
-    width: "90%",
+    width: "75%",
   },
 });
 
