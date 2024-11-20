@@ -7,7 +7,7 @@ import Toast from "react-native-toast-message";
 import { useLoading } from "./loadingContext";
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
-  const { loadinf, setIsLoading } = useLoading();
+  const { loading, setIsLoading } = useLoading();
   const [userInfo, setUserInfo] = useState(null);
   const navigation = useNavigation();
   const [access_token, setAccessToken] = useState(null);
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(user.access_token);
       await AsyncStorage.setItem("refresh_token", user.refresh_token);
 
-      
+
       Toast.show({
         type: 'success',
         text1: 'Sign In',

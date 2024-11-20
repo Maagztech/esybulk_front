@@ -1,3 +1,4 @@
+import Loading from "@/components/mobileview/global/GlobalLoader";
 import Header from "@/components/mobileview/global/Header";
 import { AuthProvider } from "@/context/authContext";
 import { CompanyProvider } from "@/context/companyContext";
@@ -52,7 +53,7 @@ export default function RootLayout() {
                   >
                     <PaperProvider>
                       <Header />
-
+                      <Loading />
                       <Stack
                         screenOptions={{
                           headerShown: false,
