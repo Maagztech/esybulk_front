@@ -44,12 +44,26 @@ export const AuthProvider = ({ children }) => {
           }
           setAccessToken(response.data.access_token)
           await AsyncStorage.setItem("refresh_token", response.data.refresh_token);
+          Toast.show({
+            type: 'success',
+            text1: 'Sign In',
+            text2: 'Sing in successfully'
+          });
         } else {
-          console.log("No user");
           router.push("/");
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Errour occured, try again !'
+          });
         }
       } catch (error) {
         router.push("/");
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Errour occured, cut the app come again!'
+        });
       }
     };
     fetchUser();
@@ -96,7 +110,7 @@ export const AuthProvider = ({ children }) => {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: 'Failed Try again!'
+        text2: 'Errour occured, cut the app come again !'
       });
     }
     setIsLoading(false);
