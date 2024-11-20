@@ -1,12 +1,14 @@
 import LabeledInput from "@/components/mobileview/global/labeledInput";
 import { useAuth } from "@/context/authContext";
+import { useLoading } from "@/context/loadingContext";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const DistributorSignUp = () => {
+  const { setIsLoading }: any = useLoading();
   const { activeAccount, userInfo }: any = useAuth();
   const categories = [
     "Grocery",
@@ -23,10 +25,8 @@ const DistributorSignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
     phoneNumber: userInfo?.phoneNumber || "",
-    landmark: userInfo?.landmark || "",
     village_city: userInfo?.village_city || "",
     pinCode: userInfo?.pinCode || "",
-    block: userInfo?.block || "",
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
@@ -60,10 +60,8 @@ const DistributorSignUp = () => {
       accountDetails.name &&
       accountDetails.phoneNumber &&
       accountDetails.categories.length > 0 &&
-      accountDetails.landmark &&
       accountDetails.village_city &&
       accountDetails.pinCode &&
-      accountDetails.block &&
       accountDetails.district &&
       accountDetails.state &&
       accountDetails.companyName
@@ -81,6 +79,29 @@ const DistributorSignUp = () => {
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
+
+  useEffect(() => {
+    const fetchPincodeDetails = async () => {
+      setIsLoading(true);
+      if (accountDetails.pinCode.toString().length === 6) {
+        const response = await fetch(
+          `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
+        );
+        const data = await response.json();
+        const postOffice = data[0]?.PostOffice[0];
+        if (postOffice) {
+          setAccountDetails({
+            ...accountDetails,
+            district: postOffice.District,
+            state: postOffice.State,
+          });
+        }
+      }
+      setIsLoading(false);
+    };
+    fetchPincodeDetails();
+  }, [accountDetails.pinCode]);
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -158,13 +179,6 @@ const DistributorSignUp = () => {
           </Text>
         </Text>
         <LabeledInput
-          label="Landmark"
-          value={accountDetails.landmark}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, landmark: text })
-          }
-        />
-        <LabeledInput
           label="Village / City"
           value={accountDetails.village_city}
           onChangeText={(text: string) =>
@@ -178,13 +192,6 @@ const DistributorSignUp = () => {
             setAccountDetails({ ...accountDetails, pinCode: text })
           }
           keyboardType="number-pad"
-        />
-        <LabeledInput
-          label="Block"
-          value={accountDetails.block}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, block: text })
-          }
         />
 
         <LabeledInput

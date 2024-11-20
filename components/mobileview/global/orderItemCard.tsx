@@ -101,8 +101,7 @@ export const ItemCard = ({ order }: any) => {
           <Text style={styles.productInfo}>
             Location:{" "}
             <Text style={styles.location}>
-              {order.landmark},{order.village_city},{order.block},
-              {order.district},{order.state}
+              {order.village_city},{order.district},{order.state}
             </Text>
           </Text>
           <Text style={styles.productInfo}>

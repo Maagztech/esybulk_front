@@ -1,18 +1,14 @@
 import LabeledInput from "@/components/mobileview/global/labeledInput";
 import { useAuth } from "@/context/authContext";
+import { useLoading } from "@/context/loadingContext";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const ShopKeeperSignUp = () => {
+  const { setIsLoading }: any = useLoading();
   const { activeAccount, userInfo }: any = useAuth();
   const categories = [
     "Grocery",
@@ -29,10 +25,8 @@ const ShopKeeperSignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
     phoneNumber: userInfo?.phoneNumber || "",
-    landmark: userInfo?.landmark || "",
     village_city: userInfo?.village_city || "",
     pinCode: userInfo?.pinCode || "",
-    block: userInfo?.block || "",
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
@@ -45,11 +39,9 @@ const ShopKeeperSignUp = () => {
       accountDetails.name &&
       accountDetails.companyName &&
       accountDetails.phoneNumber &&
-      accountDetails.landmark &&
       accountDetails.village_city &&
       accountDetails.categories.length > 0 &&
       accountDetails.pinCode &&
-      accountDetails.block &&
       accountDetails.district &&
       accountDetails.state
     );
@@ -57,9 +49,9 @@ const ShopKeeperSignUp = () => {
   const handleSignUp = async () => {
     if (!canSignUp()) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Please fill out all fields'
+        type: "error",
+        text1: "Error",
+        text2: "Please fill out all fields",
       });
       return;
     }
@@ -78,6 +70,28 @@ const ShopKeeperSignUp = () => {
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
+
+  useEffect(() => {
+    const fetchPincodeDetails = async () => {
+      setIsLoading(true);
+      if (accountDetails.pinCode.toString().length === 6) {
+        const response = await fetch(
+          `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
+        );
+        const data = await response.json();
+        const postOffice = data[0]?.PostOffice[0];
+        if (postOffice) {
+          setAccountDetails({
+            ...accountDetails,
+            district: postOffice.District,
+            state: postOffice.State,
+          });
+        }
+      }
+      setIsLoading(false);
+    };
+    fetchPincodeDetails();
+  }, [accountDetails.pinCode]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -142,18 +156,11 @@ const ShopKeeperSignUp = () => {
         )}
 
         <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-          Company Address{" "}
+          Shop Address{" "}
           <Text style={{ fontSize: 12, color: "#966440" }}>
             (Fill it correctly)
           </Text>
         </Text>
-        <LabeledInput
-          label="Landmark"
-          value={accountDetails.landmark}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, landmark: text })
-          }
-        />
         <LabeledInput
           label="Village / City"
           value={accountDetails.village_city}
@@ -170,14 +177,6 @@ const ShopKeeperSignUp = () => {
           keyboardType="number-pad"
         />
         <LabeledInput
-          label="Block"
-          value={accountDetails.block}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, block: text })
-          }
-        />
-
-        <LabeledInput
           label="District"
           value={accountDetails.district}
           onChangeText={(text: string) =>
@@ -191,7 +190,6 @@ const ShopKeeperSignUp = () => {
             setAccountDetails({ ...accountDetails, state: text })
           }
         />
-
 
         <View style={styles.PressableContainer}>
           <Pressable

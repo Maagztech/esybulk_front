@@ -120,9 +120,8 @@ export default function ProductDetails({ id }: { id: string }) {
           }}
         >
           <Text style={[styles.address, { marginBottom: 10 }]}>
-            Delivery Address: {userInfo?.landmark}, {userInfo?.village_city},{" "}
-            {userInfo?.block}, {userInfo?.district}, {userInfo?.state} -{" "}
-            {userInfo?.pinCode}
+            Delivery Address:{userInfo?.village_city}, {userInfo?.district},{" "}
+            {userInfo?.state} - {userInfo?.pinCode}
           </Text>
           <Pressable
             onPress={() => {
