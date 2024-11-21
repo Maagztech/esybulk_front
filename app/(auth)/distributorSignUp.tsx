@@ -24,16 +24,15 @@ const DistributorSignUp = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
-    phoneNumber: userInfo?.phoneNumber || "",
+    phoneNumber: userInfo?.phoneNumber ? String(userInfo.phoneNumber) : "",
     village_city: userInfo?.village_city || "",
-    pinCode: userInfo?.pinCode || "",
+    pinCode: userInfo?.pinCode ? String(userInfo.pinCode) : "",
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
     designation: userInfo?.designation || "",
     categories: userInfo?.categories || [],
   });
-
   const [hasVehicleAccess, setHasVehicleAccess] = useState<boolean | null>(
     null
   );

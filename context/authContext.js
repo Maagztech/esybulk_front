@@ -29,9 +29,10 @@ export const AuthProvider = ({ children }) => {
   }, [currentPathname, userInfo, router]);
 
   useEffect(() => {
-    setIsLoading(true);
+
     const fetchUser = async () => {
       try {
+        setIsLoading(true);
         const refresh_token = await getLocalUser();
         if (refresh_token) {
           const response = await axios.post("https://esybulkback-production.up.railway.app/api/refresh_token", { refresh_token });
@@ -49,15 +50,18 @@ export const AuthProvider = ({ children }) => {
           });
 
           AsyncStorage.setItem("refresh_token", response.data.refresh_token);
+          setIsLoading(false);
         } else {
           router.push("/");
+          setIsLoading(false);
         }
       } catch (error) {
         router.push("/");
+        setIsLoading(false);
       }
     };
     fetchUser();
-    setIsLoading(false);
+
   }, [])
 
   const getLocalUser = async () => {
@@ -136,14 +140,19 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
+      axios.get("https://esybulkback-production.up.railway.app/api/logout",
+        { headers: { Authorization: `${access_token}` } })
+
       await AsyncStorage.removeItem("refresh_token");
+
       setUserInfo(null);
       setRole(null);
-      router.push("/");
+      navigation.navigate("(auth)");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
+
 
 
 

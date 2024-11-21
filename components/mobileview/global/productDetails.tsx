@@ -94,7 +94,7 @@ export default function ProductDetails({ id }: { id: string }) {
     }
   };
 
-  if (!productDetails && !buyOptions)
+  if (!productDetails || !buyOptions)
     return <ActivityIndicator size="small" color="#0000ff" />;
   return (
     <View style={styles.container}>

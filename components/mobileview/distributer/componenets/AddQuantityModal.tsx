@@ -6,13 +6,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import LabeledInput from "../../global/labeledInput";
@@ -39,10 +39,10 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
     const options = response.data;
     if (options.quantity && options.price.length != 0) {
       setProductData({
-        quantity: options.quantity,
+        quantity: String(options.quantity),
         buyOptions: options.price.map((option: any) => ({
-          quantity: option.quantity,
-          price: option.price,
+          quantity: String(option.quantity),
+          price: String(option.price),
         })),
       });
     }

@@ -12,6 +12,7 @@ const ProductPage = () => {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { id } = route.params;
   const navigation = useNavigation();
+  
   return (
     <ScrollView>
       <ProductDetails id={id} />
