@@ -41,7 +41,7 @@ const CompanySignUp = () => {
   useEffect(() => {
     const fetchPincodeDetails = async () => {
       setIsLoading(true);
-      if (accountDetails.pinCode.toString().length === 6) {
+      if (accountDetails && accountDetails?.pinCode?.toString().length === 6) {
         const response = await fetch(
           `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
         );

@@ -26,7 +26,7 @@ const ShopKeeperSignUp = () => {
     name: userInfo?.name || "",
     phoneNumber: userInfo?.phoneNumber ? String(userInfo.phoneNumber) : "",
     village_city: userInfo?.village_city || "",
-    pinCode: userInfo?.pinCode ? String(userInfo.pinCode) : "",
+    pinCode: userInfo?.pinCode ? String(userInfo?.pinCode) : "",
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
@@ -74,7 +74,7 @@ const ShopKeeperSignUp = () => {
   useEffect(() => {
     const fetchPincodeDetails = async () => {
       setIsLoading(true);
-      if (accountDetails.pinCode.toString().length === 6) {
+      if (accountDetails && accountDetails?.pinCode?.toString().length === 6) {
         const response = await fetch(
           `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
         );
@@ -92,7 +92,7 @@ const ShopKeeperSignUp = () => {
     };
     fetchPincodeDetails();
   }, [accountDetails.pinCode]);
-
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.innerContainer}>
