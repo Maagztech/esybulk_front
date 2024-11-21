@@ -199,7 +199,11 @@ const ShopKeeperSignUp = () => {
             ]}
             onPress={handleSignUp}
           >
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
+            {userInfo.pinCode ? (
+              <Text style={styles.signUpButtonText}>Update</Text>
+            ) : (
+              <Text style={styles.signUpButtonText}>Sign Up</Text>
+            )}
           </Pressable>
         </View>
       </View>

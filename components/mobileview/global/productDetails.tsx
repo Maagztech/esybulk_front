@@ -119,10 +119,19 @@ export default function ProductDetails({ id }: { id: string }) {
             alignItems: "center",
           }}
         >
-          <Text style={[styles.address, { marginBottom: 10, maxWidth: "65%" }]}>
-            Delivery Address:{userInfo?.village_city}, {userInfo?.district},{" "}
-            {userInfo?.state} - {userInfo?.pinCode}
-          </Text>
+          <View>
+            <Text
+              style={[styles.address, { maxWidth: "65%" }]}
+            >
+              Your Address:
+            </Text>
+            <Text
+              style={[styles.address, { marginBottom: 10, maxWidth: "65%",color:"#966440" }]}
+            >
+              {userInfo?.village_city}, {userInfo?.district}, {userInfo?.state}{" "}
+              - {userInfo?.pinCode}
+            </Text>
+          </View>
           <Pressable
             onPress={() => {
               router.push("/profile");
@@ -225,7 +234,6 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 15,
     color: "black",
-    marginVertical: 5,
     fontWeight: "bold",
   },
   productDescription: {

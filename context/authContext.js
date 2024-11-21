@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
     if (!userInfo && currentPathname && currentPathname !== "index") {
       router.push("/");
     }
-    if (userInfo && currentPathname === "index") {
-      router.push("/home");
+    if (userInfo && currentPathname === null) {
+      navigation.navigate("(tabs)");
     }
   }, [currentPathname, userInfo, router]);
 

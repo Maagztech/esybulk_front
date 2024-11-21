@@ -24,7 +24,6 @@ const OrderFromShop = () => {
     );
 
     const orders = response.data;
-    console.log("buy order", orders);
     setPendingBuy(
       orders.filter(
         (order: any) => order.status === "ordered" || order.status === "shipped"

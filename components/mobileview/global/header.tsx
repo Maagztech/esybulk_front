@@ -33,14 +33,14 @@ const Header = () => {
   }, [navigation]);
 
   const handleSearchPress = () => {
-    if (currentPathname != "search") {
+    if (currentPathname != "/search") {
       router.push("/search" as never);
       setSearchVisible(true);
     } else {
       setSearchVisible(true);
     }
   };
-
+  
   const handleClosePress = () => {
     setSearchVisible(false);
   };
@@ -54,11 +54,12 @@ const Header = () => {
       {!searchVisible ? (
         <View style={styles.container}>
           <View style={styles.innerContainer}>
-            {canGoBack && (
-              <Pressable onPress={() => navigation.goBack()}>
-                <Ionicons name="arrow-back" size={24} color="black" />
-              </Pressable>
-            )}
+            {canGoBack &&
+              (currentPathname == "search/index" || currentPathname == "cart/index") && (
+                <Pressable onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </Pressable>
+              )}
             <Image
               source={require("../../../assets/images/namelogo-w.png")}
               style={styles.image}
