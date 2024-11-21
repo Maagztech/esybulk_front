@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Tooltip } from "react-native-paper";
+import ConfirmModal from "./BuyNowConfirmModal";
 
 const Header = () => {
   const navigation = useNavigation();
@@ -19,16 +20,10 @@ const Header = () => {
   }: any = useDistributor();
   const router = useRouter();
   const [searchVisible, setSearchVisible] = useState(false);
-
+  const [visible, setVisible] = useState(false);
   const currentPathname = useNavigationState((state) => {
     return state.routes[state.index] ? state.routes[state.index].name : null;
   });
-
-  useEffect(() => {
-    if (currentPathname && currentPathname !== "/home") {
-      setSearchVisible(false);
-    }
-  }, [currentPathname, router]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
@@ -38,8 +33,12 @@ const Header = () => {
   }, [navigation]);
 
   const handleSearchPress = () => {
-    setSearchVisible(!searchVisible);
-    router.push("/search" as never);
+    if (currentPathname != "search") {
+      router.push("/search" as never);
+      setSearchVisible(true);
+    } else {
+      setSearchVisible(true);
+    }
   };
 
   const handleClosePress = () => {
@@ -83,12 +82,22 @@ const Header = () => {
                 </>
               )}
               <Tooltip title="Logout">
-                <Pressable onPress={handleLogout}>
+                <Pressable onPress={() => setVisible(true)}>
                   <Ionicons name="log-out" size={28} color="#000" />
                 </Pressable>
               </Tooltip>
             </View>
           )}
+          <ConfirmModal
+            text1="Logout"
+            text2="Are you sure want to logout?"
+            visible={visible}
+            onCancel={() => setVisible(false)}
+            onConfirm={() => {
+              handleLogout();
+              setVisible(false);
+            }}
+          />
         </View>
       ) : (
         <View style={styles.container}>

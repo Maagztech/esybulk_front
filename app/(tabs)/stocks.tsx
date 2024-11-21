@@ -10,7 +10,6 @@ const StastsAndStocks = () => {
   const { userInfo }: any = useAuth();
   return (
     <>
-      {" "}
       {userInfo?.role === "company" && <CompanyStatistics />}
       {userInfo?.role === "distributor" && <Stocks />}
       {userInfo?.role === "shopkeeper" && <ShopStatistics />}

@@ -13,7 +13,6 @@ export const DistributorProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [selectForSell, setSelectForSell] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [flag, setFlag] = useState(false);
   const [query, setQuery] = useState("");
 
   const fetchProducts = async (page) => {
@@ -40,10 +39,7 @@ export const DistributorProvider = ({ children }) => {
 
   useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
 
-
-
-
-  useEffect(() => { setProducts([]); fetchProducts() }, [query])
+  useEffect(() => { setProducts([]); fetchProducts(1) }, [query])
 
   const [searchcurrentPage, setSearchCurrentPage] = useState(1);
   const [searchtotalPages, setSearchTotalPages] = useState(0);
@@ -58,7 +54,6 @@ export const DistributorProvider = ({ children }) => {
         setPreviousSearchText(searchText);
       }
       setLoading(true);
-      console.log(searchText);
       const response = await axios.get(
         `https://esybulk-back.onrender.com/api/search?search=${searchText}&page=${currentPage}`,
         {

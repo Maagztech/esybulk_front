@@ -51,19 +51,9 @@ export const AuthProvider = ({ children }) => {
           AsyncStorage.setItem("refresh_token", response.data.refresh_token);
         } else {
           router.push("/");
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Errour occured, try again !'
-          });
         }
       } catch (error) {
         router.push("/");
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Errour occured, cut the app come again!'
-        });
       }
     };
     fetchUser();

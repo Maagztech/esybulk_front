@@ -119,7 +119,7 @@ export default function ProductDetails({ id }: { id: string }) {
             alignItems: "center",
           }}
         >
-          <Text style={[styles.address, { marginBottom: 10 }]}>
+          <Text style={[styles.address, { marginBottom: 10, maxWidth: "65%" }]}>
             Delivery Address:{userInfo?.village_city}, {userInfo?.district},{" "}
             {userInfo?.state} - {userInfo?.pinCode}
           </Text>
