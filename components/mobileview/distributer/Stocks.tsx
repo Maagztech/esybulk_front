@@ -3,14 +3,14 @@ import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
 export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { access_token }: any = useAuth();
-  const { setDistributorCompanyStocks, distributorCompanyStocks }: any =
-    useCompany();
+  const { setDistributorCompanyStocks, distributorCompanyStocks }: any = useCompany();
 
   useEffect(() => {
     loadcompanyProducts();
@@ -25,6 +25,13 @@ export const CompanyProducts = () => {
     );
     setDistributorCompanyStocks(response.data);
   };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadcompanyProducts();
+    setRefreshing(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -34,7 +41,12 @@ export const CompanyProducts = () => {
             <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
         </View>
-        <ScrollView style={styles.scrollContainer}>
+        <ScrollView
+          style={styles.scrollContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        >
           {distributorCompanyStocks.map((order: any) => (
             <ItemCard product={order} key={order.id} />
           ))}

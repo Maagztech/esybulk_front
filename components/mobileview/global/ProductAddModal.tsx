@@ -161,7 +161,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         type: productData.type,
       };
       if (selectedProduct) {
-        console.log(selectedProduct);
         await axios.post(
           `https://esybulkback-production.up.railway.app/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
