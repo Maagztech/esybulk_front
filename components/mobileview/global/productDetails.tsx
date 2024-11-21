@@ -44,12 +44,12 @@ export default function ProductDetails({ id }: { id: string }) {
       let response;
       if (userInfo?.role === "distributor") {
         response = await axios.get(
-          `https://esybulk-back.onrender.com/api/distributor/buyoptions?product=${id}`,
+          `https://esybulkback-production.up.railway.app/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else {
         response = await axios.get(
-          `https://esybulk-back.onrender.com/api/distributor/buyoptionsshopkeeper?product=${id}`,
+          `https://esybulkback-production.up.railway.app/api/distributor/buyoptionsshopkeeper?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       }
@@ -74,7 +74,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const handleBuyNow = () => {
     try {
       const reponse = axios.post(
-        `https://esybulk-back.onrender.com/api/distributor/addorder`,
+        `https://esybulkback-production.up.railway.app/api/distributor/addorder`,
         selectedOption,
         { headers: { Authorization: `${access_token}` } }
       );

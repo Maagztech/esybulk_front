@@ -59,10 +59,15 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         title: selectedProduct.title,
         about: selectedProduct.about,
         images: selectedProduct.images,
-        quantity: selectedProduct.quantity,
-        mrp: selectedProduct.mrp,
+        quantity: String(selectedProduct.quantity), // Convert to string
+        mrp: String(selectedProduct.mrp), // Convert to string
         type: selectedProduct.type,
-        buyOptions: selectedProduct.buyOptions || [{ quantity: "", price: "" }],
+        buyOptions: selectedProduct.buyOptions
+          ? selectedProduct.buyOptions.map((option: any) => ({
+              quantity: String(option.quantity), // Convert to string
+              price: String(option.price), // Convert to string
+            }))
+          : [{ quantity: "", price: "" }],
       });
     } else {
       setProductData({
@@ -85,7 +90,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const pickImages = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: true,
@@ -159,12 +163,12 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       if (selectedProduct) {
         console.log(selectedProduct);
         await axios.post(
-          `https://esybulk-back.onrender.com/api/companyregisterproductedit/${selectedProduct.id}`,
+          `https://esybulkback-production.up.railway.app/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         await axios.post(
-          "https://esybulk-back.onrender.com/api/distributor_or_company_add_quantity",
+          "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
           {
             product: selectedProduct.id,
             price: productData.buyOptions.map((option) => ({
@@ -183,13 +187,13 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       } else {
         // Add new product
         const productResponse = await axios.post(
-          "https://esybulk-back.onrender.com/api/companyregisterproduct",
+          "https://esybulkback-production.up.railway.app/api/companyregisterproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         const productId = productResponse.data._id;
         await axios.post(
-          "https://esybulk-back.onrender.com/api/distributor_or_company_add_quantity",
+          "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
           {
             product: productId,
             price: productData.buyOptions.map((option) => ({
@@ -214,7 +218,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
       });
     }
     const response = await axios.get(
-      "https://esybulk-back.onrender.com/api/distributor_company_stocks",
+      "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

@@ -19,7 +19,7 @@ export const DistributorProvider = ({ children }) => {
     try {
       if (!access_token) return;
       setLoading(true);
-      const response = await axios.get(`https://esybulk-back.onrender.com/api/distributor/products?page=${page}&query=${query}`, {
+      const response = await axios.get(`https://esybulkback-production.up.railway.app/api/distributor/products?page=${page}&query=${query}`, {
         headers: { Authorization: `${access_token}` },
       });
       setProducts((prev) => [...prev, ...response.data.products]);
@@ -55,7 +55,7 @@ export const DistributorProvider = ({ children }) => {
       }
       setLoading(true);
       const response = await axios.get(
-        `https://esybulk-back.onrender.com/api/search?search=${searchText}&page=${currentPage}`,
+        `https://esybulkback-production.up.railway.app/api/search?search=${searchText}&page=${currentPage}`,
         {
           headers: { Authorization: `${access_token}` },
         }
@@ -76,7 +76,7 @@ export const DistributorProvider = ({ children }) => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get("https://esybulk-back.onrender.com/api/distributor/cart",
+      const response = await axios.get("https://esybulkback-production.up.railway.app/api/distributor/cart",
         { headers: { Authorization: `${access_token}` } })
       setCart(response.data.cartItems);
     } catch (error) {
@@ -90,7 +90,7 @@ export const DistributorProvider = ({ children }) => {
 
   const addToCart = async (product) => {
     try {
-      const response = await axios.post("https://esybulk-back.onrender.com/api/distributor/addremovecart",
+      const response = await axios.post("https://esybulkback-production.up.railway.app/api/distributor/addremovecart",
         { product },
         { headers: { Authorization: `${access_token}` } });
       fetchCart();

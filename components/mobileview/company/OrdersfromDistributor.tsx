@@ -17,7 +17,7 @@ const PendingOrders = () => {
 
   const loadOrderedProducts = async () => {
     const response = await axios.get(
-      "https://esybulk-back.onrender.com/api/distributor_or_company_orders",
+      "https://esybulkback-production.up.railway.app/api/distributor_or_company_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

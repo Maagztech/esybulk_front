@@ -2,13 +2,13 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import {
-  Alert,
-  Image,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    Image,
+    Linking,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import ConfirmModal from "./BuyNowConfirmModal";
@@ -27,11 +27,11 @@ export const ItemCard = ({ order }: any) => {
   const updateStatus = (newStatus: string) => {
     const url =
       newStatus === "shipped"
-        ? "https://esybulk-back.onrender.com/api/shipped"
+        ? "https://esybulkback-production.up.railway.app/api/shipped"
         : newStatus === "delivered"
-        ? "https://esybulk-back.onrender.com/api/delivered"
+        ? "https://esybulkback-production.up.railway.app/api/delivered"
         : newStatus === "cancelled"
-        ? "https://esybulk-back.onrender.com/api/ordercancel"
+        ? "https://esybulkback-production.up.railway.app/api/ordercancel"
         : null;
 
     if (!url) {

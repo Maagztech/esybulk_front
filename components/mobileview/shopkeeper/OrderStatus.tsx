@@ -17,7 +17,7 @@ const OrderFromShop = () => {
 
   const loadBuyOrdered = async () => {
     const response = await axios.get(
-      "https://esybulk-back.onrender.com/api/distributor_or_shopkeeper_orders",
+      "https://esybulkback-production.up.railway.app/api/distributor_or_shopkeeper_orders",
       {
         headers: { Authorization: `${access_token}` },
       }
