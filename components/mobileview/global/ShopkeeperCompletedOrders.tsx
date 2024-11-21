@@ -6,8 +6,8 @@ const ShopkeeperCompletedOrders = ({ orders }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.cardContainer}>
+        <View style={styles.scrollContent}>
+          <ScrollView contentContainerStyle={styles.cardContainer}>
             {orders.map((order: any, index: number) => (
               <View style={styles.row} key={order.id}>
                 <OrderNotChangeCard order={order} />
@@ -18,8 +18,8 @@ const ShopkeeperCompletedOrders = ({ orders }: any) => {
                 <Text>You are not having any orders.</Text>
               </View>
             )}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </View>
     </View>
   );
