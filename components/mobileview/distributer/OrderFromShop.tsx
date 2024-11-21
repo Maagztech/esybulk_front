@@ -29,7 +29,6 @@ const OrderFromShop = () => {
       }
     );
     const orders = response.data;
-    console.log("sell Order", orders);
     setPendingSell(
       orders.filter(
         (order: any) => order.status === "ordered" || order.status === "shipped"
@@ -52,7 +51,6 @@ const OrderFromShop = () => {
     );
 
     const orders = response.data;
-    console.log("buy order", orders);
     setPendingBuy(
       orders.filter(
         (order: any) => order.status === "ordered" || order.status === "shipped"
@@ -137,16 +135,28 @@ const OrderFromShop = () => {
 
         <View style={styles.content}>
           {activeTab === "Sell" && pending === "Pending" && (
-            <CompnayPendingOrders orders={pendingSell} />
+            <CompnayPendingOrders
+              loadSellOrdered={loadSellOrdered}
+              orders={pendingSell}
+            />
           )}
           {activeTab === "Sell" && pending === "Completed" && (
-            <CompletedOrders orders={completedSell} />
+            <CompletedOrders
+              orders={completedSell}
+              loadSellOrdered={loadSellOrdered}
+            />
           )}
           {activeTab === "Buy" && pending === "Pending" && (
-            <ShopkeeperPendingOrders orders={pendingBuy} />
+            <ShopkeeperPendingOrders
+              loadBuyOrdered={loadBuyOrdered}
+              orders={pendingBuy}
+            />
           )}
           {activeTab === "Buy" && pending === "Completed" && (
-            <ShopkeeperCompletedOrders orders={completedBuy} />
+            <ShopkeeperCompletedOrders
+              orders={completedBuy}
+              loadBuyOrdered={loadBuyOrdered}
+            />
           )}
         </View>
       </View>

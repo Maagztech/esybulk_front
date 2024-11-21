@@ -84,7 +84,6 @@ export default function ProductDetails({ id }: { id: string }) {
         text2: "Order placed successfully",
       });
       setConfirmModal(false);
-      router.push("/orders");
     } catch (error) {
       Toast.show({
         type: "error",
