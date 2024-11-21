@@ -3,32 +3,39 @@ import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
- const CompanyProducts = () => {
+const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { access_token }: any = useAuth();
-  const {
-    setDistributorCompanyStocks,
-    distributorCompanyStocks,
-  }: any = useCompany();
+  const { setDistributorCompanyStocks, distributorCompanyStocks }: any = useCompany();
 
-  
   useEffect(() => {
     loadcompanyProducts();
   }, []);
 
-
   const loadcompanyProducts = async () => {
-    const response = await axios.get(
-      "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
-      {
-        headers: { Authorization: `${access_token}` },
-      }
-    );
-    setDistributorCompanyStocks(response.data);
+    try {
+      const response = await axios.get(
+        "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
+        {
+          headers: { Authorization: `${access_token}` },
+        }
+      );
+      setDistributorCompanyStocks(response.data);
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
   };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadcompanyProducts();
+    setRefreshing(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -38,7 +45,12 @@ import AddProductModal from "../global/ProductAddModal";
             <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
         </View>
-        <ScrollView style={styles.scrollContainer}>
+        <ScrollView
+          style={styles.scrollContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        >
           {distributorCompanyStocks.map((order: any) => (
             <ItemCard product={order} key={order.id} />
           ))}
