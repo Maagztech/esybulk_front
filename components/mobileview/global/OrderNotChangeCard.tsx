@@ -11,10 +11,9 @@ export const OrderNotChangeCard = ({ order }: any) => {
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
-    const url = "https://esybulkback-production.up.railway.app/api/ordercancel";
     axios
       .post(
-        url,
+        "https://esybulkback-production.up.railway.app/api/ordercancel",
         {
           orderId: order._id,
         },

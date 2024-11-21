@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   complete_button: {
-    backgroundColor: "#2A7EFF",
+    backgroundColor: "green",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "red",
+    backgroundColor: "gray",
   },
   horizontalBar: {
     flex: 1,
