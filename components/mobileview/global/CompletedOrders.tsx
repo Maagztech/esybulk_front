@@ -7,7 +7,6 @@ export const CompletedOrders = ({ loadSellOrdered, orders }: any) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Assuming loadSellOrdered is a function that reloads orders
     await loadSellOrdered();
     setRefreshing(false);
   };
@@ -41,8 +40,7 @@ export const CompletedOrders = ({ loadSellOrdered, orders }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
-    padding: 20,
+    minHeight: 500,
     display: "flex",
     alignItems: "center",
   },

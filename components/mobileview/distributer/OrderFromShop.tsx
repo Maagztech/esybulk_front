@@ -29,6 +29,7 @@ const OrderFromShop = () => {
       }
     );
     const orders = response.data;
+    console.log(orders);
     setPendingSell(
       orders.filter(
         (order: any) => order.status === "ordered" || order.status === "shipped"
@@ -37,7 +38,7 @@ const OrderFromShop = () => {
     setCompletedSell(
       orders.filter(
         (order: any) =>
-          order.status === "completed" || order.status === "cancelled"
+          order.status === "delivered" || order.status === "cancelled"
       )
     );
   };
@@ -59,7 +60,7 @@ const OrderFromShop = () => {
     setCompletedBuy(
       orders.filter(
         (order: any) =>
-          order.status === "completed" || order.status === "cancelled"
+          order.status === "delivered" || order.status === "cancelled"
       )
     );
   };

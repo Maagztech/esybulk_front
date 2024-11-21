@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ItemCard } from "../../global/OrderItemCard";
 
 export const CompnayPendingOrders = ({ loadSellOrdered, orders }: any) => {
@@ -7,7 +13,6 @@ export const CompnayPendingOrders = ({ loadSellOrdered, orders }: any) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Call the loadSellOrdered function (assuming it fetches new orders)
     await loadSellOrdered();
     setRefreshing(false);
   };
@@ -18,25 +23,25 @@ export const CompnayPendingOrders = ({ loadSellOrdered, orders }: any) => {
         *Please update here about order status.
       </Text>
       <View style={styles.innerContainer}>
-        <View style={styles.scrollContent}>
-          <ScrollView
-            contentContainerStyle={styles.cardContainer}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {orders.map((order: any, index: number) => (
-              <View style={styles.row} key={order.id}>
-                <ItemCard order={order} />
-              </View>
-            ))}
-            {orders.length === 0 && (
-              <View>
-                <Text>You are not having any orders.</Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.cardContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {orders.map((order: any, index: number) => (
+            <View style={styles.row} key={order.id}>
+              <ItemCard order={order} />
+            </View>
+          ))}
+          {orders.length === 0 && (
+            <View>
+              <Text style={styles.headerTitle}>
+                You are not having any orders.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
     </View>
   );
@@ -44,8 +49,7 @@ export const CompnayPendingOrders = ({ loadSellOrdered, orders }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
-    padding: 20,
+    minHeight: 500,
     display: "flex",
     alignItems: "center",
   },
@@ -56,9 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 20,
-  },
-  scrollContent: {
-    paddingBottom: 20,
+    textAlign: "center",
   },
   cardContainer: {
     alignItems: "center",

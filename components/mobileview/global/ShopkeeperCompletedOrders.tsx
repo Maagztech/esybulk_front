@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { OrderNotChangeCard } from "./OrderNotChangeCard";
 
 const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
@@ -15,25 +21,25 @@ const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <View style={styles.scrollContent}>
-          <ScrollView
-            contentContainerStyle={styles.cardContainer}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {orders.map((order: any, index: number) => (
-              <View style={styles.row} key={order.id}>
-                <OrderNotChangeCard order={order} />
-              </View>
-            ))}
-            {orders.length === 0 && (
-              <View>
-                <Text>You are not having any orders.</Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.cardContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {orders.map((order: any, index: number) => (
+            <View style={styles.row} key={order.id}>
+              <OrderNotChangeCard order={order} />
+            </View>
+          ))}
+          {orders.length === 0 && (
+            <View>
+              <Text style={styles.headerTitle}>
+                You are not having any orders.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
     </View>
   );
@@ -41,8 +47,7 @@ const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
+    minHeight: 500,
     padding: 20,
     display: "flex",
     alignItems: "center",

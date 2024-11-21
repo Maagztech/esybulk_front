@@ -16,7 +16,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
       .post(
         url,
         {
-          orderId: order.id,
+          orderId: order._id,
         },
         { headers: { Authorization: `${access_token}` } }
       )
@@ -49,7 +49,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
     <View
       style={[
         styles.card,
-        status === "completed" && styles.completedCard,
+        status === "delivered" && styles.completedCard,
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
@@ -62,10 +62,10 @@ export const OrderNotChangeCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantity}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Cost: <Text style={styles.quantity}>{order.price}</Text>
+            Cost: <Text style={styles.quantity}>{order.price} Rs.</Text>
           </Text>
         </View>
-        {status !== "completed" && status !== "cancelled" && (
+        {status !== "delivered" && status !== "cancelled" && (
           <View style={styles.buttons}>
             {status === "ordered" && (
               <Pressable
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     maxWidth: 350,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
   },
   quantity: {
     color: "#FF5733",
+    fontWeight:"bold"
   },
   price: {
     fontWeight: "bold",
@@ -192,7 +193,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
   },
   incomplete_button: {
     backgroundColor: "gray",

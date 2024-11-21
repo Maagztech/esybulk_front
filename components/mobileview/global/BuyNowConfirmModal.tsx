@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 interface BuyNowConfirmModalProps {
   visible: boolean;
@@ -37,6 +38,7 @@ const ConfirmModal: React.FC<BuyNowConfirmModalProps> = ({
           </View>
         </View>
       </View>
+      <Toast />
     </Modal>
   );
 };

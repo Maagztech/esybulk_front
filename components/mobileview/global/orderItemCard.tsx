@@ -2,13 +2,13 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    Linking,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import ConfirmModal from "./BuyNowConfirmModal";
@@ -80,7 +80,7 @@ export const ItemCard = ({ order }: any) => {
     <View
       style={[
         styles.card,
-        status === "completed" && styles.completedCard,
+        status === "delivered" && styles.completedCard,
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
@@ -111,7 +111,7 @@ export const ItemCard = ({ order }: any) => {
             Contact: <Text style={styles.location}>{order.contact}</Text>
           </Text>
         </View>
-        {status !== "completed" && status !== "cancelled" && (
+        {status !== "delivered" && status !== "cancelled" && (
           <View style={styles.buttons}>
             {status === "ordered" && (
               <Pressable
@@ -172,7 +172,7 @@ export const ItemCard = ({ order }: any) => {
         />
       </View>
       {/* Delivery status buttons */}
-      {status !== "completed" && status !== "cancelled" && (
+      {status !== "delivered" && status !== "cancelled" ? (
         <View style={styles.deliveryProcessButtons}>
           <Pressable
             style={
@@ -203,6 +203,12 @@ export const ItemCard = ({ order }: any) => {
           >
             <Text style={styles.addButtonText}>Delivered</Text>
           </Pressable>
+        </View>
+      ) : (
+        <View style={styles.deliveryProcessButtons}>
+          <Text style={styles.addButtonText}>Ordered</Text>
+          <Text style={styles.addButtonText}>Shipped</Text>
+          <Text style={styles.addButtonText}>Delivered</Text>
         </View>
       )}
     </View>
@@ -335,9 +341,11 @@ const styles = StyleSheet.create({
   deliveryProcessButtons: {
     width: "100%",
     flexDirection: "row",
+    justifyContent: "space-between",
+    color: "black",
   },
   addButtonText: {
-    color: "#fff",
+    color: "black",
     fontWeight: "600",
   },
 });
