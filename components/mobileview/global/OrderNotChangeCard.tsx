@@ -23,10 +23,11 @@ export const OrderNotChangeCard = ({ order }: any) => {
         if (response.status === 200) {
           setStatus("cancelled");
           Toast.show({
-            type: "error",
+            type: "success",
             text1: "Success",
             text2: "Ordered cancelled successfully.",
           });
+          setVisible(false);
         } else {
           Toast.show({
             type: "error",

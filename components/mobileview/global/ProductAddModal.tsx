@@ -20,7 +20,6 @@ import { Checkbox } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import LabeledInput from "./labeledInput";
 import LabeledMultilineInput from "./LabeledMultilineInput";
-
 const AddProductModal = ({ isOpen, setIsOpen }: any) => {
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
@@ -32,6 +31,45 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     selectedProduct,
   }: any = useCompany();
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const uploadImages = async (productData: any) => {
+    const uploadedImageUrls: string[] = [];
+  
+    for (const image of productData.images) {
+      if (!image.startsWith("http")) {
+        try {
+          const formData = new FormData();
+          formData.append("file", {
+            uri: image, // Local file URI from ImagePicker or similar
+            name: `${productData.title}.jpg`, // Name of the file
+            type: "image/jpeg", // MIME type
+          } as any); // Cast to 'any' to satisfy TypeScript
+          formData.append("upload_preset", "esybulk");
+          formData.append("cloud_name", "dv5daoaut");
+  
+          const response = await axios.post(
+            "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+  
+          uploadedImageUrls.push(response.data.secure_url);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      } else {
+        uploadedImageUrls.push(image); // Add existing image URLs directly
+      }
+    }
+  
+    return uploadedImageUrls;
+  };
+  
+
   const types = [
     "Grocery",
     "Clothing and Apparel",
@@ -134,25 +172,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     });
     setIsOpen(false);
     try {
-      const uploadedImageUrls = [];
-      for (const image of productData.images) {
-        if (!image.startsWith("http")) {
-          // Only upload new images, skip existing ones
-          const formData = new FormData();
-          const response = await fetch(image);
-          const blob = await response.blob();
-          formData.append("file", blob, `${productData.title}.jpg`);
-          formData.append("upload_preset", "esybulk");
-          formData.append("cloud_name", "dv5daoaut");
-          const cloudinaryResponse = await axios.post(
-            "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
-            formData
-          );
-          uploadedImageUrls.push(cloudinaryResponse.data.secure_url);
-        } else {
-          uploadedImageUrls.push(image); // Add existing image URLs directly
-        }
-      }
+      console.log("check", selectedProduct);
+      const uploadedImageUrls = await uploadImages(productData);
+      console.log("check1", uploadedImageUrls);
       const productPayload = {
         title: productData.title,
         about: productData.about,
@@ -184,12 +206,13 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           text2: "Product updated successfully.",
         });
       } else {
-        // Add new product
+        console.log("check2", productPayload);
         const productResponse = await axios.post(
-          "https://esybulkback-production.up.railway.app/api/companyregisterproduct",
+          "https://esybulkback-production.up.railway.app/api/company_or_ditsributor_registerproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
+        console.log("check3", productResponse);
         const productId = productResponse.data._id;
         await axios.post(
           "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
@@ -203,6 +226,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           },
           { headers: { Authorization: `${access_token}` } }
         );
+        console.log("check4");
         Toast.show({
           type: "success",
           text1: "Success",
@@ -333,10 +357,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             }
             multiline={3}
           />
-          <Pressable
-            onPress={handleDropdownToggle}
-            style={[styles.dropdownBox]}
-          >
+          <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
             <Text>
               {productData.type.length > 0
                 ? productData.type.join(", ")
@@ -351,20 +372,25 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           </Pressable>
 
           {showDropdown && (
-            <ScrollView contentContainerStyle={styles.dropdown}>
-              {types.map((type) => (
-                <View key={type} style={styles.checkboxContainer}>
-                  <Checkbox
-                    status={
-                      productData.type.includes(type) ? "checked" : "unchecked"
-                    }
-                    onPress={() => handleTypeChange(type)}
-                  />
-                  <Text>{type}</Text>
-                </View>
-              ))}
-            </ScrollView>
+            <View style={styles.dropdownContainer}>
+              <ScrollView style={styles.dropdown}>
+                {types.map((type) => (
+                  <View key={type} style={styles.checkboxContainer}>
+                    <Checkbox
+                      status={
+                        productData.type.includes(type)
+                          ? "checked"
+                          : "unchecked"
+                      }
+                      onPress={() => handleTypeChange(type)}
+                    />
+                    <Text>{type}</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
           )}
+
           <LabeledInput
             label="MRP"
             value={productData.mrp}
@@ -550,21 +576,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  dropdown: {
+  dropdownContainer: {
+    maxHeight: 500, // Limits height of the dropdown container
+    width: "100%", // Ensures the dropdown takes full width
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 10,
     borderRadius: 4,
-    maxHeight: 200,
-    width: "100%",
-    marginBottom: 10,
-    height: 200,
+    backgroundColor: "#fff",
+    overflow: "scroll", // Ensures scroll view respects container bounds
+    marginBottom: 14,
   },
+
+  dropdown: {
+    width: "100%", // Matches parent width
+  },
+
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
   },
+
   icon: {
     marginLeft: 10,
   },
