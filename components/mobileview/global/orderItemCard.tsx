@@ -31,7 +31,7 @@ export const ItemCard = ({ order }: any) => {
         : newStatus === "delivered"
         ? "https://esybulkback-production.up.railway.app/api/delivered"
         : newStatus === "cancelled"
-        ? "https://esybulkback-production.up.railway.app/api/ordercancel"
+        ? "https://esybulkback-production.up.railway.app/api/cancelorder"
         : null;
 
     if (!url) {

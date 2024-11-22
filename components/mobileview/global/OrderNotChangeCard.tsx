@@ -11,9 +11,9 @@ export const OrderNotChangeCard = ({ order }: any) => {
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
   const cancelOrder = () => {
-    axios
+    const response = axios
       .post(
-        "https://esybulkback-production.up.railway.app/api/ordercancel",
+        "https://esybulkback-production.up.railway.app/api/cancelorder",
         {
           orderId: order._id,
         },
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
   quantity: {
     color: "#FF5733",
-    fontWeight:"bold"
+    fontWeight: "bold",
   },
   price: {
     fontWeight: "bold",

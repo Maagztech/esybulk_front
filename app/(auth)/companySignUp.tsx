@@ -40,6 +40,7 @@ const CompanySignUp = () => {
 
   useEffect(() => {
     const fetchPincodeDetails = async () => {
+      if (!accountDetails?.pinCode) return;
       setIsLoading(true);
       if (accountDetails && accountDetails?.pinCode?.toString().length === 6) {
         const response = await fetch(

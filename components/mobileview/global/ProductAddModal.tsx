@@ -351,7 +351,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           </Pressable>
 
           {showDropdown && (
-            <ScrollView style={styles.dropdown}>
+            <ScrollView contentContainerStyle={styles.dropdown}>
               {types.map((type) => (
                 <View key={type} style={styles.checkboxContainer}>
                   <Checkbox
@@ -558,6 +558,7 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     width: "100%",
     marginBottom: 10,
+    height: 200,
   },
   checkboxContainer: {
     flexDirection: "row",
