@@ -1,5 +1,5 @@
 import Loading from "@/components/mobileview/global/GlobalLoader";
-import Header from "@/components/mobileview/global/Header";
+import Header from "@/components/mobileview/global/Headers";
 import { AuthProvider } from "@/context/authContext";
 import { CompanyProvider } from "@/context/companyContext";
 import { DistributorProvider } from "@/context/distributorContext";
