@@ -152,21 +152,23 @@ const CompanySignUp = () => {
         </Pressable>
 
         {showDropdown && (
-          <ScrollView style={styles.dropdown}>
-            {categories.map((type) => (
-              <View key={type} style={styles.checkboxContainer}>
-                <Checkbox
-                  status={
-                    accountDetails.categories.includes(type)
-                      ? "checked"
-                      : "unchecked"
-                  }
-                  onPress={() => handleTypeChange(type)}
-                />
-                <Text>{type}</Text>
-              </View>
-            ))}
-          </ScrollView>
+          <View style={styles.dropdown}>
+            <ScrollView>
+              {categories.map((type) => (
+                <View key={type} style={styles.checkboxContainer}>
+                  <Checkbox
+                    status={
+                      accountDetails.categories.includes(type)
+                        ? "checked"
+                        : "unchecked"
+                    }
+                    onPress={() => handleTypeChange(type)}
+                  />
+                  <Text>{type}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
         )}
 
         <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 4,
-    maxHeight: 200,
+    maxHeight: 500,
     width: "100%",
     marginBottom: 10,
   },
