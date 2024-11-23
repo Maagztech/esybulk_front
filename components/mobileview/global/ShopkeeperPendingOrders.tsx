@@ -13,7 +13,6 @@ const ShopkeeperPendingOrders = ({ loadBuyOrdered, orders }: any) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Assuming loadSellOrdered is a function that reloads orders
     await loadBuyOrdered();
     setRefreshing(false);
   };

@@ -2,10 +2,10 @@ import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { CompnayPendingOrders } from "../global/CompanyPendingOrders";
 import CompletedOrders from "../global/CompletedOrders";
 import ShopkeeperCompletedOrders from "../global/ShopkeeperCompletedOrders";
 import ShopkeeperPendingOrders from "../global/ShopkeeperPendingOrders";
-import { CompnayPendingOrders } from "./../shopkeeper/components/CompanyPendingOrders";
 
 const OrderFromShop = () => {
   const [activeTab, setActiveTab] = useState("Sell");

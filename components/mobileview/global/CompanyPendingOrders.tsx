@@ -43,9 +43,7 @@ export const CompnayPendingOrders = ({ loadSellOrders, orders }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 20,
+    minHeight: 500,
     display: "flex",
     alignItems: "center",
   },

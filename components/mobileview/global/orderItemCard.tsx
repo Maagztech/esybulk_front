@@ -341,6 +341,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   addButtonText2: {
+    fontSize: 12,
     color: "white",
     fontWeight: "600",
   },
