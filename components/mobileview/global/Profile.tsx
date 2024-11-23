@@ -67,9 +67,9 @@ const BusinessProfile = () => {
       <Pressable
         style={styles.contactPressable}
         onPress={() => {
-          if (role === "shopkeeper") {
+          if (userInfo.role === "shopkeeper") {
             router.push("shopKeeperSignUp" as never);
-          } else if (role === "company") {
+          } else if (userInfo.role === "company") {
             router.push("companySignUp" as never);
           } else {
             router.push("distributorSignUp" as never);
