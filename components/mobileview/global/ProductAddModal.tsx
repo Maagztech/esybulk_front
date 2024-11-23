@@ -172,9 +172,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     });
     setIsOpen(false);
     try {
-      console.log("check", selectedProduct);
       const uploadedImageUrls = await uploadImages(productData);
-      console.log("check1", uploadedImageUrls);
       const productPayload = {
         title: productData.title,
         about: productData.about,
@@ -206,13 +204,11 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           text2: "Product updated successfully.",
         });
       } else {
-        console.log("check2", productPayload);
         const productResponse = await axios.post(
           "https://esybulkback-production.up.railway.app/api/company_or_ditsributor_registerproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
-        console.log("check3", productResponse);
         const productId = productResponse.data._id;
         await axios.post(
           "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
@@ -226,7 +222,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           },
           { headers: { Authorization: `${access_token}` } }
         );
-        console.log("check4");
         Toast.show({
           type: "success",
           text1: "Success",

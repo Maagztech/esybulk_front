@@ -40,7 +40,7 @@ const Header = () => {
       setSearchVisible(true);
     }
   };
-  
+
   const handleClosePress = () => {
     setSearchVisible(false);
   };
@@ -55,7 +55,8 @@ const Header = () => {
         <View style={styles.container}>
           <View style={styles.innerContainer}>
             {canGoBack &&
-              (currentPathname == "search/index" || currentPathname == "cart/index") && (
+              (currentPathname == "search/index" ||
+                currentPathname == "cart/index") && (
                 <Pressable onPress={() => navigation.goBack()}>
                   <Ionicons name="arrow-back" size={24} color="black" />
                 </Pressable>
@@ -107,7 +108,6 @@ const Header = () => {
             placeholder="Search products..."
             value={searchText}
             onChangeText={(e) => {
-              console.log(e);
               setSearchText(e);
             }}
             onSubmitEditing={() => handleSearchSubmit()}
