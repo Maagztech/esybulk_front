@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/authContext";
+import { useLoading } from "@/context/loadingContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -6,6 +7,7 @@ import { CompnayPendingOrders } from "../global/CompanyPendingOrders";
 import CompletedOrders from "../global/CompletedOrders";
 
 const PendingOrders = () => {
+  const { setIsLoading }: any = useLoading();
   const [activeTab, setActiveTab] = useState("Pending");
   const { access_token } = useAuth();
 
@@ -16,6 +18,7 @@ const PendingOrders = () => {
   }, []);
 
   const loadOrderedProducts = async () => {
+    setIsLoading(true);
     const response = await axios.get(
       "https://esybulkback-production.up.railway.app/api/distributor_or_company_orders",
       {
@@ -34,6 +37,7 @@ const PendingOrders = () => {
           order.status === "delivered" || order.status === "cancelled"
       )
     );
+    setIsLoading(false);
   };
 
   return (
@@ -77,7 +81,7 @@ const PendingOrders = () => {
             />
           ) : (
             <CompletedOrders
-              loadSellOrders={loadOrderedProducts}
+              loadSellOrdered={loadOrderedProducts}
               orders={completedOrders}
             />
           )}

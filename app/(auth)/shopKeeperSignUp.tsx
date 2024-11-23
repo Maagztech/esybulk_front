@@ -73,8 +73,8 @@ const ShopKeeperSignUp = () => {
 
   useEffect(() => {
     const fetchPincodeDetails = async () => {
-      setIsLoading(true);
       if (!accountDetails?.pinCode) return;
+      setIsLoading(true);
       if (
         accountDetails &&
         accountDetails?.pinCode &&

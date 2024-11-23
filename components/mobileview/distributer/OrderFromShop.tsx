@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/authContext";
+import { useLoading } from "@/context/loadingContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -11,7 +12,7 @@ const OrderFromShop = () => {
   const [activeTab, setActiveTab] = useState("Sell");
   const [pending, setPending] = useState("Pending");
   const { access_token } = useAuth();
-
+  const { setIsLoading }: any = useLoading();
   const [pendingBuy, setPendingBuy] = useState<any[]>([]);
   const [completedBuy, setCompletedBuy] = useState<any[]>([]);
   const [pendingSell, setPendingSell] = useState<any[]>([]);
@@ -22,6 +23,7 @@ const OrderFromShop = () => {
   }, []);
 
   const loadSellOrdered = async () => {
+    setIsLoading(true);
     const response = await axios.get(
       "https://esybulkback-production.up.railway.app/api/distributor_or_company_orders",
       {
@@ -40,6 +42,7 @@ const OrderFromShop = () => {
           order.status === "delivered" || order.status === "cancelled"
       )
     );
+    setIsLoading(false);
   };
 
   const loadBuyOrdered = async () => {
@@ -62,6 +65,7 @@ const OrderFromShop = () => {
           order.status === "delivered" || order.status === "cancelled"
       )
     );
+    
   };
 
   return (
@@ -136,7 +140,7 @@ const OrderFromShop = () => {
         <View style={styles.content}>
           {activeTab === "Sell" && pending === "Pending" && (
             <CompnayPendingOrders
-              loadSellOrdered={loadSellOrdered}
+            loadSellOrders={loadSellOrdered}
               orders={pendingSell}
             />
           )}

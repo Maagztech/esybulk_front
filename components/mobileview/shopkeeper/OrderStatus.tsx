@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/authContext";
+import { useLoading } from "@/context/loadingContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -8,7 +9,7 @@ import ShopkeeperPendingOrders from "../global/ShopkeeperPendingOrders";
 const OrderFromShop = () => {
   const [pending, setPending] = useState("Pending");
   const { access_token } = useAuth();
-
+  const { setIsLoading }: any = useLoading();
   const [pendingBuy, setPendingBuy] = useState<any[]>([]);
   const [completedBuy, setCompletedBuy] = useState<any[]>([]);
   useEffect(() => {
@@ -16,6 +17,7 @@ const OrderFromShop = () => {
   }, []);
 
   const loadBuyOrdered = async () => {
+    setIsLoading(true);
     const response = await axios.get(
       "https://esybulkback-production.up.railway.app/api/distributor_or_shopkeeper_orders",
       {
@@ -35,6 +37,7 @@ const OrderFromShop = () => {
           order.status === "delivered" || order.status === "cancelled"
       )
     );
+    setIsLoading(false);
   };
 
   return (
