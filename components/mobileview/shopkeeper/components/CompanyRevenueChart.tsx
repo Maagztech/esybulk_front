@@ -83,7 +83,7 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
           height={300}
           fromZero
           showBarTops={false}
-          yAxisLabel="$"
+          yAxisLabel="Rs."
           yAxisSuffix=""
           chartConfig={{
             backgroundColor: "#ffffff",

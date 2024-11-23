@@ -181,7 +181,7 @@ export const ItemCard = ({ order }: any) => {
                 : styles.incomplete_button
             }
           >
-            <Text style={styles.addButtonText}>Ordered</Text>
+            <Text style={styles.addButtonText2}>Ordered</Text>
           </Pressable>
           <Pressable
             style={
@@ -191,7 +191,7 @@ export const ItemCard = ({ order }: any) => {
             }
             onPress={() => updateStatus("shipped")}
           >
-            <Text style={styles.addButtonText}>Shipped</Text>
+            <Text style={styles.addButtonText2}>Shipped</Text>
           </Pressable>
           <Pressable
             style={
@@ -201,7 +201,7 @@ export const ItemCard = ({ order }: any) => {
             }
             onPress={() => updateStatus("delivered")}
           >
-            <Text style={styles.addButtonText}>Delivered</Text>
+            <Text style={styles.addButtonText2}>Delivered</Text>
           </Pressable>
         </View>
       ) : (
@@ -346,6 +346,10 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: "black",
+    fontWeight: "600",
+  },
+  addButtonText2: {
+    color: "white",
     fontWeight: "600",
   },
 });
