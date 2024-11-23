@@ -72,10 +72,16 @@ const OrderFromShop = () => {
 
         <View style={styles.content}>
           {pending === "Pending" && (
-            <ShopkeeperPendingOrders orders={pendingBuy} />
+            <ShopkeeperPendingOrders
+              loadBuyOrdered={loadBuyOrdered}
+              orders={pendingBuy}
+            />
           )}
           {pending === "Completed" && (
-            <ShopkeeperCompletedOrders orders={completedBuy} />
+            <ShopkeeperCompletedOrders
+              loadBuyOrdered={loadBuyOrdered}
+              orders={completedBuy}
+            />
           )}
         </View>
       </View>

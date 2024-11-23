@@ -10,39 +10,29 @@ export const OrderNotChangeCard = ({ order }: any) => {
   const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState(order.status);
   const [product, setProduct] = useState(order.product);
-  const cancelOrder = () => {
-    const response = axios
-      .post(
+  const cancelOrder = async () => {
+    try {
+      const response = await axios.post(
         "https://esybulkback-production.up.railway.app/api/cancelorder",
         {
           orderId: order._id,
         },
         { headers: { Authorization: `${access_token}` } }
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          setStatus("cancelled");
-          Toast.show({
-            type: "success",
-            text1: "Success",
-            text2: "Ordered cancelled successfully.",
-          });
-          setVisible(false);
-        } else {
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Unable to update status.",
-          });
-        }
-      })
-      .catch(() => {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Unable to update status.",
-        });
+      );
+      setStatus("cancelled");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Ordered cancelled successfully.",
       });
+      setVisible(false);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Unable to update status.",
+      });
+    }
   };
 
   return (
@@ -100,7 +90,9 @@ export const OrderNotChangeCard = ({ order }: any) => {
         />
         <View
           style={
-            status === "shipped" ? styles.circleFilled : styles.circleVacant
+            status === "shipped" || status === "delivered"
+              ? styles.circleFilled
+              : styles.circleVacant
           }
         />
         <View

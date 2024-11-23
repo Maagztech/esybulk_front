@@ -17,6 +17,8 @@ export const ItemCard = ({ order }: any) => {
   const { access_token } = useAuth();
   const [status, setStatus] = useState(order.status);
   const [visible, setVisible] = useState(false);
+
+  
   const handleContactManager = () => {
     const phoneUrl = `tel:${order.contact}`;
     Linking.openURL(phoneUrl).catch(() =>
@@ -42,38 +44,28 @@ export const ItemCard = ({ order }: any) => {
       });
       return;
     }
-
-    axios
-      .post(
+    try {
+      axios.post(
         url,
         {
           orderId: order.id,
         },
         { headers: { Authorization: `${access_token}` } }
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          setStatus(newStatus);
-          Toast.show({
-            type: "success",
-            text1: "Success",
-            text2: "Status updated successfully.",
-          });
-        } else {
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Unable to update status.",
-          });
-        }
-      })
-      .catch(() => {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Unable to update status.",
-        });
+      );
+      setStatus(newStatus);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Status updated successfully.",
       });
+      setVisible(false);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Unable to update status.",
+      });
+    }
   };
 
   return (

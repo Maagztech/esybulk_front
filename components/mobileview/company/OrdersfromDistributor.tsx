@@ -71,9 +71,15 @@ const PendingOrders = () => {
 
         <View style={styles.content}>
           {activeTab === "Pending" ? (
-            <CompnayPendingOrders orders={pendingOrders} />
+            <CompnayPendingOrders
+              loadSellOrders={loadOrderedProducts}
+              orders={pendingOrders}
+            />
           ) : (
-            <CompletedOrders orders={completedOrders} />
+            <CompletedOrders
+              loadSellOrders={loadOrderedProducts}
+              orders={completedOrders}
+            />
           )}
         </View>
       </View>

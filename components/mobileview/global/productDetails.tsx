@@ -84,6 +84,7 @@ export default function ProductDetails({ id }: { id: string }) {
         text2: "Order placed successfully",
       });
       setConfirmModal(false);
+      router.push("/orders");
     } catch (error) {
       Toast.show({
         type: "error",
@@ -119,13 +120,14 @@ export default function ProductDetails({ id }: { id: string }) {
           }}
         >
           <View>
-            <Text
-              style={[styles.address, { maxWidth: "65%" }]}
-            >
+            <Text style={[styles.address, { maxWidth: "65%" }]}>
               Your Address:
             </Text>
             <Text
-              style={[styles.address, { marginBottom: 10, maxWidth: "65%",color:"#966440" }]}
+              style={[
+                styles.address,
+                { marginBottom: 10, maxWidth: "65%", color: "#966440" },
+              ]}
             >
               {userInfo?.village_city}, {userInfo?.district}, {userInfo?.state}{" "}
               - {userInfo?.pinCode}
@@ -198,6 +200,7 @@ export default function ProductDetails({ id }: { id: string }) {
         text1="Confirm Purchase"
         text2="Are you sure you want to buy this item?"
       />
+      <Toast />
     </View>
   );
 }

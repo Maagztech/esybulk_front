@@ -1,16 +1,29 @@
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ItemCard } from "./OrderItemCard";
 
-export const CompnayPendingOrders = ({ orders }: any) => {
+export const CompnayPendingOrders = ({ loadSellOrders, orders }: any) => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadSellOrders();
+    setRefreshing(false);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerTitle}>
         *Please update here about order ststus.
       </Text>
       <View style={styles.innerContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.cardContainer}>
+        <View style={styles.scrollContent}>
+          <ScrollView
+            contentContainerStyle={styles.cardContainer}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             {orders.map((order: any, index: number) => (
               <View style={styles.row} key={order.id}>
                 <ItemCard order={order} />
@@ -21,8 +34,8 @@ export const CompnayPendingOrders = ({ orders }: any) => {
                 <Text>You are not having any orders.</Text>
               </View>
             )}
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </View>
     </View>
   );

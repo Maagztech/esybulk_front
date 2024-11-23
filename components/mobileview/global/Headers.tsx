@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Tooltip } from "react-native-paper";
+import Toast from "react-native-toast-message";
 import ConfirmModal from "./BuyNowConfirmModal";
 
 const Header = () => {
@@ -125,6 +126,7 @@ const Header = () => {
           </Tooltip>
         </View>
       )}
+      <Toast />
     </>
   );
 };

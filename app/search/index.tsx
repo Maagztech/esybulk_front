@@ -19,7 +19,12 @@ const search = () => {
       {searchproducts?.length === 0 && (
         <>
           <Text
-            style={{ fontSize: 14, textAlign: "center", marginVertical: 10 }}
+            style={{
+              fontSize: 14,
+              textAlign: "center",
+              marginVertical: 10,
+              fontWeight: "bold",
+            }}
           >
             No products found change your search.
           </Text>

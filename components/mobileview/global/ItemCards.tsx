@@ -15,6 +15,7 @@ import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 import AddProductModal from "./ProductAddModal";
 
 const ProductDetails = ({ product }: any) => {
+  console.log(product);
   const { userInfo }: any = useAuth();
   const { setSelectedProduct }: any = useCompany();
   const { selectForSell, setSelectForSell }: any = useDistributor();
