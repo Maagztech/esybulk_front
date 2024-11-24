@@ -2,6 +2,7 @@ import LabeledInput from "@/components/mobileview/global/labeledInput";
 import { useAuth } from "@/context/authContext";
 import { useLoading } from "@/context/loadingContext";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
@@ -40,26 +41,40 @@ const CompanySignUp = () => {
 
   useEffect(() => {
     const fetchPincodeDetails = async () => {
-      if (!accountDetails?.pinCode) return;
-      setIsLoading(true);
-      if (accountDetails && accountDetails?.pinCode?.toString().length === 6) {
-        const response = await fetch(
-          `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
-        );
-        const data = await response.json();
-        const postOffice = data[0]?.PostOffice[0];
-        if (postOffice) {
-          setAccountDetails({
-            ...accountDetails,
-            district: postOffice.District,
-            state: postOffice.State,
+      if (
+        accountDetails &&
+        accountDetails?.pinCode &&
+        accountDetails?.pinCode?.toString().length === 6
+      ) {
+        try {
+          setIsLoading(true);
+          const response = await axios.get(
+            `https://api.postalpincode.in/pincode/${accountDetails.pinCode}`
+          );
+          const postOffice = response.data[0]?.PostOffice[0];
+          if (postOffice) {
+            setAccountDetails({
+              ...accountDetails,
+              district: postOffice.District,
+              state: postOffice.State,
+            });
+          }
+
+          setIsLoading(false);
+        } catch (error) {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Invalid Pincode",
           });
+          setIsLoading(false);
         }
       }
-      setIsLoading(false);
     };
     fetchPincodeDetails();
   }, [accountDetails.pinCode]);
+
+  
   const canSignUp = () => {
     return (
       hasVehicleAccess === true &&
@@ -246,7 +261,11 @@ const CompanySignUp = () => {
             ]}
             onPress={handleSignUp}
           >
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
+            {userInfo?.pinCode ? (
+              <Text style={styles.signUpButtonText}>Update</Text>
+            ) : (
+              <Text style={styles.signUpButtonText}>Sign Up</Text>
+            )}
           </Pressable>
         </View>
       </View>

@@ -13,28 +13,36 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.asutosh123.esybulk"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.asutosh123.esybulk"
+      "package": "com.asutosh123.esybulk",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/logo-b.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
+      "router": {
+        "origin": false
+      },
       "eas": {
-        "projectId": "20b0cba7-a6d7-42d7-bc3e-d8cd9b5f8a35"
+        "projectId": "9a800a2f-a500-48ce-98ae-1402d3d25d9b"
       }
-    }
+    },
+    "owner": "asutosh123"
   }
 }

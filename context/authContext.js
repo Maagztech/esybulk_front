@@ -5,8 +5,10 @@ import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import Toast from "react-native-toast-message";
 import { useLoading } from "./loadingContext";
+import { useNotification } from "./notificationsContext";
 const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
+  const { expoPushToken } = useNotification();
   const { loading, setIsLoading } = useLoading();
   const [userInfo, setUserInfo] = useState(null);
   const navigation = useNavigation();
@@ -75,7 +77,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         "https://esybulkback-production.up.railway.app/api/login",
-        {},
+        { 
+          pushToken: expoPushToken
+         },
         {
           headers: { Authorization: `${token}` },
         }

@@ -4,6 +4,7 @@ import { AuthProvider } from "@/context/authContext";
 import { CompanyProvider } from "@/context/companyContext";
 import { DistributorProvider } from "@/context/distributorContext";
 import { LoadingProvider } from "@/context/loadingContext";
+import { NotificationProvider } from "@/context/notificationsContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   DarkTheme,
@@ -11,6 +12,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
@@ -19,7 +21,15 @@ import { Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-// import Toast from "react-native-toast-message";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -38,7 +48,7 @@ export default function RootLayout() {
     return null;
   }
   return (
-    <>
+    <NotificationProvider>
       <LoadingProvider>
         <AuthProvider>
           <CompanyProvider>
@@ -77,7 +87,7 @@ export default function RootLayout() {
         </AuthProvider>
       </LoadingProvider>
       <Toast />
-    </>
+    </NotificationProvider>
   );
 }
 

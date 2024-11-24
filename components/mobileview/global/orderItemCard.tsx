@@ -110,7 +110,7 @@ export const ItemCard = ({ order }: any) => {
                 style={styles.cancelbutton}
                 onPress={() => setVisible(true)}
               >
-                <Text style={styles.addButtonText}>Cancel Order</Text>
+                <Text style={styles.addButtonText2}>Cancel Order</Text>
               </Pressable>
             )}
             <ConfirmModal
@@ -127,7 +127,7 @@ export const ItemCard = ({ order }: any) => {
                 style={styles.cancelbutton}
                 onPress={handleContactManager}
               >
-                <Text style={styles.addButtonText}>Contact</Text>
+                <Text style={styles.addButtonText2}>Contact</Text>
               </Pressable>
             )}
           </View>
