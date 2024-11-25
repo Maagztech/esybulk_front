@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { BarChart } from "react-native-chart-kit";
 
 interface ProductPriceChartProps {
@@ -13,43 +20,40 @@ interface ProductPriceChartProps {
 
 const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
   const [view, setView] = useState<"daily" | "weekly" | "monthly">("daily");
+  const [selectedProductIndex, setSelectedProductIndex] = useState<number>(0);
 
-  const filteredData = data.map((item) => {
-    if (view === "daily") {
-      const lastThreeDays = item.ordersByDate.slice(-3);
-      return {
-        product: item.product,
-        prices: lastThreeDays.map((entry) => entry.price),
-        labels: lastThreeDays.map((entry) => entry.date),
-      };
-    } else if (view === "weekly") {
-      const lastThreeWeeks = item.ordersByWeek.slice(-3);
-      return {
-        product: item.product,
-        prices: lastThreeWeeks.map((entry) => entry.price),
-        labels: lastThreeWeeks.map((entry) => `Week ${entry.week}`),
-      };
-    } else if (view === "monthly") {
-      const lastThreeMonths = item.ordersByMonth.slice(-3);
-      return {
-        product: item.product,
-        prices: lastThreeMonths.map((entry) => entry.price),
-        labels: lastThreeMonths.map((entry) => `Month ${entry.month}`),
-      };
-    }
-    return { product: "", prices: [], labels: [] };
-  });
+  const selectedProduct = data[selectedProductIndex];
 
-  const chartLabels = filteredData[0]?.labels || [];
-  const datasets = filteredData.map((item) => ({
-    data: item.prices,
-    color: () => "rgba(255, 99, 132, 1)", // Change color for price chart
-  }));
+  const chartData = (() => {
+    if (!selectedProduct) return { labels: [], datasets: [{ data: [] }] };
 
-  const chartData = {
-    labels: chartLabels,
-    datasets,
-  };
+    const filteredData =
+      view === "daily"
+        ? selectedProduct.ordersByDate.slice(-3)
+        : view === "weekly"
+        ? selectedProduct.ordersByWeek.slice(-3)
+        : selectedProduct.ordersByMonth.slice(-3);
+
+    const labels =
+      view === "daily"
+        ? filteredData.map((entry) => {
+            if ("date" in entry) return entry.date;
+            return "";
+          })
+        : view === "weekly"
+        ? filteredData.map((entry) => {
+            if ("week" in entry) return `Week ${entry.week}`;
+            return "";
+          })
+        : filteredData.map((entry) => {
+            if ("month" in entry) return `Month ${entry.month}`;
+            return "";
+          });
+
+    const prices = filteredData.map((entry) => entry.price);
+
+    return { labels, datasets: [{ data: prices }] };
+  })();
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -76,14 +80,41 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
           </Pressable>
         ))}
       </View>
-      {chartLabels.length > 0 ? (
+
+      <FlatList
+        horizontal
+        data={data}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <Pressable
+            style={[
+              styles.productButton,
+              index === selectedProductIndex && styles.selectedProductButton,
+            ]}
+            onPress={() => setSelectedProductIndex(index)}
+          >
+            <Text
+              style={[
+                styles.productButtonText,
+                index === selectedProductIndex && styles.selectedProductText,
+              ]}
+            >
+              {item.product}
+            </Text>
+          </Pressable>
+        )}
+        contentContainerStyle={styles.productList}
+        showsHorizontalScrollIndicator={false}
+      />
+
+      {chartData.labels.length > 0 ? (
         <BarChart
           data={chartData}
           width={screenWidth - 40}
           height={300}
           fromZero
           showBarTops={false}
-          yAxisLabel="Rs."
+          yAxisLabel=""
           yAxisSuffix=""
           chartConfig={{
             backgroundColor: "#ffffff",
@@ -92,6 +123,10 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
             color: (opacity = 1) => `rgba(255, 99, 132, ${opacity})`,
             barPercentage: 0.5,
             labelColor: () => "#374151",
+            formatYLabel: (value) => {
+              const intValue = Number(value);
+              return intValue % 1 === 0 ? `${intValue}` : "";
+            },
           }}
           style={styles.chart}
         />
@@ -134,9 +169,32 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
   },
+  productList: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  productButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    backgroundColor: "#e5e7eb",
+    marginHorizontal: 5,
+  },
+  selectedProductButton: {
+    backgroundColor: "#FF6384",
+  },
+  productButtonText: {
+    color: "#374151",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  selectedProductText: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
   chart: {
     borderRadius: 10,
-    padding: 10,
+    padding: 30,
   },
   noDataText: {
     marginTop: 50,
