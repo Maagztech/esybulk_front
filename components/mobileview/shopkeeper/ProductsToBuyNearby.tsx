@@ -19,6 +19,7 @@ const ProductsToBuyNearby = () => {
     currentPage,
     totalPages,
     setQuery,
+    query,
   }: any = useDistributor();
 
   const types = [
@@ -48,10 +49,28 @@ const ProductsToBuyNearby = () => {
           contentContainerStyle={styles.flatListContainer}
           style={styles.scrollView}
         >
+          <Pressable
+            onPress={() => setQuery("")}
+            style={{
+              margin: 5,
+              backgroundColor: query === "" ? "black" : "gray",
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              borderRadius: 50,
+            }}
+          >
+            <Text style={styles.text}>All</Text>
+          </Pressable>
           {types.map((item) => (
             <Pressable
               onPress={() => setQuery(item)}
-              style={styles.pressable}
+              style={{
+                margin: 5,
+                backgroundColor: query === item ? "black" : "gray",
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+                borderRadius: 50,
+              }}
               key={item}
             >
               <Text style={styles.text}>{item}</Text>
@@ -94,7 +113,6 @@ const styles = StyleSheet.create({
   },
   pressable: {
     margin: 5,
-    backgroundColor: "gray",
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 50,

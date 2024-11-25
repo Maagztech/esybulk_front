@@ -24,6 +24,7 @@ export const ProductsToBuyNearbydistributor = () => {
     currentPage,
     totalPages,
     setQuery,
+    query,
   }: any = useDistributor();
   const handleLoadMore = () => {
     if (!loading && currentPage < totalPages) {
@@ -50,19 +51,31 @@ export const ProductsToBuyNearbydistributor = () => {
           contentContainerStyle={styles.flatListContainer}
           style={styles.scrollView} // Apply height constraint here
         >
+          <Pressable
+            onPress={() => setQuery("")}
+            style={{
+              margin: 5,
+              backgroundColor: query === "" ? "black" : "gray",
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              borderRadius: 50,
+            }}
+          >
+            <Text style={styles.text}>All</Text>
+          </Pressable>
           {types.map((item) => (
             <Pressable
               onPress={() => setQuery(item)}
               style={{
                 margin: 5,
-                backgroundColor: "gray",
+                backgroundColor: query === item ? "black" : "gray",
                 paddingHorizontal: 15,
                 paddingVertical: 5,
                 borderRadius: 50,
               }}
               key={item}
             >
-              <Text style={{ color: "white", fontSize: 15 }}>{item}</Text>
+              <Text style={styles.text}>{item}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -117,5 +130,9 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     height: 50,
+  },
+  text: {
+    color: "white",
+    fontSize: 15,
   },
 });

@@ -15,6 +15,7 @@ export const DistributorProvider = ({ children }) => {
   const [searchText, setSearchText] = useState("");
   const [query, setQuery] = useState("");
 
+  useEffect(() => { console.log(query); setProducts([]) }, [query])
   const fetchProducts = async (page) => {
     try {
       if (!access_token) return;
@@ -45,7 +46,7 @@ export const DistributorProvider = ({ children }) => {
   const [searchtotalPages, setSearchTotalPages] = useState(0);
   const [searchproducts, setSearchProducts] = useState([]);
   const [previousSearchText, setPreviousSearchText] = useState("");
-
+  useEffect(() => { setProducts([]); setSearchProducts([]); setCurrentPage(1); setSearchCurrentPage(1); }, [access_token])
   const handleSearchSubmit = async () => {
     try {
       if (previousSearchText != searchText) {
@@ -107,7 +108,29 @@ export const DistributorProvider = ({ children }) => {
 
 
   return (
-    <DistributorContext.Provider value={{ setQuery, searchproducts, setSearchProducts, searchcurrentPage, setSearchCurrentPage, searchtotalPages, setSearchTotalPages, setCurrentPage, setProducts, searchText, setSearchText, handleSearchSubmit, selectForSell, setSelectForSell, addToCart, products, cart, totalPages, currentPage, loading }}>
+    <DistributorContext.Provider value={{
+      fetchProducts,
+      setQuery,
+      searchproducts,
+      setSearchProducts,
+      searchcurrentPage,
+      setSearchCurrentPage,
+      searchtotalPages,
+      setSearchTotalPages,
+      setCurrentPage,
+      setProducts,
+      searchText,
+      setSearchText,
+      handleSearchSubmit,
+      selectForSell,
+      setSelectForSell,
+      addToCart,
+      products,
+      cart,
+      totalPages,
+      currentPage,
+      loading
+    }}>
       {children}
     </DistributorContext.Provider>
   );

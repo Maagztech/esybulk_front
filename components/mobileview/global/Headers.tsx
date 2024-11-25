@@ -56,8 +56,9 @@ const Header = () => {
         <View style={styles.container}>
           <View style={styles.innerContainer}>
             {canGoBack &&
-              (currentPathname == "search/index" ||
-                currentPathname == "cart/index") && (
+              (currentPathname === "search/index" ||
+                currentPathname === "cart/index" ||
+                currentPathname?.startsWith("product/")) && ( 
                 <Pressable onPress={() => navigation.goBack()}>
                   <Ionicons name="arrow-back" size={24} color="black" />
                 </Pressable>
