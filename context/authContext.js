@@ -152,8 +152,6 @@ export const AuthProvider = ({ children }) => {
       setUserInfo(null);
       setRole(null);
       navigation.navigate("(auth)");
-      await GoogleSignin.signOut();
-      await auth().signOut();
     } catch (error) {
       console.error("Logout failed:", error);
     }

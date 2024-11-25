@@ -33,6 +33,8 @@ export default function App() {
 
   async function onGoogleButtonPress() {
     try {
+      await GoogleSignin.signOut();
+      await auth().signOut();
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
