@@ -3,14 +3,22 @@ import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
 const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { access_token }: any = useAuth();
-  const { setDistributorCompanyStocks, distributorCompanyStocks }: any = useCompany();
+  const { setDistributorCompanyStocks, distributorCompanyStocks }: any =
+    useCompany();
 
   useEffect(() => {
     loadcompanyProducts();

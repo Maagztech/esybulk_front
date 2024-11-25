@@ -1,4 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth from "@react-native-firebase/auth";
+import {
+  GoogleSignin
+} from "@react-native-google-signin/google-signin";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -152,6 +156,8 @@ export const AuthProvider = ({ children }) => {
       setUserInfo(null);
       setRole(null);
       navigation.navigate("(auth)");
+      await GoogleSignin.signOut();
+      await auth().signOut();
     } catch (error) {
       console.error("Logout failed:", error);
     }

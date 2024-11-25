@@ -74,7 +74,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const handleBuyNow = () => {
     try {
       const reponse = axios.post(
-        `https://esybulkback-production.up.railway.app/api/distributor/addorder`,
+        `https://esybulkback-production.up.railway.app/api/shopkeeperorder`,
         selectedOption,
         { headers: { Authorization: `${access_token}` } }
       );
