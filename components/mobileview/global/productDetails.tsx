@@ -313,10 +313,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   buyOptions: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
     color: "#333",
     marginVertical: 10,
+    textAlign:"center"
   },
   distributorSection: {
     marginVertical: 10,

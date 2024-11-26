@@ -18,7 +18,6 @@ export const ItemCard = ({ order }: any) => {
   const [status, setStatus] = useState(order.status);
   const [visible, setVisible] = useState(false);
 
-  
   const handleContactManager = () => {
     const phoneUrl = `tel:${order.contact}`;
     Linking.openURL(phoneUrl).catch(() =>
@@ -85,7 +84,10 @@ export const ItemCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantityToDeliver}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Price to collect: <Text style={styles.price}>{order.cost} ₹</Text>
+            Price to collect:{" "}
+            <Text style={styles.price}>
+              ₹ {order.cost}*{order.quantityToDeliver}
+            </Text>
           </Text>
           <Text style={styles.productInfo}>
             Shop: <Text style={styles.shop}>{order.companyName}</Text>
