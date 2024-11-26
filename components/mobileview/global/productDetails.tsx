@@ -111,7 +111,7 @@ export default function ProductDetails({ id }: { id: string }) {
             companyUserId: option.companyUserId,
             companyName: option.companyName,
             quantity: priceOption.quantity,
-            price: priceOption.price,
+            price: priceOption.price * priceOption.quantity,
           }))
           .sort((a, b) => a.quantity - b.quantity)
       );
@@ -185,7 +185,9 @@ export default function ProductDetails({ id }: { id: string }) {
                   <Text style={styles.tableCell}>{option.quantity}</Text>
                   <Text style={styles.tableCell}>₹{option.price}</Text>
                   <Text style={styles.tableCell}>
-                    ₹{(productDetails?.mrp ?? 0) * option.quantity - option.price}
+                    ₹
+                    {(productDetails?.mrp ?? 0) * option.quantity -
+                      option.price}
                   </Text>
                   <View style={styles.tableCell}>
                     <RadioButton
