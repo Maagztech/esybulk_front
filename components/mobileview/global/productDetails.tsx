@@ -68,9 +68,11 @@ export default function ProductDetails({ id }: { id: string }) {
     } catch (error) {}
   };
   const [simmilarProducts, setSimmilarProducts]: any = useState([]);
-  useEffect(()=>{
-
-  },[simmilarProducts,productDetails])
+  useEffect(() => {
+    setSimmilarProducts(
+      simmilarProducts.filter((product: any) => product._id !== id)
+    );
+  }, [simmilarProducts, id]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const loadSimmilarProducts = async () => {
@@ -320,7 +322,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginVertical: 10,
-    textAlign:"center"
+    textAlign: "center",
   },
   distributorSection: {
     marginVertical: 10,
