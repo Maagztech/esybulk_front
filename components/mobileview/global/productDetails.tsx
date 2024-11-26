@@ -68,6 +68,9 @@ export default function ProductDetails({ id }: { id: string }) {
     } catch (error) {}
   };
   const [simmilarProducts, setSimmilarProducts]: any = useState([]);
+  useEffect(()=>{
+
+  },[simmilarProducts,productDetails])
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const loadSimmilarProducts = async () => {
@@ -211,7 +214,7 @@ export default function ProductDetails({ id }: { id: string }) {
                     {(productDetails?.mrp ?? 0) * option.quantity -
                       option.price}
                   </Text>
-                  <View style={[styles.tableCell, styles.radioCell]}>
+                  <View style={styles.tableCell}>
                     <RadioButton
                       selected={
                         selectedOption?.order_from === option.companyUserId &&
@@ -389,10 +392,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 14,
-  },
-  radioCell: {
     display: "flex",
     justifyContent: "center",
-    textAlign: "center",
   },
 });
