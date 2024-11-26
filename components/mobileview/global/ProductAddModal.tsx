@@ -408,7 +408,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative" }}>
+              <View style={{ position: "relative", width: "50%" }}>
                 <Text style={styles.inputLabel}>quantity</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -424,7 +424,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
                   }
                 />
               </View>
-              <View style={{ position: "relative" }}>
+              <View style={{ position: "relative", width: "50%" }}>
                 <Text style={styles.inputLabel}>Price / Piece</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -557,7 +557,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     flex: 1,
-    width: "50%",
   },
   inputLabel: {
     position: "absolute",
