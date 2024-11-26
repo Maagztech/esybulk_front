@@ -59,6 +59,11 @@ const ProductDetails = ({ product }: any) => {
           style={styles.showMoreButton}
           onPress={() => setShowMore(!showMore)}
         >
+          <Ionicons
+            name={showMore ? "chevron-up" : "chevron-down"}
+            size={24}
+            color="white"
+          />
           <Text style={styles.showMoreText}>
             {showMore ? "Show Less" : "Show More"}
           </Text>
@@ -154,7 +159,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginLeft: 5,
-  },table: {
+  },
+  table: {
     marginTop: 10,
     marginBottom: 10,
     borderWidth: 1,
@@ -187,14 +193,17 @@ const styles = StyleSheet.create({
   },
   showMoreButton: {
     alignSelf: "center",
-    marginTop: 10,
-    backgroundColor: "#4CAF50",
+    backgroundColor: "gray",
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 7,
   },
   showMoreText: {
-    color: "#FFF",
+    color: "white",
     fontWeight: "bold",
     fontSize: 16,
   },

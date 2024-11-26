@@ -73,10 +73,14 @@ const BusinessProfile = () => {
         <Text style={styles.contactPressableText}>Edit Profile</Text>
       </Pressable>
       <Pressable
-        style={{ ...styles.contactPressable, backgroundColor: "#966440" }}
+        style={{
+          ...styles.contactPressable,
+          backgroundColor: "#966440",
+          paddingBottom: 35,
+        }}
         onPress={handleContactManager}
       >
-        <Text style={styles.contactPressableText}>Costumer Care</Text>
+        <Text style={styles.contactPressableText}>Customer support</Text>
       </Pressable>
     </ScrollView>
   );
