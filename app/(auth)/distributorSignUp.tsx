@@ -31,7 +31,6 @@ const DistributorSignUp = () => {
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
-    designation: userInfo?.designation || "",
     categories: userInfo?.categories || [],
   });
   const [hasVehicleAccess, setHasVehicleAccess] = useState<boolean | null>(
@@ -134,13 +133,7 @@ const DistributorSignUp = () => {
             setAccountDetails({ ...accountDetails, companyName: text })
           }
         />
-        <LabeledInput
-          label="Designation"
-          value={accountDetails.designation}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, designation: text })
-          }
-        />
+       
         <LabeledInput
           label="Phone Number"
           value={accountDetails.phoneNumber}

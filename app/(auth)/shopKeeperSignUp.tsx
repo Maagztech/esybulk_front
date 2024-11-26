@@ -31,7 +31,6 @@ const ShopKeeperSignUp = () => {
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
-    designation: userInfo?.designation || "",
     categories: userInfo?.categories || [],
   });
 

@@ -32,7 +32,6 @@ const CompanySignUp = () => {
     district: userInfo?.district || "",
     state: userInfo?.state || "",
     companyName: userInfo?.companyName || "",
-    designation: userInfo?.designation || "",
     categories: userInfo?.categories || [],
   });
   const [hasVehicleAccess, setHasVehicleAccess] = useState<boolean | null>(
@@ -74,12 +73,10 @@ const CompanySignUp = () => {
     fetchPincodeDetails();
   }, [accountDetails.pinCode]);
 
-  
   const canSignUp = () => {
     return (
       hasVehicleAccess === true &&
       accountDetails.name &&
-      accountDetails.designation &&
       accountDetails.companyName &&
       accountDetails.categories.length > 0 &&
       accountDetails.village_city &&
@@ -133,13 +130,7 @@ const CompanySignUp = () => {
             setAccountDetails({ ...accountDetails, companyName: text })
           }
         />
-        <LabeledInput
-          label="Designation"
-          value={accountDetails.designation}
-          onChangeText={(text: string) =>
-            setAccountDetails({ ...accountDetails, designation: text })
-          }
-        />
+
         <LabeledInput
           label="Phone Number"
           value={accountDetails.phoneNumber}

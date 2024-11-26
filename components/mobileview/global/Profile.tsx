@@ -41,12 +41,6 @@ const BusinessProfile = () => {
         <Text style={styles.sectionTitle}>Manager Information</Text>
         <Text style={styles.infoLabel}>Name:</Text>
         <Text style={styles.infoText}>{userInfo?.name}</Text>
-        {role != "shopkeeper" && (
-          <>
-            <Text style={styles.infoLabel}>Designation:</Text>
-            <Text style={styles.infoText}>{userInfo?.designation}</Text>
-          </>
-        )}
         <Text style={styles.infoLabel}>Email:</Text>
         <Text style={styles.infoText}>{userInfo?.account}</Text>
 
