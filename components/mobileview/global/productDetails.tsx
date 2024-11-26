@@ -72,7 +72,7 @@ export default function ProductDetails({ id }: { id: string }) {
     setSimmilarProducts(
       simmilarProducts.filter((product: any) => product._id !== id)
     );
-  }, [simmilarProducts, id]);
+  }, [simmilarProducts]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const loadSimmilarProducts = async () => {
