@@ -36,8 +36,7 @@ const ProductDetails = ({ product }: any) => {
         Available Quantity: {product.quantity}
       </Text>
 
-      <Text style={styles.buyOptionsTitle}>Sell Options:</Text>
-      <Text style={styles.buyOptionsTitle}>Sell Options:</Text>
+      <Text style={styles.buyOptionsTitle}>Sell Options</Text>
       <View style={styles.table}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderCell}>Quantity</Text>
@@ -133,9 +132,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buyOptionsTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "600",
     marginBottom: 5,
+    textAlign:"center"
   },
   buyOption: {
     flexDirection: "row",
