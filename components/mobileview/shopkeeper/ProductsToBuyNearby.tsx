@@ -53,7 +53,7 @@ const ProductsToBuyNearby = () => {
             onPress={() => setQuery("")}
             style={{
               margin: 5,
-              backgroundColor: query.trim() === "" ? "black" : "gray",
+              backgroundColor: query === "" ? "black" : "gray",
               paddingHorizontal: 15,
               paddingVertical: 5,
               borderRadius: 50,
@@ -63,11 +63,11 @@ const ProductsToBuyNearby = () => {
           </Pressable>
           {types.map((item) => (
             <Pressable
-              onPress={() => setQuery(item.trim())}
+              onPress={() => setQuery(item)}
               style={{
                 margin: 5,
                 backgroundColor:
-                  query.trim().toLowerCase() === item.trim().toLowerCase()
+                  query === item
                     ? "black"
                     : "gray",
                 paddingHorizontal: 15,
