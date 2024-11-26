@@ -176,7 +176,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative" }}>
+              <View style={{ position: "relative", width: "43%" }}>
                 <Text style={styles.inputLabel}>quantity</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -192,7 +192,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
                   }
                 />
               </View>
-              <View style={{ position: "relative" }}>
+              <View style={{ position: "relative", width: "43%" }}>
                 <Text style={styles.inputLabel}>Price / Piece</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -276,12 +276,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 15,
   },
-  imageButton: {
-    backgroundColor: "#8E44AD",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
   buttonContainer: {
     flexDirection: "row",
     width: "100%",
@@ -332,7 +326,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     flex: 1,
-    width: "50%",
   },
   inputLabel: {
     position: "absolute",
@@ -348,6 +341,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4d4d",
     padding: 8,
     borderRadius: 4,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   deleteButtonText: {
     color: "#fff",

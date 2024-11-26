@@ -352,10 +352,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             multiline={3}
           />
           <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
+            <Text style={styles.inputLabel}>Product Category</Text>
             <Text>
-              {productData.type.length > 0
-                ? productData.type.join(", ")
-                : "Product Category"}
+              {productData.type.length > 0 ? productData.type.join(", ") : ""}
             </Text>
             <Ionicons
               name={showDropdown ? "arrow-up" : "arrow-down"}
@@ -408,7 +407,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative", width: "50%" }}>
+              <View style={{ position: "relative", width: "43%" }}>
                 <Text style={styles.inputLabel}>quantity</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -424,7 +423,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
                   }
                 />
               </View>
-              <View style={{ position: "relative", width: "50%" }}>
+              <View style={{ position: "relative", width: "43%" }}>
                 <Text style={styles.inputLabel}>Price / Piece</Text>
                 <TextInput
                   style={styles.buyOptionInput}
@@ -505,8 +504,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   imageButton: {
-    backgroundColor: "#8E44AD",
-    padding: 10,
+    backgroundColor: "#270e45",
+    paddingVertical: 16,
     borderRadius: 5,
     marginBottom: 15,
     width: "100%",
@@ -568,11 +567,6 @@ const styles = StyleSheet.create({
     color: "#966440",
     zIndex: 1,
   },
-  deleteButton: {
-    backgroundColor: "#ff4d4d",
-    padding: 8,
-    borderRadius: 4,
-  },
   deleteButtonText: {
     color: "#fff",
     fontWeight: "bold",
@@ -588,16 +582,26 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 12,
   },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+    padding: 8,
+    borderRadius: 4,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   dropdownBox: {
     borderWidth: 1,
     borderColor: "#966440",
-    padding: 13,
+    backgroundColor: "#f0f0f0",
+    padding: 15,
     borderRadius: 7,
     width: "100%",
     marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "relative",
   },
   dropdownContainer: {
     maxHeight: 500, // Limits height of the dropdown container
