@@ -211,7 +211,7 @@ export default function ProductDetails({ id }: { id: string }) {
                     {(productDetails?.mrp ?? 0) * option.quantity -
                       option.price}
                   </Text>
-                  <View style={styles.tableCell}>
+                  <View style={[styles.tableCell, styles.radioCell]}>
                     <RadioButton
                       selected={
                         selectedOption?.order_from === option.companyUserId &&
@@ -388,5 +388,10 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 14,
+  },
+  radioCell: {
+    display: "flex",
+    justifyContent: "center",
+    textAlign: "center",
   },
 });
