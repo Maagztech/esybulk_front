@@ -34,7 +34,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
 
   const uploadImages = async (productData: any) => {
     const uploadedImageUrls: string[] = [];
-  
+
     for (const image of productData.images) {
       if (!image.startsWith("http")) {
         try {
@@ -46,7 +46,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           } as any); // Cast to 'any' to satisfy TypeScript
           formData.append("upload_preset", "esybulk");
           formData.append("cloud_name", "dv5daoaut");
-  
+
           const response = await axios.post(
             "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
             formData,
@@ -56,7 +56,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
               },
             }
           );
-  
+
           uploadedImageUrls.push(response.data.secure_url);
         } catch (error) {
           console.error("Error uploading image:", error);
@@ -65,10 +65,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         uploadedImageUrls.push(image); // Add existing image URLs directly
       }
     }
-  
+
     return uploadedImageUrls;
   };
-  
 
   const types = [
     "Grocery",
@@ -317,8 +316,8 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           <Pressable style={styles.imageButton} onPress={pickImages}>
             <Text style={styles.buttonText}>
               {productData.images.length > 0
-                ? `${productData.images.length} Images Selected`
-                : "Pick Images"}
+                ? `${productData.images.length} Photos Selected`
+                : "Select Photos"}
             </Text>
           </Pressable>
           <FlatList
@@ -399,29 +398,48 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
             value={productData.quantity}
             keyboardType="numeric"
             onChangeText={(value: any) =>
-              setProductData((prevData) => ({ ...prevData, quantity: value }))
+              setProductData((prevData) => ({
+                ...prevData,
+                quantity: value.replace(/[^0-9]/g, ""),
+              }))
             }
           />
 
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
-              <TextInput
-                style={styles.buyOptionInput}
-                placeholder="Quantity"
-                value={option.quantity}
-                keyboardType="numeric"
-                onChangeText={(value) =>
-                  updateBuyOption(index, "quantity", value)
-                }
-              />
-              <TextInput
-                style={styles.buyOptionInput}
-                placeholder="Price"
-                value={option.price}
-                keyboardType="decimal-pad"
-                onChangeText={(value) => updateBuyOption(index, "price", value)}
-              />
+              <View style={{ position: "relative" }}>
+                <Text style={styles.inputLabel}>quantity</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Quantity"
+                  value={option.quantity}
+                  keyboardType="numeric"
+                  onChangeText={(value) =>
+                    updateBuyOption(
+                      index,
+                      "quantity",
+                      value.replace(/[^0-9]/g, "")
+                    )
+                  }
+                />
+              </View>
+              <View style={{ position: "relative" }}>
+                <Text style={styles.inputLabel}>Price / Piece</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Price"
+                  value={option.price}
+                  keyboardType="decimal-pad"
+                  onChangeText={(value) =>
+                    updateBuyOption(
+                      index,
+                      "price",
+                      value.replace(/[^0-9]/g, "")
+                    )
+                  }
+                />
+              </View>
               <Pressable
                 onPress={() => handleDeleteOption(index)}
                 style={styles.deleteButton}
@@ -491,6 +509,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 15,
+    width: "100%",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -539,6 +558,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     flex: 1,
     width: "50%",
+  },
+  inputLabel: {
+    position: "absolute",
+    top: -10,
+    left: 15,
+    backgroundColor: "#fff",
+    paddingHorizontal: 5,
+    fontSize: 12,
+    color: "#966440",
+    zIndex: 1,
   },
   deleteButton: {
     backgroundColor: "#ff4d4d",

@@ -63,7 +63,9 @@ const CompanyProducts = () => {
             <ItemCard product={order} key={order.id} />
           ))}
           {distributorCompanyStocks.length === 0 && (
-            <Text>You do not have any products yet.</Text>
+            <Text style={{ textAlign: "center", marginVertical: 20 }}>
+              You do not have any products yet.
+            </Text>
           )}
         </ScrollView>
       </View>

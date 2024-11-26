@@ -167,28 +167,47 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
             value={productData.quantity}
             keyboardType="numeric"
             onChangeText={(value: any) =>
-              setProductData((prevData) => ({ ...prevData, quantity: value }))
+              setProductData((prevData) => ({
+                ...prevData,
+                quantity: value.replace(/[^0-9]/g, ""),
+              }))
             }
           />
           <Text style={styles.subTitle}>Sell Options</Text>
           {productData.buyOptions.map((option, index) => (
             <View key={index} style={styles.buyOptionContainer}>
-              <TextInput
-                style={styles.buyOptionInput}
-                placeholder="Quantity"
-                value={option.quantity}
-                keyboardType="numeric"
-                onChangeText={(value) =>
-                  updateBuyOption(index, "quantity", value)
-                }
-              />
-              <TextInput
-                style={styles.buyOptionInput}
-                placeholder="Price"
-                value={option.price}
-                keyboardType="decimal-pad"
-                onChangeText={(value) => updateBuyOption(index, "price", value)}
-              />
+              <View style={{ position: "relative" }}>
+                <Text style={styles.inputLabel}>quantity</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Quantity"
+                  value={option.quantity}
+                  keyboardType="numeric"
+                  onChangeText={(value) =>
+                    updateBuyOption(
+                      index,
+                      "quantity",
+                      value.replace(/[^0-9]/g, "")
+                    )
+                  }
+                />
+              </View>
+              <View style={{ position: "relative" }}>
+                <Text style={styles.inputLabel}>Price / Piece</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Price"
+                  value={option.price}
+                  keyboardType="decimal-pad"
+                  onChangeText={(value) =>
+                    updateBuyOption(
+                      index,
+                      "price",
+                      value.replace(/[^0-9]/g, "")
+                    )
+                  }
+                />
+              </View>
               <Pressable
                 onPress={() => handleDeleteOption(index)}
                 style={styles.deleteButton}
@@ -314,6 +333,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     flex: 1,
     width: "50%",
+  },
+  inputLabel: {
+    position: "absolute",
+    top: -10,
+    left: 15,
+    backgroundColor: "#fff",
+    paddingHorizontal: 5,
+    fontSize: 12,
+    color: "#966440",
+    zIndex: 1,
   },
   deleteButton: {
     backgroundColor: "#ff4d4d",
