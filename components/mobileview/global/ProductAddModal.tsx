@@ -20,7 +20,18 @@ import { Checkbox } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import LabeledInput from "./labeledInput";
 import LabeledMultilineInput from "./LabeledMultilineInput";
-const AddProductModal = ({ isOpen, setIsOpen }: any) => {
+
+type AddProductModalProps = {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  setLoading?: (loading: boolean) => void; // Optional setLoading prop
+};
+
+const AddProductModal = ({
+  isOpen,
+  setIsOpen,
+  setLoading,
+}: AddProductModalProps) => {
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
   const {
@@ -155,7 +166,7 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
 
   const handleAddProduct = async () => {
     // Call canSignUp function to properly check if all fields are filled
-    setIsLoading(true);
+
     if (!canSignUp()) {
       Toast.show({
         type: "error",
@@ -171,6 +182,16 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     });
     setIsOpen(false);
     try {
+      if (selectedProduct) {
+        Toast.show({
+          type: "info",
+          text1: "Adding",
+          text2: "Adding the product details.",
+        });
+      }
+      if (setLoading) {
+        setLoading(true);
+      }
       const uploadedImageUrls = await uploadImages(productData);
       const productPayload = {
         title: productData.title,
@@ -179,7 +200,15 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
         mrp: productData.mrp,
         type: productData.type,
       };
+      if (setLoading) {
+        setLoading(false);
+      }
       if (selectedProduct) {
+        Toast.show({
+          type: "info",
+          text1: "Editing",
+          text2: "Updating the product details.",
+        });
         await axios.post(
           `https://esybulkback-production.up.railway.app/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
@@ -203,6 +232,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           text2: "Product updated successfully.",
         });
       } else {
+        if (setLoading) {
+          setLoading(true);
+        }
         const productResponse = await axios.post(
           "https://esybulkback-production.up.railway.app/api/company_or_ditsributor_registerproduct",
           productPayload,
@@ -226,6 +258,9 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
           text1: "Success",
           text2: "Product added successfully.",
         });
+        if (setLoading) {
+          setLoading(false);
+        }
       }
     } catch (error) {
       Toast.show({
@@ -242,7 +277,6 @@ const AddProductModal = ({ isOpen, setIsOpen }: any) => {
     );
     setDistributorCompanyStocks(response.data);
     closeModal();
-    setIsLoading(false);
   };
 
   const addBuyOption = () => {

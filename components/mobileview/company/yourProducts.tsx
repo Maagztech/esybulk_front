@@ -4,6 +4,7 @@ import { useCompany } from "@/context/companyContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -37,7 +38,7 @@ const CompanyProducts = () => {
       console.error("Error loading products:", error);
     }
   };
-
+  const [loading, setLoading] = useState(false);
   const handleRefresh = async () => {
     setRefreshing(true);
     await loadcompanyProducts();
@@ -53,6 +54,11 @@ const CompanyProducts = () => {
             <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
         </View>
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#0000ff" />
+          </View>
+        )}
         <ScrollView
           style={styles.scrollContainer}
           refreshControl={
@@ -69,7 +75,11 @@ const CompanyProducts = () => {
           )}
         </ScrollView>
       </View>
-      <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <AddProductModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        setLoading={setLoading}
+      />
     </View>
   );
 };
@@ -108,6 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 20,
   },
+  loadingContainer: { paddingVertical: 10, alignItems: "center" },
 });
 
 export default CompanyProducts;

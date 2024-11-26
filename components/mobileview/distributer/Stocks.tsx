@@ -3,14 +3,23 @@ import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
 export const CompanyProducts = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { access_token }: any = useAuth();
-  const { setDistributorCompanyStocks, distributorCompanyStocks }: any = useCompany();
+  const { setDistributorCompanyStocks, distributorCompanyStocks }: any =
+    useCompany();
 
   useEffect(() => {
     loadcompanyProducts();
@@ -31,7 +40,7 @@ export const CompanyProducts = () => {
     await loadcompanyProducts();
     setRefreshing(false);
   };
-
+  const [loading, setLoading] = useState(false);
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -41,6 +50,11 @@ export const CompanyProducts = () => {
             <Text style={styles.addButtonText}>Add Product</Text>
           </Pressable>
         </View>
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#0000ff" />
+          </View>
+        )}
         <ScrollView
           style={styles.scrollContainer}
           refreshControl={
@@ -55,7 +69,11 @@ export const CompanyProducts = () => {
           )}
         </ScrollView>
       </View>
-      <AddProductModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <AddProductModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        setLoading={setLoading}
+      />
     </View>
   );
 };
@@ -94,6 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 20,
   },
+  loadingContainer: { paddingVertical: 10, alignItems: "center" },
 });
 
 export default CompanyProducts;
