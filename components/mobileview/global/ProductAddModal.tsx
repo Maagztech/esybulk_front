@@ -391,7 +391,7 @@ const AddProductModal = ({
               {productData.type.length > 0 ? productData.type.join(", ") : ""}
             </Text>
             <Ionicons
-              name={showDropdown ? "arrow-up" : "arrow-down"}
+              name={showDropdown ? "chevron-up" : "chevron-down"}
               size={24}
               color="black"
               style={styles.icon}

@@ -143,7 +143,7 @@ const ShopKeeperSignUp = () => {
               : "Shop Type"}
           </Text>
           <Ionicons
-            name={showDropdown ? "arrow-up" : "arrow-down"}
+            name={showDropdown ? "chevron-up" : "chevron-down"}
             size={24}
             color="black"
             style={styles.icon}

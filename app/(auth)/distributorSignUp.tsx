@@ -114,7 +114,6 @@ const DistributorSignUp = () => {
     setShowDropdown(!showDropdown);
   };
 
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.innerContainer}>
@@ -133,7 +132,7 @@ const DistributorSignUp = () => {
             setAccountDetails({ ...accountDetails, companyName: text })
           }
         />
-       
+
         <LabeledInput
           label="Phone Number"
           value={accountDetails.phoneNumber}
@@ -153,7 +152,7 @@ const DistributorSignUp = () => {
               : "Industry Type"}
           </Text>
           <Ionicons
-            name={showDropdown ? "arrow-up" : "arrow-down"}
+            name={showDropdown ? "chevron-up" : "chevron-down"}
             size={24}
             color="black"
             style={styles.icon}
