@@ -14,6 +14,7 @@ import {
 import Toast from "react-native-toast-message";
 import RadioButton from "../shopkeeper/components/RadioButton";
 import BuyNowConfirmModal from "./BuyNowConfirmModal";
+import BuySellButton from "./BuySellButton";
 
 export default function ProductDetails({ id }: { id: string }) {
   const { userInfo, access_token }: any = useAuth();
@@ -66,7 +67,28 @@ export default function ProductDetails({ id }: { id: string }) {
       setBuyOptions(response.data.buyOptions);
     } catch (error) {}
   };
-
+  const [simmilarProducts, setSimmilarProducts]: any = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const loadSimmilarProducts = async () => {
+      if (productDetails) {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `https://esybulkback-production.up.railway.app/api/search?search=${productDetails?.title}&page=1`,
+            {
+              headers: { Authorization: `${access_token}` },
+            }
+          );
+          setSimmilarProducts(response.data.products);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+        }
+      }
+    };
+    loadSimmilarProducts();
+  }, [productDetails]);
   type SelectedOption = {
     quantity: number;
     price: number;
@@ -234,6 +256,20 @@ export default function ProductDetails({ id }: { id: string }) {
         text2="Are you sure you want to buy this item?"
       />
       <Toast />
+      <FlatList
+        data={simmilarProducts}
+        keyExtractor={(item: { _id: string }) => item._id}
+        renderItem={({ item }) => <BuySellButton item={item} />}
+        ListFooterComponent={
+          <>
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#0000ff" />
+              </View>
+            ) : null}
+          </>
+        }
+      />
     </View>
   );
 }
@@ -241,8 +277,8 @@ export default function ProductDetails({ id }: { id: string }) {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 20,
-    backgroundColor: "#f3f3f3",
   },
+  loadingContainer: { paddingVertical: 10, alignItems: "center" },
   flatListContainer: {
     paddingVertical: 10,
   },
