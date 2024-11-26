@@ -52,7 +52,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantity}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Cost: <Text style={styles.quantity}>{order.price} Rs.</Text>
+            Cost: <Text style={styles.quantity}>{order.price} ₹</Text>
           </Text>
         </View>
         {status !== "delivered" && status !== "cancelled" && (

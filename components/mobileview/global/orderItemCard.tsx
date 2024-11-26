@@ -85,7 +85,7 @@ export const ItemCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantityToDeliver}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Price to collect: <Text style={styles.price}>{order.cost} Rs.</Text>
+            Price to collect: <Text style={styles.price}>{order.cost} ₹</Text>
           </Text>
           <Text style={styles.productInfo}>
             Shop: <Text style={styles.shop}>{order.companyName}</Text>

@@ -33,8 +33,17 @@ export default function ProductDetails({ id }: { id: string }) {
     price: { quantity: number; price: number }[];
   };
 
-  const [buyOptions, setBuyOptions] = useState<BuyOptionType[]>([]);
+  type combinedBuyOptionsType = {
+    companyName: string;
+    companyUserId: string;
+    quantity: number;
+    price: number;
+  }[];
 
+  const [buyOptions, setBuyOptions] = useState<BuyOptionType[]>([]);
+  const [combinedBuyOptions, setCombinedBuyOptions] = useState<
+    combinedBuyOptionsType[]
+  >([]);
   useEffect(() => {
     if (access_token) fetchProductDetails();
   }, [id, access_token]);
@@ -94,6 +103,22 @@ export default function ProductDetails({ id }: { id: string }) {
     }
   };
 
+  useEffect(() => {
+    if (buyOptions) {
+      const aggregatedOptions = buyOptions.map((option) =>
+        option.price
+          .map((priceOption) => ({
+            companyUserId: option.companyUserId,
+            companyName: option.companyName,
+            quantity: priceOption.quantity,
+            price: priceOption.price,
+          }))
+          .sort((a, b) => a.quantity - b.quantity)
+      );
+      setCombinedBuyOptions(aggregatedOptions);
+    }
+  }, [buyOptions]);
+
   if (!productDetails || !buyOptions)
     return <ActivityIndicator size="small" color="#0000ff" />;
   return (
@@ -110,7 +135,7 @@ export default function ProductDetails({ id }: { id: string }) {
       />
       <View style={styles.infoContainer}>
         <Text style={styles.productName}>{productDetails?.title}</Text>
-        <Text style={styles.productPrice}>MRP: {productDetails?.mrp} Rs.</Text>
+        <Text style={styles.productPrice}>MRP: {productDetails?.mrp} ₹</Text>
         <Text style={styles.productDescription}>{productDetails?.about}</Text>
         <View
           style={{
@@ -146,36 +171,42 @@ export default function ProductDetails({ id }: { id: string }) {
           </Pressable>
         </View>
         <Text style={styles.buyOptions}>Buy Options</Text>
-        {buyOptions.map((option, index) => (
-          <View key={index} style={styles.distributorSection}>
-            <Text style={styles.distributorName}>{option.companyName}</Text>
-            {option.price.map((priceOption, priceIndex) => (
-              <View key={priceIndex} style={styles.optionContainer}>
-                <RadioButton
-                  selected={
-                    selectedOption?.order_from === option.companyUserId &&
-                    selectedOption?.quantity === priceOption.quantity
-                  }
-                  onPress={() =>
-                    handleSelectOption({
-                      order_from: option.companyUserId,
-                      product: id,
-                      quantity: priceOption.quantity,
-                      price: priceOption.price,
-                    })
-                  }
-                />
-                <Text style={styles.optionText}>
-                  Quantity: {priceOption.quantity}, Price: Rs.{" "}
-                  {priceOption.price} ,profit: Rs.
-                  {(productDetails?.mrp ?? 0) * priceOption.quantity -
-                    priceOption.price}
-                </Text>
-              </View>
-            ))}
+        {combinedBuyOptions.length > 0 ? (
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderText}>Quantity</Text>
+              <Text style={styles.tableHeaderText}>Price</Text>
+              <Text style={styles.tableHeaderText}>Profit</Text>
+              <Text style={styles.tableHeaderText}>Select</Text>
+            </View>
+            {combinedBuyOptions.map((options, index) =>
+              options.map((option, subIndex) => (
+                <View key={`${index}-${subIndex}`} style={styles.tableRow}>
+                  <Text style={styles.tableCell}>{option.quantity}</Text>
+                  <Text style={styles.tableCell}>₹{option.price}</Text>
+                  <Text style={styles.tableCell}>
+                    ₹{(productDetails?.mrp ?? 0) * option.quantity - option.price}
+                  </Text>
+                  <View style={styles.tableCell}>
+                    <RadioButton
+                      selected={
+                        selectedOption?.order_from === option.companyUserId &&
+                        selectedOption?.quantity === option.quantity
+                      }
+                      onPress={() =>
+                        handleSelectOption({
+                          order_from: option.companyUserId,
+                          product: id,
+                          quantity: option.quantity,
+                        })
+                      }
+                    />
+                  </View>
+                </View>
+              ))
+            )}
           </View>
-        ))}
-        {buyOptions.length === 0 && (
+        ) : (
           <Text style={{ fontSize: 14, textAlign: "center" }}>
             No buy options available in your region.
           </Text>
@@ -287,5 +318,37 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 20,
+  },
+  table: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f7f7f7",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+  },
+  tableHeaderText: {
+    flex: 1,
+    fontWeight: "bold",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  tableRow: {
+    flexDirection: "row",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 14,
   },
 });

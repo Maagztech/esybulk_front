@@ -15,7 +15,7 @@ import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 import AddProductModal from "./ProductAddModal";
 
 const ProductDetails = ({ product }: any) => {
-  console.log(product);
+  const [showMore, setShowMore] = useState(false);
   const { userInfo }: any = useAuth();
   const { setSelectedProduct }: any = useCompany();
   const { selectForSell, setSelectForSell }: any = useDistributor();
@@ -31,22 +31,39 @@ const ProductDetails = ({ product }: any) => {
         </Text>
       )}
 
-      <Text style={styles.mrp}>MRP: {product.mrp} Rs.</Text>
+      <Text style={styles.mrp}>MRP: {product.mrp} ₹</Text>
       <Text style={styles.quantity}>
         Available Quantity: {product.quantity}
       </Text>
 
       <Text style={styles.buyOptionsTitle}>Sell Options:</Text>
-      <FlatList
-        data={product.buyOptions}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <View style={styles.buyOption}>
-            <Text>Quantity: {item.quantity}</Text>
-            <Text>Price: {item.price} Rs.</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.buyOptionsTitle}>Sell Options:</Text>
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderCell}>Quantity</Text>
+          <Text style={styles.tableHeaderCell}>Price (₹)</Text>
+        </View>
+        <FlatList
+          data={showMore ? product.buyOptions : product.buyOptions.slice(0, 3)}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.quantity}</Text>
+              <Text style={styles.tableCell}>{item.price}</Text>
+            </View>
+          )}
+        />
+      </View>
+      {product.buyOptions.length > 3 && (
+        <TouchableOpacity
+          style={styles.showMoreButton}
+          onPress={() => setShowMore(!showMore)}
+        >
+          <Text style={styles.showMoreText}>
+            {showMore ? "Show Less" : "Show More"}
+          </Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity
         style={styles.editButton}
@@ -137,6 +154,49 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginLeft: 5,
+  },table: {
+    marginTop: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f5f5f5",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  tableHeaderCell: {
+    flex: 1,
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  tableRow: {
+    flexDirection: "row",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 16,
+  },
+  showMoreButton: {
+    alignSelf: "center",
+    marginTop: 10,
+    backgroundColor: "#4CAF50",
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  showMoreText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 
