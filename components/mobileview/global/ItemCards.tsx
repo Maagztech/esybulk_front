@@ -49,6 +49,33 @@ const ProductDetails = ({ product }: any) => {
           {showMoreAbout ? "Show Less" : "Show More"}
         </Text>
       </Pressable>
+
+      <Text style={styles.buyOptionsTitle}>Product Proporties</Text>
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderCell}>Question</Text>
+          <Text style={styles.tableHeaderCell}>Answer</Text>
+        </View>
+        <FlatList
+          data={product.proporties.slice(0, 3)}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.question}</Text>
+              <Text style={styles.tableCell}>{item.answer}</Text>
+            </View>
+          )}
+        />
+      </View>
+      {product.proporties.length > 3 && (
+        <TouchableOpacity
+          style={styles.showMoreButton}
+          onPress={() => router.push(`/product/${product.id}`)}
+        >
+          <Text style={styles.showMoreText}>Show More</Text>
+        </TouchableOpacity>
+      )}
+      
       {product.type && product.type.length > 0 && (
         <Text style={styles.productTypes}>
           Categories: {product.type.join(", ")}
@@ -123,7 +150,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    margin: 10,
+    marginVertical: 10,
     maxWidth: 400,
   },
   title: {
@@ -139,7 +166,7 @@ const styles = StyleSheet.create({
   },
   about: {
     fontSize: 16,
-    marginBottom: 4
+    marginBottom: 4,
   },
   productTypes: {
     fontSize: 16,

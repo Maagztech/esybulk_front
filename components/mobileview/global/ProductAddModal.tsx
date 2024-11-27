@@ -98,6 +98,7 @@ const AddProductModal = ({
     type: [] as string[],
     quantity: "",
     mrp: "",
+    proporties: [{ question: "", answer: "" }],
     buyOptions: [{ quantity: "", price: "" }],
   });
 
@@ -110,6 +111,12 @@ const AddProductModal = ({
         quantity: String(selectedProduct.quantity), // Convert to string
         mrp: String(selectedProduct.mrp), // Convert to string
         type: selectedProduct.type,
+        proporties: selectedProduct.proporties
+          ? selectedProduct.proporties.map((option: any) => ({
+              question: String(option.question), // Convert to string
+              answer: String(option.answer), // Convert to string
+            }))
+          : [{ quantity: "", price: "" }],
         buyOptions: selectedProduct.buyOptions
           ? selectedProduct.buyOptions.map((option: any) => ({
               quantity: String(option.quantity), // Convert to string
@@ -125,6 +132,7 @@ const AddProductModal = ({
         type: [],
         quantity: "",
         mrp: "",
+        proporties: [{ question: "", answer: "" }],
         buyOptions: [{ quantity: "", price: "" }],
       });
     }
@@ -159,8 +167,7 @@ const AddProductModal = ({
       Number(productData.mrp) > 0 &&
       productData.type.length > 0 &&
       !isNaN(Number(productData.quantity)) && // Ensure Quantity is a valid number
-      Number(productData.quantity) > 0 &&
-      productData.buyOptions.every((option) => option.quantity && option.price)
+      Number(productData.quantity) > 0
     );
   };
 
@@ -171,7 +178,7 @@ const AddProductModal = ({
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Please fill out all fields.",
+        text2: "Details are missing or invalid. Please check again.",
       });
       return;
     }
@@ -196,6 +203,18 @@ const AddProductModal = ({
       const productPayload = {
         title: productData.title,
         about: productData.about,
+        proporties: productData.proporties
+          .filter(
+            (option) =>
+              typeof option.question === "string" &&
+              option.question.trim() !== "" &&
+              typeof option.answer === "string" &&
+              option.answer.trim() !== ""
+          )
+          .map((option) => ({
+            question: option.question,
+            answer: option.answer,
+          })),
         images: uploadedImageUrls,
         mrp: productData.mrp,
         type: productData.type,
@@ -218,10 +237,19 @@ const AddProductModal = ({
           "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
           {
             product: selectedProduct.id,
-            price: productData.buyOptions.map((option) => ({
-              quantity: option.quantity,
-              price: option.price,
-            })),
+            price: productData.buyOptions
+              .filter(
+                (option) =>
+                  option.quantity != null &&
+                  option.price != null &&
+                  option.quantity !== "" &&
+                  option.price !== ""
+              )
+              .map((option) => ({
+                quantity: option.quantity,
+                price: option.price,
+              })),
+
             quantity: productData.quantity,
           },
           { headers: { Authorization: `${access_token}` } }
@@ -245,10 +273,19 @@ const AddProductModal = ({
           "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
           {
             product: productId,
-            price: productData.buyOptions.map((option) => ({
-              quantity: option.quantity,
-              price: option.price,
-            })),
+            price: productData.buyOptions
+              .filter(
+                (option) =>
+                  option.quantity != null &&
+                  option.price != null &&
+                  option.quantity !== "" &&
+                  option.price !== ""
+              )
+              .map((option) => ({
+                quantity: option.quantity,
+                price: option.price,
+              })),
+
             quantity: productData.quantity,
           },
           { headers: { Authorization: `${access_token}` } }
@@ -296,6 +333,23 @@ const AddProductModal = ({
     }));
   };
 
+  const addProporties = () => {
+    const lastOption =
+      productData.proporties[productData.proporties.length - 1];
+    if (lastOption && !lastOption.question && !lastOption.answer) {
+      Toast.show({
+        type: "info",
+        text1: "Error",
+        text2: "Please fill in the previous option before adding a new one.",
+      });
+      return;
+    }
+    setProductData((prevData) => ({
+      ...prevData,
+      proporties: [...prevData.proporties, { question: "", answer: "" }],
+    }));
+  };
+
   const updateBuyOption = (
     index: number,
     key: "quantity" | "price",
@@ -314,6 +368,27 @@ const AddProductModal = ({
     setProductData((prevData) => ({
       ...prevData,
       buyOptions: updatedOptions,
+    }));
+  };
+
+  const updateProductProporties = (
+    index: number,
+    key: "question" | "answer",
+    value: string
+  ) => {
+    const updatedOptions = [...productData.proporties];
+    updatedOptions[index][key] = value;
+    setProductData((prevData) => ({
+      ...prevData,
+      proporties: updatedOptions,
+    }));
+  };
+
+  const handleDeleteProporties = (index: number) => {
+    const updatedOptions = productData.proporties.filter((_, i) => i !== index);
+    setProductData((prevData) => ({
+      ...prevData,
+      proporties: updatedOptions,
     }));
   };
 
@@ -385,6 +460,47 @@ const AddProductModal = ({
             }
             multiline={3}
           />
+          <Text style={styles.subTitle}>
+            Product Proporties{" "}
+            <Text style={styles.subsubTitle}> (Brand,Size,Weight etc.)</Text>
+          </Text>
+          {productData.proporties.map((option, index) => (
+            <View key={index} style={styles.buyOptionContainer}>
+              <View style={{ position: "relative", width: "43%" }}>
+                <Text style={styles.inputLabel}>Questions</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Size"
+                  value={option.question}
+                  onChangeText={(value) =>
+                    updateProductProporties(index, "question", value)
+                  }
+                />
+              </View>
+              <View style={{ position: "relative", width: "43%" }}>
+                <Text style={styles.inputLabel}>Answer</Text>
+                <TextInput
+                  style={styles.buyOptionInput}
+                  placeholder="Medium"
+                  value={option.answer}
+                  onChangeText={(value) =>
+                    updateProductProporties(index, "answer", value)
+                  }
+                />
+              </View>
+              <Pressable
+                onPress={() => handleDeleteProporties(index)}
+                style={styles.deleteButton}
+              >
+                <Ionicons name="trash" size={24} color="white" />
+              </Pressable>
+            </View>
+          ))}
+
+          <Pressable onPress={addProporties} style={{ marginBottom: 20 }}>
+            <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
+          </Pressable>
+
           <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
             <Text style={styles.inputLabel}>Product Category</Text>
             <Text>
@@ -574,9 +690,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     marginVertical: 10,
+    marginBottom: 20,
+  },
+  subsubTitle: {
+    fontSize: 10,
   },
   buyOptionContainer: {
     flexDirection: "row",
@@ -586,6 +706,7 @@ const styles = StyleSheet.create({
   buyOptionInput: {
     borderWidth: 1,
     borderColor: "#966440",
+    backgroundColor: "#f0f0f0",
     padding: 15,
     borderRadius: 5,
     marginRight: 10,
@@ -636,6 +757,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "relative",
+    marginTop: 10,
   },
   dropdownContainer: {
     maxHeight: 500, // Limits height of the dropdown container

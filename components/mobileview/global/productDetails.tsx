@@ -38,6 +38,7 @@ export default function ProductDetails({ id }: { id: string }) {
     about: string;
     rating: number;
     totalRating: number;
+    proporties: { _id: string; question: string; answer: string }[];
   };
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
@@ -50,6 +51,12 @@ export default function ProductDetails({ id }: { id: string }) {
     price: { quantity: number; price: number }[];
   };
 
+  type SellOptionType = {
+    quantity: number;
+    price: number;
+  };
+
+  const [sellOptions, setSellOptions] = useState<SellOptionType[]>([]);
   type combinedBuyOptionsType = {
     companyName: string;
     companyUserId: string;
@@ -68,9 +75,8 @@ export default function ProductDetails({ id }: { id: string }) {
   const fetchProductDetails = async () => {
     try {
       let response;
-      console.log(id)
+      console.log(id);
       if (userInfo?.role === "distributor") {
-        
         response = await axios.get(
           `https://esybulkback-production.up.railway.app/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
@@ -83,8 +89,11 @@ export default function ProductDetails({ id }: { id: string }) {
       } else {
         response = await axios.get(
           "https://esybulkback-production.up.railway.app/api/companygetProductDetails?product=" +
-            id
+            id,
+          { headers: { Authorization: `${access_token}` } }
         );
+        setSellOptions(response.data.sellOptions);
+        console.log(response.data);
       }
       setProductDetails(response.data.product);
       setBuyOptions(response.data.buyOptions);
@@ -289,6 +298,45 @@ export default function ProductDetails({ id }: { id: string }) {
             {showMoreAbout ? "Show Less" : "Show More"}
           </Text>
         </Pressable>
+
+        <Text style={styles.buyOptions}>Product Proporties</Text>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderText}>Question</Text>
+            <Text style={styles.tableHeaderText}>Answer</Text>
+          </View>
+          <FlatList
+            data={productDetails.proporties}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCell}>{item.question}</Text>
+                <Text style={styles.tableCell}>{item.answer}</Text>
+              </View>
+            )}
+          />
+        </View>
+        {userInfo?.role === "company" && (
+          <>
+            <Text style={styles.buyOptions}>Sell Options</Text>
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={styles.tableHeaderText}>Quantity</Text>
+                <Text style={styles.tableHeaderText}>Price (₹)</Text>
+              </View>
+              <FlatList
+                data={sellOptions}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <View style={styles.tableRow}>
+                    <Text style={styles.tableCell}>{item.quantity}</Text>
+                    <Text style={styles.tableCell}>{item.price}</Text>
+                  </View>
+                )}
+              />
+            </View>
+          </>
+        )}
         {userInfo?.role !== "company" && (
           <>
             <View
@@ -397,91 +445,91 @@ export default function ProductDetails({ id }: { id: string }) {
         text2="Are you sure you want to buy this item?"
       />
       {userInfo?.role !== "company" && (
-      <View
-        style={{
-          backgroundColor: "white",
-          marginVertical: 10,
-          borderRadius: 10,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 10,
-          position: "relative",
-        }}
-      >
-        {ratingAddLoading ||
-          (ratingAdded && (
-            <View
-              style={{
-                position: "absolute",
-                height: "100%",
-                width: "100%",
-                backgroundColor: "white",
-                opacity: 0.8,
-                zIndex: 1,
-                borderRadius: 10,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {ratingAddLoading && (
-                <ActivityIndicator size="small" color="#0000ff" />
-              )}
-              {ratingAdded && (
-                <>
-                  <Ionicons name="checkmark-circle" size={30} color="green" />
-                  <Text
-                    style={{
-                      color: "green",
-                      fontSize: 20,
-                      marginVertical: 10,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Rating Added Successfully
-                  </Text>
-                </>
-              )}
-            </View>
-          ))}
-        <Text
+        <View
           style={{
-            fontSize: 14,
-            color: "#333",
-            fontWeight: "bold",
-            marginBottom: 15,
+            backgroundColor: "white",
+            marginVertical: 10,
+            borderRadius: 10,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 10,
+            position: "relative",
           }}
         >
-          Rate this product
-        </Text>
-        <StarRating
-          rating={rating}
-          onChange={setRating}
-          color="#966440"
-          starSize={55}
-          style={{ marginBottom: 20 }}
-        />
-        {rating > 0 && (
-          <>
-            <LabeledInput
-              label="Add a review"
-              value={review}
-              onChangeText={setReview}
-              placeholder="Write your review here"
-            />
-            <Pressable
-              style={[styles.button, styles.buttonEnabled, { width: "100%" }]}
-              disabled={ratingAddLoading}
-              onPress={() => {
-                handelAddRating();
-              }}
-            >
-              <Text style={styles.buttonText}>Add Rating</Text>
-            </Pressable>
-          </>
-        )}
-      </View>
+          {ratingAddLoading ||
+            (ratingAdded && (
+              <View
+                style={{
+                  position: "absolute",
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "white",
+                  opacity: 0.8,
+                  zIndex: 1,
+                  borderRadius: 10,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {ratingAddLoading && (
+                  <ActivityIndicator size="small" color="#0000ff" />
+                )}
+                {ratingAdded && (
+                  <>
+                    <Ionicons name="checkmark-circle" size={30} color="green" />
+                    <Text
+                      style={{
+                        color: "green",
+                        fontSize: 20,
+                        marginVertical: 10,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Rating Added Successfully
+                    </Text>
+                  </>
+                )}
+              </View>
+            ))}
+          <Text
+            style={{
+              fontSize: 14,
+              color: "#333",
+              fontWeight: "bold",
+              marginBottom: 15,
+            }}
+          >
+            Rate this product
+          </Text>
+          <StarRating
+            rating={rating}
+            onChange={setRating}
+            color="#966440"
+            starSize={55}
+            style={{ marginBottom: 20 }}
+          />
+          {rating > 0 && (
+            <>
+              <LabeledInput
+                label="Add a review"
+                value={review}
+                onChangeText={setReview}
+                placeholder="Write your review here"
+              />
+              <Pressable
+                style={[styles.button, styles.buttonEnabled, { width: "100%" }]}
+                disabled={ratingAddLoading}
+                onPress={() => {
+                  handelAddRating();
+                }}
+              >
+                <Text style={styles.buttonText}>Add Rating</Text>
+              </Pressable>
+            </>
+          )}
+        </View>
       )}
       {comments.length > 0 && (
         <>
@@ -620,7 +668,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: "#333",
-    marginVertical: 10,
+    marginTop: 10,
     textAlign: "center",
   },
   distributorSection: {
