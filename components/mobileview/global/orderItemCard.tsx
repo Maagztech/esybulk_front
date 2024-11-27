@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/authContext";
 import axios from "axios";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -75,8 +76,17 @@ export const ItemCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image source={{ uri: order.imageUrl[0] }} style={styles.productImage} />
-      <Text style={styles.productName}>{order.productName}</Text>
+      <Pressable
+        onPress={() => {
+          router.push(`/product/${order.productId}`);
+        }}
+      >
+        <Image
+          source={{ uri: order.imageUrl[0] }}
+          style={styles.productImage}
+        />
+        <Text style={styles.productName}>{order.productName}</Text>
+      </Pressable>
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>

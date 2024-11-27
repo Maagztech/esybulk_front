@@ -76,7 +76,7 @@ const BusinessProfile = () => {
         style={{
           ...styles.contactPressable,
           backgroundColor: "#966440",
-          paddingBottom: 35,
+          marginBottom: 40,
         }}
         onPress={handleContactManager}
       >

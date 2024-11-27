@@ -51,29 +51,14 @@ const ProductsToBuyNearby = () => {
         >
           <Pressable
             onPress={() => setQuery("")}
-            style={{
-              margin: 5,
-              backgroundColor: query === "" ? "black" : "gray",
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              borderRadius: 50,
-            }}
+            style={styles.seleceted}
           >
             <Text style={styles.text}>All</Text>
           </Pressable>
           {types.map((item) => (
             <Pressable
               onPress={() => setQuery(item)}
-              style={{
-                margin: 5,
-                backgroundColor:
-                  query === item
-                    ? "black"
-                    : "gray",
-                paddingHorizontal: 15,
-                paddingVertical: 5,
-                borderRadius: 50,
-              }}
+              style={styles.seleceted}
               key={item}
             >
               <Text style={styles.text}>{item}</Text>
@@ -123,6 +108,13 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontSize: 15,
+  },
+  seleceted: {
+    margin: 5,
+    backgroundColor: "black",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 50,
   },
 });
 

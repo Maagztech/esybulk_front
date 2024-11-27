@@ -1,30 +1,46 @@
 import { useAuth } from "@/context/authContext";
+import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import StarRating, { StarRatingDisplay } from "react-native-star-rating-widget";
 import Toast from "react-native-toast-message";
 import RadioButton from "../shopkeeper/components/RadioButton";
 import BuyNowConfirmModal from "./BuyNowConfirmModal";
 import BuySellButton from "./BuySellButton";
-
+import LabeledInput from "./LabeledMultilineInput";
 export default function ProductDetails({ id }: { id: string }) {
+  const formatTime = (utcString: string) => {
+    const time = moment(utcString);
+    const now = moment();
+
+    if (now.diff(time, "seconds") < 60) return "moments ago";
+    if (now.diff(time, "days") < 1) return time.fromNow();
+
+    return time.format("MMMM Do YYYY, h:mm a"); // e.g., "November 27th 2024, 2:45 pm"
+  };
   const { userInfo, access_token }: any = useAuth();
   type ProductDetailsType = {
     images: string[];
     title: string;
     mrp: number;
     about: string;
+    rating: number;
+    totalRating: number;
   };
-
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
   const [productDetails, setProductDetails] =
     useState<ProductDetailsType | null>(null);
 
@@ -52,24 +68,34 @@ export default function ProductDetails({ id }: { id: string }) {
   const fetchProductDetails = async () => {
     try {
       let response;
+      console.log(id)
       if (userInfo?.role === "distributor") {
+        
         response = await axios.get(
           `https://esybulkback-production.up.railway.app/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
-      } else {
+      } else if (userInfo?.role === "shopkeeper") {
         response = await axios.get(
           `https://esybulkback-production.up.railway.app/api/distributor/buyoptionsshopkeeper?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
+      } else {
+        response = await axios.get(
+          "https://esybulkback-production.up.railway.app/api/companygetProductDetails?product=" +
+            id
+        );
       }
       setProductDetails(response.data.product);
       setBuyOptions(response.data.buyOptions);
-    } catch (error) {}
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   const [simmilarProducts, setSimmilarProducts]: any = useState([]);
+  const [confinedSimmilarProducts, setConfinedSimmilarProducts] = useState([]);
   useEffect(() => {
-    setSimmilarProducts(
+    setConfinedSimmilarProducts(
       simmilarProducts.filter((product: any) => product._id !== id)
     );
   }, [simmilarProducts]);
@@ -145,7 +171,81 @@ export default function ProductDetails({ id }: { id: string }) {
       setCombinedBuyOptions(aggregatedOptions);
     }
   }, [buyOptions]);
+  const [ratingAddLoading, setRatingAddLoading] = useState(false);
+  const [ratingAdded, setRatingAdded] = useState(false);
 
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const maxLines = 3; // Number of lines to show when collapsed
+
+  const toggleShowMore = () => {
+    setShowMoreAbout(!showMoreAbout);
+  };
+  type CommentType = {
+    _id: string;
+    rating: number;
+    review: string;
+    createdAt: string;
+    author: {
+      name: string;
+      companyName: string;
+      avatar: string;
+    };
+  };
+
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const loadComments = async () => {
+    try {
+      if (currentPage >= totalPages) return;
+      const response = await axios.get(
+        `https://esybulkback-production.up.railway.app/api/getRating/${id}?&page=${
+          currentPage + 1
+        }`
+      );
+      setCurrentPage(response.data.currentPage);
+      setTotalPages(response.data.totalPages);
+      setComments((prev) => [...prev, ...response.data.ratings]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    loadComments();
+  }, [id]);
+
+  const handelAddRating = async () => {
+    try {
+      setRatingAddLoading(true);
+      const response = await axios.post(
+        `https://esybulkback-production.up.railway.app/api/addRating`,
+        {
+          product: id,
+          rating: rating,
+          review: review,
+        },
+        { headers: { Authorization: `${access_token}` } }
+      );
+      setRatingAddLoading(false);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Rating added successfully",
+      });
+      setRating(0);
+      setReview("");
+      setRatingAdded(true);
+      setTimeout(() => {
+        setRatingAdded(false);
+      }, 2000);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to add rating.",
+      });
+    }
+  };
   if (!productDetails || !buyOptions)
     return <ActivityIndicator size="small" color="#0000ff" />;
   return (
@@ -161,98 +261,134 @@ export default function ProductDetails({ id }: { id: string }) {
         contentContainerStyle={styles.flatListContainer}
       />
       <View style={styles.infoContainer}>
+        <View style={{ flexDirection: "row", gap: 7, alignItems: "center" }}>
+          <StarRatingDisplay
+            rating={productDetails.rating}
+            starSize={30}
+            color="#966440"
+          />
+          <Text style={{ fontSize: 16, color: "#966440", fontWeight: "bold" }}>
+            {productDetails.rating}
+            <Text style={{ color: "black", fontSize: 10 }}>
+              {" "}
+              {productDetails.totalRating} Ratings
+            </Text>
+          </Text>
+        </View>
         <Text style={styles.productName}>{productDetails?.title}</Text>
         <Text style={styles.productPrice}>MRP: {productDetails?.mrp} ₹</Text>
-        <Text style={styles.productDescription}>{productDetails?.about}</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+        <Text
+          style={styles.productDescription}
+          numberOfLines={showMoreAbout ? undefined : maxLines}
+          ellipsizeMode="tail"
         >
-          <View>
-            <Text style={[styles.address, { maxWidth: "65%" }]}>
-              Your Address:
-            </Text>
-            <Text
-              style={[
-                styles.address,
-                { marginBottom: 10, maxWidth: "65%", color: "#966440" },
-              ]}
-            >
-              {userInfo?.village_city}, {userInfo?.district}, {userInfo?.state}{" "}
-              - {userInfo?.pinCode}
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => {
-              router.push("/profile");
-            }}
-          >
-            <Text
-              style={{ color: "#966440", fontSize: 16, fontWeight: "bold" }}
-            >
-              Change Address
-            </Text>
-          </Pressable>
-        </View>
-        <Text style={styles.buyOptions}>Buy Options</Text>
-        {combinedBuyOptions.length > 0 ? (
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderText}>Quantity</Text>
-              <Text style={styles.tableHeaderText}>Price</Text>
-              <Text style={styles.tableHeaderText}>Profit</Text>
-              <Text style={styles.tableHeaderText}>Select</Text>
-            </View>
-            {combinedBuyOptions.map((options, index) =>
-              options.map((option, subIndex) => (
-                <View key={`${index}-${subIndex}`} style={styles.tableRow}>
-                  <Text style={styles.tableCell}>{option.quantity}</Text>
-                  <Text style={styles.tableCell}>₹{option.price}</Text>
-                  <Text style={styles.tableCell}>
-                    ₹
-                    {(productDetails?.mrp ?? 0) * option.quantity -
-                      option.price}
-                  </Text>
-                  <View style={styles.tableCell}>
-                    <RadioButton
-                      selected={
-                        selectedOption?.order_from === option.companyUserId &&
-                        selectedOption?.quantity === option.quantity
-                      }
-                      onPress={() =>
-                        handleSelectOption({
-                          order_from: option.companyUserId,
-                          product: id,
-                          quantity: option.quantity,
-                        })
-                      }
-                    />
-                  </View>
-                </View>
-              ))
-            )}
-          </View>
-        ) : (
-          <Text style={{ fontSize: 14, textAlign: "center" }}>
-            No buy options available in your region.
+          {productDetails?.about}
+        </Text>
+        <Pressable onPress={toggleShowMore}>
+          <Text style={styles.showMoreButton}>
+            {showMoreAbout ? "Show Less" : "Show More"}
           </Text>
+        </Pressable>
+        {userInfo?.role !== "company" && (
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View>
+                <Text style={[styles.address, { maxWidth: "65%" }]}>
+                  Your Address:
+                </Text>
+                <Text
+                  style={[
+                    styles.address,
+                    { marginBottom: 10, maxWidth: "65%", color: "#966440" },
+                  ]}
+                >
+                  {userInfo?.village_city}, {userInfo?.district},{" "}
+                  {userInfo?.state} - {userInfo?.pinCode}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => {
+                  router.push("/profile");
+                }}
+              >
+                <Text
+                  style={{ color: "#966440", fontSize: 16, fontWeight: "bold" }}
+                >
+                  Change Address
+                </Text>
+              </Pressable>
+            </View>
+
+            <Text style={styles.buyOptions}>Buy Options</Text>
+            {combinedBuyOptions.length > 0 ? (
+              <View style={styles.table}>
+                <View style={styles.tableHeader}>
+                  <Text style={styles.tableHeaderText}>Quantity</Text>
+                  <Text style={styles.tableHeaderText}>Price</Text>
+                  <Text style={styles.tableHeaderText}>Profit</Text>
+                  {userInfo?.role != "company" && (
+                    <Text style={styles.tableHeaderText}>Select</Text>
+                  )}
+                </View>
+                {combinedBuyOptions.map((options, index) =>
+                  options.map((option, subIndex) => (
+                    <View key={`${index}-${subIndex}`} style={styles.tableRow}>
+                      <Text style={styles.tableCell}>{option.quantity}</Text>
+                      <Text style={styles.tableCell}>₹{option.price}</Text>
+                      <Text style={styles.tableCell}>
+                        ₹
+                        {(productDetails?.mrp ?? 0) * option.quantity -
+                          option.price}
+                      </Text>
+
+                      <View style={styles.tableCell}>
+                        <RadioButton
+                          selected={
+                            selectedOption?.order_from ===
+                              option.companyUserId &&
+                            selectedOption?.quantity === option.quantity
+                          }
+                          onPress={() =>
+                            handleSelectOption({
+                              order_from: option.companyUserId,
+                              product: id,
+                              quantity: option.quantity,
+                            })
+                          }
+                        />
+                      </View>
+                    </View>
+                  ))
+                )}
+              </View>
+            ) : (
+              <Text style={{ fontSize: 14, textAlign: "center" }}>
+                No buy options available in your region.
+              </Text>
+            )}
+          </>
         )}
       </View>
-      <View style={styles.buttonContainer}>
-        <Pressable
-          style={[
-            styles.button,
-            selectedOption ? styles.buttonEnabled : styles.buttonDisabled,
-          ]}
-          onPress={() => setConfirmModal(true)}
-          disabled={!selectedOption}
-        >
-          <Text style={styles.buttonText}>Buy Now</Text>
-        </Pressable>
-      </View>
+      {userInfo?.role !== "company" && (
+        <View style={styles.buttonContainer}>
+          <Pressable
+            style={[
+              styles.button,
+              selectedOption ? styles.buttonEnabled : styles.buttonDisabled,
+            ]}
+            onPress={() => setConfirmModal(true)}
+            disabled={!selectedOption}
+          >
+            <Text style={styles.buttonText}>Buy Now</Text>
+          </Pressable>
+        </View>
+      )}
       <BuyNowConfirmModal
         visible={confirmModal}
         onConfirm={handleBuyNow}
@@ -260,9 +396,165 @@ export default function ProductDetails({ id }: { id: string }) {
         text1="Confirm Purchase"
         text2="Are you sure you want to buy this item?"
       />
-      <Toast />
+      {userInfo?.role !== "company" && (
+      <View
+        style={{
+          backgroundColor: "white",
+          marginVertical: 10,
+          borderRadius: 10,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 10,
+          position: "relative",
+        }}
+      >
+        {ratingAddLoading ||
+          (ratingAdded && (
+            <View
+              style={{
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                backgroundColor: "white",
+                opacity: 0.8,
+                zIndex: 1,
+                borderRadius: 10,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {ratingAddLoading && (
+                <ActivityIndicator size="small" color="#0000ff" />
+              )}
+              {ratingAdded && (
+                <>
+                  <Ionicons name="checkmark-circle" size={30} color="green" />
+                  <Text
+                    style={{
+                      color: "green",
+                      fontSize: 20,
+                      marginVertical: 10,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Rating Added Successfully
+                  </Text>
+                </>
+              )}
+            </View>
+          ))}
+        <Text
+          style={{
+            fontSize: 14,
+            color: "#333",
+            fontWeight: "bold",
+            marginBottom: 15,
+          }}
+        >
+          Rate this product
+        </Text>
+        <StarRating
+          rating={rating}
+          onChange={setRating}
+          color="#966440"
+          starSize={55}
+          style={{ marginBottom: 20 }}
+        />
+        {rating > 0 && (
+          <>
+            <LabeledInput
+              label="Add a review"
+              value={review}
+              onChangeText={setReview}
+              placeholder="Write your review here"
+            />
+            <Pressable
+              style={[styles.button, styles.buttonEnabled, { width: "100%" }]}
+              disabled={ratingAddLoading}
+              onPress={() => {
+                handelAddRating();
+              }}
+            >
+              <Text style={styles.buttonText}>Add Rating</Text>
+            </Pressable>
+          </>
+        )}
+      </View>
+      )}
+      {comments.length > 0 && (
+        <>
+          <ScrollView
+            contentContainerStyle={{
+              marginVertical: 3,
+              borderRadius: 10,
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            {comments.map((comment) => (
+              <View
+                style={{
+                  marginVertical: 10,
+                  width: "100%",
+                  backgroundColor: "white",
+                  padding: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", marginBottom: 5 }}>
+                  <Image
+                    source={{ uri: comment.author.avatar }}
+                    style={{ width: 35, height: 35, borderRadius: 17.5 }}
+                  />
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={styles.distributorName}>
+                      {comment.author.name}
+                    </Text>
+                    <Text style={{ color: "#333", fontSize: 10 }}>
+                      {comment.author.companyName}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <View
+                    style={{
+                      backgroundColor: "gray",
+                      padding: 5,
+                      borderRadius: 5,
+                      alignSelf: "flex-start",
+                      marginVertical: 5, // Makes the View take only the Text's width
+                    }}
+                  >
+                    <Text style={{ color: "white" }}>
+                      {formatTime(comment.createdAt)}
+                    </Text>
+                  </View>
+
+                  <StarRatingDisplay
+                    rating={comment.rating}
+                    starSize={20}
+                    color="#966440"
+                  />
+                  <Text
+                    style={{ fontSize: 14, color: "#333", marginVertical: 5 }}
+                  >
+                    {comment.review}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+          <Pressable onPress={() => loadComments()}>
+            <Text style={styles.showMoreButton}>View More</Text>
+          </Pressable>
+        </>
+      )}
       <FlatList
-        data={simmilarProducts}
+        data={confinedSimmilarProducts}
         keyExtractor={(item: { _id: string }) => item._id}
         renderItem={({ item }) => <BuySellButton item={item} />}
         ListFooterComponent={
@@ -315,7 +607,14 @@ const styles = StyleSheet.create({
   productDescription: {
     fontSize: 16,
     color: "#333",
-    marginVertical: 10,
+    marginTop: 10,
+  },
+  showMoreButton: {
+    color: "#007BFF",
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
   },
   buyOptions: {
     fontSize: 17,
@@ -332,7 +631,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 5,
   },
   optionContainer: {
     flexDirection: "row",
@@ -396,5 +694,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
   },
 });

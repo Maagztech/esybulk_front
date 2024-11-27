@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/authContext";
 import axios from "axios";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -43,8 +44,19 @@ export const OrderNotChangeCard = ({ order }: any) => {
         status === "cancelled" && styles.cancelledCard,
       ]}
     >
-      <Image source={{ uri: product.images[0] }} style={styles.productImage} />
-      <Text style={styles.productName}>{product.title}</Text>
+      <Pressable
+        onPress={() => {
+          router.push(`/product/${product._id}`);
+        }}
+      >
+        {" "}
+        <Image
+          source={{ uri: product.images[0] }}
+          style={styles.productImage}
+        />
+        <Text style={styles.productName}>{product.title}</Text>
+      </Pressable>
+
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>
@@ -52,7 +64,10 @@ export const OrderNotChangeCard = ({ order }: any) => {
             <Text style={styles.quantity}>{order.quantity}</Text>
           </Text>
           <Text style={styles.productInfo}>
-            Cost: <Text style={styles.quantity}>₹ {order.price}*{order.quantity}</Text>
+            Cost:{" "}
+            <Text style={styles.quantity}>
+              ₹ {order.price}*{order.quantity}
+            </Text>
           </Text>
         </View>
         {status !== "delivered" && status !== "cancelled" && (

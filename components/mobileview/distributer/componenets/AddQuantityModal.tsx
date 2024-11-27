@@ -153,7 +153,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <Toast />
+      
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Update Quantity</Text>
@@ -243,6 +243,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
           </View>
         </View>
       </ScrollView>
+      <Toast />
     </Modal>
   );
 };

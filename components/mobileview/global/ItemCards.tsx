@@ -2,10 +2,12 @@ import { useAuth } from "@/context/authContext";
 import { useCompany } from "@/context/companyContext";
 import { useDistributor } from "@/context/distributorContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,11 +22,33 @@ const ProductDetails = ({ product }: any) => {
   const { setSelectedProduct }: any = useCompany();
   const { selectForSell, setSelectForSell }: any = useDistributor();
   const [isOpen, setIsOpen] = useState(false);
+  const [showMoreAbout, setShowMoreAbout] = useState(false);
+  const toggleShowMore = () => {
+    setShowMoreAbout(!showMoreAbout);
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{product.title}</Text>
-      <Image source={{ uri: product.images[0] }} style={styles.image} />
-      <Text style={styles.about}>{product.about}</Text>
+      <Pressable
+        onPress={() => {
+          router.push(`/product/${product.id}`);
+        }}
+      >
+        <Text style={styles.title}>{product.title}</Text>
+        <Image source={{ uri: product.images[0] }} style={styles.image} />
+      </Pressable>
+
+      <Text
+        style={styles.about}
+        numberOfLines={showMoreAbout ? undefined : 2}
+        ellipsizeMode="tail"
+      >
+        {product?.about}
+      </Text>
+      <Pressable onPress={toggleShowMore}>
+        <Text style={styles.showMoreAbout}>
+          {showMoreAbout ? "Show Less" : "Show More"}
+        </Text>
+      </Pressable>
       {product.type && product.type.length > 0 && (
         <Text style={styles.productTypes}>
           Categories: {product.type.join(", ")}
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
   },
   about: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 4
   },
   productTypes: {
     fontSize: 16,
@@ -135,7 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
     marginBottom: 5,
-    textAlign:"center"
+    textAlign: "center",
   },
   buyOption: {
     flexDirection: "row",
@@ -191,16 +215,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
+  showMoreAbout: {
+    alignSelf: "flex-end",
+    borderRadius: 5,
+    flexDirection: "row",
+    gap: 5,
+  },
   showMoreButton: {
     alignSelf: "center",
     backgroundColor: "gray",
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 7,
+    flexDirection: "row",
+    gap: 5,
   },
   showMoreText: {
     color: "white",
