@@ -299,6 +299,16 @@ const AddProductModal = ({
           setLoading(false);
         }
       }
+      setProductData({
+        title: "",
+        about: "",
+        images: [],
+        type: [],
+        quantity: "",
+        mrp: "",
+        proporties: [{ question: "", answer: "" }],
+        buyOptions: [{ quantity: "", price: "" }],
+      });
     } catch (error) {
       Toast.show({
         type: "error",

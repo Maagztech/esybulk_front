@@ -8,8 +8,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 
@@ -22,11 +21,13 @@ const BuySellButton = ({ item }: { item: any }) => {
 
   return (
     <View style={styles.productCard}>
-      <TouchableOpacity>
+      <Pressable onPress={() => router.push(`product/${item._id}` as never)}>
         <Image source={{ uri: item.images[0] }} style={styles.productImage} />
-      </TouchableOpacity>
+      </Pressable>
       <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.title}</Text>
+        <Pressable onPress={() => router.push(`product/${item._id}` as never)}>
+          <Text style={styles.productName}>{item.title}</Text>
+        </Pressable>
         <Text style={styles.productPrice}>MRP: {item.mrp}</Text>
         <View style={styles.buttonContainer}>
           <Pressable

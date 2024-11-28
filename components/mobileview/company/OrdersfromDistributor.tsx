@@ -14,6 +14,9 @@ const PendingOrders = () => {
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [completedOrders, setCompletedOrders] = useState<any[]>([]);
   useEffect(() => {
+    const loadOrderedProducts = async () => {
+      await loadOrderedProducts();
+    };
     loadOrderedProducts();
   }, []);
 

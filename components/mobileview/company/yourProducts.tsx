@@ -22,11 +22,15 @@ const CompanyProducts = () => {
     useCompany();
 
   useEffect(() => {
-    loadcompanyProducts();
+    const fetchProducts = async () => {
+      await loadcompanyProducts();
+    };
+    fetchProducts();
   }, []);
 
   const loadcompanyProducts = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
         {
@@ -34,7 +38,9 @@ const CompanyProducts = () => {
         }
       );
       setDistributorCompanyStocks(response.data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error loading products:", error);
     }
   };

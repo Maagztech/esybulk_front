@@ -35,9 +35,12 @@ const ProductsToBuyNearby = () => {
   ];
 
   const handleLoadMore = () => {
-    if (!loading && currentPage < totalPages) {
-      fetchProducts(currentPage + 1);
-    }
+    const fetchProduct = async () => {
+      if (!loading && currentPage < totalPages) {
+        await fetchProducts(currentPage + 1);
+      }
+    };
+    fetchProduct();
   };
 
   return (
@@ -49,10 +52,7 @@ const ProductsToBuyNearby = () => {
           contentContainerStyle={styles.flatListContainer}
           style={styles.scrollView}
         >
-          <Pressable
-            onPress={() => setQuery("")}
-            style={styles.seleceted}
-          >
+          <Pressable onPress={() => setQuery("")} style={styles.seleceted}>
             <Text style={styles.text}>All</Text>
           </Pressable>
           {types.map((item) => (

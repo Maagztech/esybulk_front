@@ -27,9 +27,12 @@ export const ProductsToBuyNearbydistributor = () => {
     query,
   }: any = useDistributor();
   const handleLoadMore = () => {
-    if (!loading && currentPage < totalPages) {
-      fetchProducts(currentPage + 1);
-    }
+    const fetchProduct = async () => {
+      if (!loading && currentPage < totalPages) {
+        await fetchProducts(currentPage + 1);
+      }
+    };
+    fetchProduct();
   };
   const types = [
     "Grocery",

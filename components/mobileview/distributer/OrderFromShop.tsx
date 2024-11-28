@@ -18,8 +18,11 @@ const OrderFromShop = () => {
   const [pendingSell, setPendingSell] = useState<any[]>([]);
   const [completedSell, setCompletedSell] = useState<any[]>([]);
   useEffect(() => {
-    loadSellOrdered();
-    loadBuyOrdered();
+    const loadOrderedProducts = async () => {
+      await loadSellOrdered();
+      await loadBuyOrdered();
+    };
+    loadOrderedProducts();
   }, []);
 
   const loadSellOrdered = async () => {
@@ -65,7 +68,6 @@ const OrderFromShop = () => {
           order.status === "delivered" || order.status === "cancelled"
       )
     );
-    
   };
 
   return (
@@ -140,7 +142,7 @@ const OrderFromShop = () => {
         <View style={styles.content}>
           {activeTab === "Sell" && pending === "Pending" && (
             <CompnayPendingOrders
-            loadSellOrders={loadSellOrdered}
+              loadSellOrders={loadSellOrdered}
               orders={pendingSell}
             />
           )}

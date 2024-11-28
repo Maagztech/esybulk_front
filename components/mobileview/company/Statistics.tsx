@@ -64,7 +64,7 @@ const CompanyStatistics = () => {
         <ProductSalesChart data={orderStats} />
       </View>
 
-      <View style={{ height: 50 }} />
+      <View style={{ height: 10 }} />
 
       <View style={{ marginBottom: 30 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>

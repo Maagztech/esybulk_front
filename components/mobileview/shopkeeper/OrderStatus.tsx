@@ -13,7 +13,10 @@ const OrderFromShop = () => {
   const [pendingBuy, setPendingBuy] = useState<any[]>([]);
   const [completedBuy, setCompletedBuy] = useState<any[]>([]);
   useEffect(() => {
-    loadBuyOrdered();
+    const loadBuyOrdereds = async () => {
+      await loadBuyOrdered();
+    };
+    loadBuyOrdereds();
   }, []);
 
   const loadBuyOrdered = async () => {
