@@ -344,6 +344,7 @@ export default function ProductDetails({ id }: { id: string }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                marginTop:15
               }}
             >
               <View>
