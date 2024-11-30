@@ -94,7 +94,7 @@ export const DistributorProvider = ({ children }) => {
       const response = await axios.post("https://esybulkback-production.up.railway.app/api/distributor/addremovecart",
         { product },
         { headers: { Authorization: `${access_token}` } });
-      fetchCart();
+      await fetchCart();
     } catch (error) {
       Toast.show({
         type: 'error',

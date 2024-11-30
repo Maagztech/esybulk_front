@@ -1,17 +1,20 @@
 import BuySellButton from "@/components/mobileview/global/BuySellButton";
 import { useDistributor } from "@/context/distributorContext";
 import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { FlatList, StyleSheet, Text } from "react-native";
 
 const Cart = () => {
   const { cart }: any = useDistributor();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {cart.map((item: any) => (
-        <BuySellButton item={item.product} key={item.product._id} />
-      ))}
-      {cart.length === 0 && (
+    <FlatList
+      contentContainerStyle={styles.container}
+      data={cart}
+      keyExtractor={(item: any) => item.product._id.toString()}
+      renderItem={({ item }) => (
+        <BuySellButton item={item.product}/>
+      )}
+      ListEmptyComponent={
         <Text
           style={{
             marginVertical: 10,
@@ -21,8 +24,8 @@ const Cart = () => {
         >
           Your wishlist cart is empty.
         </Text>
-      )}
-    </ScrollView>
+      }
+    />
   );
 };
 

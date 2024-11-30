@@ -2,7 +2,7 @@ import { useAuth } from "@/context/authContext";
 import { useDistributor } from "@/context/distributorContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -14,10 +14,26 @@ import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 
 const BuySellButton = ({ item }: { item: any }) => {
   const { userInfo }: any = useAuth();
-  const { cart, addToCart, selectForSell, setSelectForSell }: any =
-    useDistributor();
+  const { cart, addToCart, selectForSell, setSelectForSell }: any = useDistributor();
 
   const [visible, setVisible] = useState(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  // Check if item is already in the cart
+  useEffect(() => {
+    setIsFavorite(cart.some((cartItem: any) => cartItem.product._id === item._id));
+  }, [cart, item._id]);
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      // Remove item from cart if already added
+      addToCart(item._id, "remove");
+    } else {
+      // Add item to cart
+      addToCart(item._id, "add");
+    }
+    setIsFavorite(!isFavorite); // Toggle the heart icon
+  };
 
   return (
     <View style={styles.productCard}>
@@ -30,16 +46,12 @@ const BuySellButton = ({ item }: { item: any }) => {
         </Pressable>
         <Text style={styles.productPrice}>MRP: {item.mrp}</Text>
         <View style={styles.buttonContainer}>
-          <Pressable
-            onPress={() => {
-              addToCart(item._id);
-            }}
-          >
-            {cart.find((cartItem: any) => cartItem.product._id === item._id) ? (
-              <Ionicons name="heart" size={24} color="#966440" />
-            ) : (
-              <Ionicons name="heart-outline" size={24} color="#966440" />
-            )}
+          <Pressable onPress={toggleFavorite}>
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={24}
+              color="#966440"
+            />
           </Pressable>
           <Pressable
             style={styles.button}
