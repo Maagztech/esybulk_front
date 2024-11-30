@@ -357,7 +357,7 @@ export default function ProductDetails({ id }: { id: string }) {
                     { marginBottom: 10, maxWidth: "65%", color: "#966440" },
                   ]}
                 >
-                  {userInfo?.village_city}, {userInfo?.district},{" "}
+                  {userInfo.street}, {userInfo?.village_city}, {userInfo?.district},{" "}
                   {userInfo?.state} - {userInfo?.pinCode}
                 </Text>
               </View>

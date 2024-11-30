@@ -26,6 +26,7 @@ const DistributorSignUp = () => {
   const [accountDetails, setAccountDetails] = useState({
     name: userInfo?.name || "",
     phoneNumber: userInfo?.phoneNumber ? String(userInfo.phoneNumber) : "",
+    street: userInfo?.street || "",
     village_city: userInfo?.village_city || "",
     pinCode: userInfo?.pinCode ? String(userInfo.pinCode) : "",
     district: userInfo?.district || "",
@@ -95,6 +96,7 @@ const DistributorSignUp = () => {
       accountDetails.phoneNumber &&
       accountDetails.categories.length > 0 &&
       accountDetails.village_city &&
+      accountDetails.street &&
       accountDetails.pinCode &&
       accountDetails.district &&
       accountDetails.state &&
@@ -146,10 +148,11 @@ const DistributorSignUp = () => {
         />
 
         <Pressable onPress={handleDropdownToggle} style={[styles.dropdownBox]}>
+        <Text style={styles.inputLabel}>Company Type</Text>
           <Text>
             {accountDetails.categories.length > 0
               ? accountDetails.categories.join(", ")
-              : "Industry Type"}
+              : ""}
           </Text>
           <Ionicons
             name={showDropdown ? "chevron-up" : "chevron-down"}
@@ -177,12 +180,19 @@ const DistributorSignUp = () => {
           </ScrollView>
         )}
 
-        <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
+        <Text style={{ fontWeight: "bold", marginBottom: 15 }}>
           Company Address{" "}
           <Text style={{ fontSize: 12, color: "#966440" }}>
             (Fill it correctly)
           </Text>
         </Text>
+        <LabeledInput
+          label="Street / Sahi / Chowk"
+          value={accountDetails.street}
+          onChangeText={(text: string) =>
+            setAccountDetails({ ...accountDetails, street: text })
+          }
+        />
         <LabeledInput
           label="Village / City"
           value={accountDetails.village_city}
@@ -390,13 +400,25 @@ const styles = StyleSheet.create({
   dropdownBox: {
     borderWidth: 1,
     borderColor: "#966440",
-    padding: 13,
+    backgroundColor: "#f0f0f0",
+    padding: 15,
     borderRadius: 7,
     width: "100%",
     marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    position: "relative",
+  },
+  inputLabel: {
+    position: "absolute",
+    top: -10,
+    left: 15,
+    backgroundColor: "#fff",
+    paddingHorizontal: 5,
+    fontSize: 12,
+    color: "#966440",
+    zIndex: 1,
   },
   dropdown: {
     borderWidth: 1,

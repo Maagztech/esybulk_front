@@ -52,7 +52,7 @@ const BusinessProfile = () => {
         <Text style={styles.sectionTitle}>Business Details</Text>
         <Text style={styles.infoLabel}>Address:</Text>
         <Text style={styles.infoText}>
-          {userInfo?.village_city},{userInfo?.district}, {userInfo?.state}
+          {userInfo?.street}, {userInfo?.village_city}, {userInfo?.district}, {userInfo?.state}
         </Text>
         <Text style={styles.infoLabel}>Pincode:</Text>
         <Text style={styles.infoText}>{userInfo?.pinCode}</Text>
