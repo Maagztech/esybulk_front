@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
-import LabeledInput from "../../global/labeledInput";
+import LabeledInput from "../../global/LabeledInput";
 
 const AddQuantityModal = ({ visible, setVisible }: any) => {
   const { access_token }: any = useAuth();

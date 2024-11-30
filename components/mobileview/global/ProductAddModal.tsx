@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import LabeledInput from "./labeledInput";
+import LabeledInput from "./LabeledInput";
 import LabeledMultilineInput from "./LabeledMultilineInput";
 
 type AddProductModalProps = {

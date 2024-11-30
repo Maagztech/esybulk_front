@@ -1,4 +1,4 @@
-import LabeledInput from "@/components/mobileview/global/labeledInput";
+import LabeledInput from "@/components/mobileview/global/LabeledInput";
 import { useAuth } from "@/context/authContext";
 import { useLoading } from "@/context/loadingContext";
 import { Ionicons } from "@expo/vector-icons";
