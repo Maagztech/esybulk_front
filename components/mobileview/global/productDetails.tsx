@@ -458,42 +458,41 @@ export default function ProductDetails({ id }: { id: string }) {
             position: "relative",
           }}
         >
-          {ratingAddLoading ||
-            (ratingAdded && (
-              <View
-                style={{
-                  position: "absolute",
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "white",
-                  opacity: 0.8,
-                  zIndex: 1,
-                  borderRadius: 10,
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {ratingAddLoading && (
-                  <ActivityIndicator size="small" color="#0000ff" />
-                )}
-                {ratingAdded && (
-                  <>
-                    <Ionicons name="checkmark-circle" size={30} color="green" />
-                    <Text
-                      style={{
-                        color: "green",
-                        fontSize: 20,
-                        marginVertical: 10,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Rating Added Successfully
-                    </Text>
-                  </>
-                )}
-              </View>
-            ))}
+          {(ratingAddLoading || ratingAdded) && (
+            <View
+              style={{
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                backgroundColor: "white",
+                opacity: 0.8,
+                zIndex: 1,
+                borderRadius: 10,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {ratingAddLoading && (
+                <ActivityIndicator size="small" color="green" />
+              )}
+              {ratingAdded && (
+                <>
+                  <Ionicons name="checkmark-circle" size={30} color="green" />
+                  <Text
+                    style={{
+                      color: "green",
+                      fontSize: 20,
+                      marginVertical: 10,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Rating Added Successfully
+                  </Text>
+                </>
+              )}
+            </View>
+          )}
           <Text
             style={{
               fontSize: 14,
