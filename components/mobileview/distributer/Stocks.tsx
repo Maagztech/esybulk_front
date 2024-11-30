@@ -5,12 +5,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  FlatList,
   Pressable,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
@@ -55,19 +55,20 @@ export const CompanyProducts = () => {
             <ActivityIndicator size="small" color="#0000ff" />
           </View>
         )}
-        <ScrollView
+        <FlatList
           style={styles.scrollContainer}
+          data={distributorCompanyStocks}
+          keyExtractor={(item: any) => item.id.toString()}
+          renderItem={({ item }) => <ItemCard product={item} />}
+          ListEmptyComponent={
+            <Text style={{ textAlign: "center", marginVertical: 20 }}>
+              You do not have any products yet.
+            </Text>
+          }
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
-        >
-          {distributorCompanyStocks.map((order: any) => (
-            <ItemCard product={order} key={order.id} />
-          ))}
-          {distributorCompanyStocks.length === 0 && (
-            <Text>You do not have any products yet.</Text>
-          )}
-        </ScrollView>
+        />
       </View>
       <AddProductModal
         isOpen={isOpen}

@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import {
+  FlatList,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 import { OrderNotChangeCard } from "./OrderNotChangeCard";
-
 const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
   const [refreshing, setRefreshing] = useState(false);
 
@@ -21,25 +20,26 @@ const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <ScrollView
+        <FlatList
           contentContainerStyle={styles.cardContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {orders.map((order: any, index: number) => (
-            <View style={styles.row} key={order.id}>
-              <OrderNotChangeCard order={order} />
+          data={orders}
+          keyExtractor={(item: any) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.row}>
+              <OrderNotChangeCard order={item} />
             </View>
-          ))}
-          {orders.length === 0 && (
+          )}
+          ListEmptyComponent={
             <View>
               <Text style={styles.headerTitle}>
                 You are not having any orders.
               </Text>
             </View>
-          )}
-        </ScrollView>
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
       </View>
     </View>
   );
