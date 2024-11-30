@@ -344,7 +344,7 @@ export default function ProductDetails({ id }: { id: string }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginTop:15
+                marginTop: 15,
               }}
             >
               <View>
@@ -357,8 +357,8 @@ export default function ProductDetails({ id }: { id: string }) {
                     { marginBottom: 10, maxWidth: "65%", color: "#966440" },
                   ]}
                 >
-                  {userInfo.street}, {userInfo?.village_city}, {userInfo?.district},{" "}
-                  {userInfo?.state} - {userInfo?.pinCode}
+                  {userInfo.street}, {userInfo?.village_city},{" "}
+                  {userInfo?.district}, {userInfo?.state} - {userInfo?.pinCode}
                 </Text>
               </View>
               <Pressable
@@ -578,7 +578,13 @@ export default function ProductDetails({ id }: { id: string }) {
                       marginVertical: 5, // Makes the View take only the Text's width
                     }}
                   >
-                    <Text style={{ color: "white" }}>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 10,
+                        fontWeight: "bold",
+                      }}
+                    >
                       {formatTime(comment.createdAt)}
                     </Text>
                   </View>
@@ -587,6 +593,7 @@ export default function ProductDetails({ id }: { id: string }) {
                     rating={comment.rating}
                     starSize={20}
                     color="#966440"
+                    style={{ marginLeft: -5 }}
                   />
                   <Text
                     style={{ fontSize: 14, color: "#333", marginVertical: 5 }}
@@ -597,9 +604,11 @@ export default function ProductDetails({ id }: { id: string }) {
               </View>
             ))}
           </ScrollView>
-          <Pressable onPress={() => loadComments()}>
-            <Text style={styles.showMoreButton}>View More</Text>
-          </Pressable>
+          {currentPage < totalPages && (
+            <Pressable onPress={() => loadComments()}>
+              <Text style={styles.showMoreButton}>View More</Text>
+            </Pressable>
+          )}
         </>
       )}
       <FlatList
