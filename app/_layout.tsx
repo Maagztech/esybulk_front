@@ -6,11 +6,6 @@ import { DistributorProvider } from "@/context/distributorContext";
 import { LoadingProvider } from "@/context/loadingContext";
 import { NotificationProvider } from "@/context/notificationsContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
@@ -53,9 +48,9 @@ export default function RootLayout() {
         <AuthProvider>
           <CompanyProvider>
             <DistributorProvider>
-              <ThemeProvider
+              {/* <ThemeProvider
                 value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-              >
+              > */}
                 <View style={styles.overlay}>
                   <SafeAreaView
                     style={styles.container}
@@ -81,7 +76,7 @@ export default function RootLayout() {
                     </PaperProvider>
                   </SafeAreaView>
                 </View>
-              </ThemeProvider>
+              {/* </ThemeProvider> */}
             </DistributorProvider>
           </CompanyProvider>
         </AuthProvider>
