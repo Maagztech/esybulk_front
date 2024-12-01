@@ -127,8 +127,6 @@ const DistributorSignUp = () => {
           street: address[0].street,
           village_city: address[0].city,
           pinCode: address[0].postalCode || "",
-          district: address[0].district,
-          state: address[0].region,
         });
       }
       setIsLoading(false);
