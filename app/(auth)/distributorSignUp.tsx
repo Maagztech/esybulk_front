@@ -147,7 +147,7 @@ const DistributorSignUp = () => {
           keyboardType="phone-pad"
         />
 
-        <Pressable onPress={handleDropdownToggle} style={[styles.dropdownBox]}>
+        <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
         <Text style={styles.inputLabel}>Company Type</Text>
           <Text>
             {accountDetails.categories.length > 0
@@ -435,7 +435,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   icon: {
-    marginLeft: 10,
+    position: "absolute",
+    right: 10,
   },
 });
 

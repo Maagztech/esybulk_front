@@ -362,7 +362,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   icon: {
-    marginLeft: 10,
+    position: "absolute",
+    right: 10,
   },
 });
 

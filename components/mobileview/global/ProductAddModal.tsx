@@ -790,7 +790,8 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    marginLeft: 10,
+    position: "absolute",
+    right: 10,
   },
 });
 
