@@ -1,6 +1,7 @@
 import LabeledInput from "@/components/mobileview/global/LabeledInput";
 import { useAuth } from "@/context/authContext";
 import { useLoading } from "@/context/loadingContext";
+import { getCurrentLocation } from "@/utils/returnUserLocation";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -116,6 +117,28 @@ const DistributorSignUp = () => {
     setShowDropdown(!showDropdown);
   };
 
+  const handleUserLocation = async () => {
+    try {
+      setIsLoading(true);
+      const address = await getCurrentLocation();
+      if (address) {
+        setAccountDetails({
+          ...accountDetails,
+          street: address[0].street,
+          village_city: address[0].city,
+          pinCode: address[0].postalCode || "",
+          district: address[0].district,
+          state: address[0].region,
+        });
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.innerContainer}>
@@ -148,7 +171,7 @@ const DistributorSignUp = () => {
         />
 
         <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
-        <Text style={styles.inputLabel}>Company Type</Text>
+          <Text style={styles.inputLabel}>Company Type</Text>
           <Text>
             {accountDetails.categories.length > 0
               ? accountDetails.categories.join(", ")
@@ -186,6 +209,16 @@ const DistributorSignUp = () => {
             (Fill it correctly)
           </Text>
         </Text>
+        <Pressable
+          style={styles.otpButton}
+          onPress={() => {
+            handleUserLocation();
+          }}
+        >
+          <Text style={{ fontWeight: "bold", color: "white" }}>
+            Automatic Fill Location
+          </Text>
+        </Pressable>
         <LabeledInput
           label="Street / Sahi / Chowk"
           value={accountDetails.street}
@@ -284,6 +317,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     zIndex: 1,
   },
+  otpButton: {
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "#966440",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
+  },
   innerContainer: {
     width: "100%",
     maxWidth: 500, // Max width for the form
@@ -323,13 +364,6 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  otpButton: {
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    alignItems: "center",
-    width: "100%",
   },
   otpButtonText: {
     color: "#fff",

@@ -1,6 +1,7 @@
 import LabeledInput from "@/components/mobileview/global/LabeledInput";
 import { useAuth } from "@/context/authContext";
 import { useLoading } from "@/context/loadingContext";
+import { getCurrentLocation } from "@/utils/returnUserLocation";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -114,6 +115,29 @@ const CompanySignUp = () => {
     setShowDropdown(!showDropdown);
   };
 
+
+  const handleUserLocation = async () => {
+    try {
+      setIsLoading(true);
+      const address = await getCurrentLocation();
+      if (address) {
+        setAccountDetails({
+          ...accountDetails,
+          street: address[0].street,
+          village_city: address[0].city,
+          pinCode: address[0].postalCode || "",
+          district: address[0].district,
+          state: address[0].region,
+        });
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.innerContainer}>
@@ -186,6 +210,16 @@ const CompanySignUp = () => {
             (Fill it correctly)
           </Text>
         </Text>
+        <Pressable
+          style={styles.otpButton}
+          onPress={() => {
+            handleUserLocation();
+          }}
+        >
+          <Text style={{ fontWeight: "bold", color: "white" }}>
+            Automatic Fill Location
+          </Text>
+        </Pressable>
         <LabeledInput
           label="Street / Sahi / Chowk"
           value={accountDetails.street}
@@ -405,6 +439,14 @@ const styles = StyleSheet.create({
   icon: {
     position: "absolute",
     right: 10,
+  },
+  otpButton: {
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "#966440",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
   },
 });
 
