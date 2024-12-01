@@ -164,7 +164,7 @@ const ShopKeeperSignUp = () => {
                   }
                   onPress={() => handleTypeChange(type)}
                 />
-                <Text>{type}</Text>
+                <Text onPress={() => handleTypeChange(type)}>{type}</Text>
               </View>
             ))}
           </ScrollView>
