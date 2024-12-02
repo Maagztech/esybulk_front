@@ -49,7 +49,6 @@ export const OrderNotChangeCard = ({ order }: any) => {
           router.push(`/product/${product._id}`);
         }}
       >
-        {" "}
         <Image
           source={{ uri: product.images[0] }}
           style={styles.productImage}
@@ -60,13 +59,13 @@ export const OrderNotChangeCard = ({ order }: any) => {
       <View style={styles.buttonAndInfo}>
         <View style={styles.infoContainer}>
           <Text style={styles.productInfo}>
-            Quantity Deliver:{" "}
+            Quantity:{" "}
             <Text style={styles.quantity}>{order.quantity}</Text>
           </Text>
           <Text style={styles.productInfo}>
             Cost:{" "}
             <Text style={styles.quantity}>
-              ₹ {order.price}*{order.quantity}
+              ₹ {order.price * order.quantity}
             </Text>
           </Text>
         </View>

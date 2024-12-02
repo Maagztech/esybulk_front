@@ -153,7 +153,6 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      
       <ScrollView contentContainerStyle={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Update Quantity</Text>
@@ -161,7 +160,9 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
           <Text style={styles.subAbout} numberOfLines={3} ellipsizeMode="tail">
             {selectForSell?.about}
           </Text>
-          <Text style={{ marginBottom: 20 }}>MRP:{selectForSell?.mrp}</Text>
+          <Text style={{ marginBottom: 20, fontWeight: "bold" }}>
+            MRP:{selectForSell?.mrp}
+          </Text>
           <LabeledInput
             label="Quantity Available"
             value={productData.quantity}
@@ -203,7 +204,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
                     updateBuyOption(
                       index,
                       "price",
-                      value.replace(/[^0-9]/g, "")
+                      value.replace(/[^0-9.]/g, "").replace(/(\..*?)\./g, "$1")
                     )
                   }
                 />
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   subAbout: {
-    fontSize: 18,
+    fontSize: 15,
     marginVertical: 10,
   },
   buyOptionContainer: {
@@ -323,10 +324,12 @@ const styles = StyleSheet.create({
   buyOptionInput: {
     borderWidth: 1,
     borderColor: "#966440",
+    backgroundColor: "#f0f0f0",
     padding: 15,
     borderRadius: 5,
     marginRight: 10,
     flex: 1,
+    fontSize: 11,
   },
   inputLabel: {
     position: "absolute",

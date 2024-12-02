@@ -96,7 +96,7 @@ export const ItemCard = ({ order }: any) => {
           <Text style={styles.productInfo}>
             Price to collect:{" "}
             <Text style={styles.price}>
-              ₹ {order.cost}*{order.quantityToDeliver}
+              ₹ {order.cost * order.quantityToDeliver}
             </Text>
           </Text>
           <Text style={styles.productInfo}>
@@ -105,7 +105,8 @@ export const ItemCard = ({ order }: any) => {
           <Text style={styles.productInfo}>
             Location:{" "}
             <Text style={styles.location}>
-              {order.street},{order.village_city},{order.district},{order.state}
+              {order?.street},{order.village_city},{order.district},
+              {order.state}
             </Text>
           </Text>
           <Text style={styles.productInfo}>
@@ -267,9 +268,11 @@ const styles = StyleSheet.create({
   },
   shop: {
     fontStyle: "italic",
+    fontWeight:"bold"
   },
   location: {
     color: "#555",
+    fontWeight:"bold"
   },
   buttonAndInfo: {
     flexDirection: "row",

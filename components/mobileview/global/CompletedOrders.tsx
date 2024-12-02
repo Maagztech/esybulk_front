@@ -32,7 +32,7 @@ export const CompletedOrders = ({ loadSellOrdered, orders }: any) => {
             )}
             ListEmptyComponent={
               <View>
-                <Text>You are not having any orders.</Text>
+                <Text style={styles.headerTitle}>You are not having any orders.</Text>
               </View>
             }
             refreshControl={

@@ -594,7 +594,7 @@ const AddProductModal = ({
                     updateBuyOption(
                       index,
                       "price",
-                      value.replace(/[^0-9]/g, "")
+                      value.replace(/[^0-9.]/g, "").replace(/(\..*?)\./g, "$1")
                     )
                   }
                 />

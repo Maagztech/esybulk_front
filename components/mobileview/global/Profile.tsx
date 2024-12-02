@@ -2,14 +2,14 @@ import { useAuth } from "@/context/authContext";
 import { router } from "expo-router";
 import React from "react";
 import {
-  Alert,
-  Image,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    Image,
+    Linking,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 
 const BusinessProfile = () => {

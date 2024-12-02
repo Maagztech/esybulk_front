@@ -357,7 +357,7 @@ export default function ProductDetails({ id }: { id: string }) {
                     { marginBottom: 10, maxWidth: "65%", color: "#966440" },
                   ]}
                 >
-                  {userInfo.street}, {userInfo?.village_city},{" "}
+                  {userInfo?.street}, {userInfo?.village_city},{" "}
                   {userInfo?.district}, {userInfo?.state} - {userInfo?.pinCode}
                 </Text>
               </View>
@@ -379,6 +379,7 @@ export default function ProductDetails({ id }: { id: string }) {
               <View style={styles.table}>
                 <View style={styles.tableHeader}>
                   <Text style={styles.tableHeaderText}>Quantity</Text>
+                  <Text style={styles.tableHeaderText}>Price / item</Text>
                   <Text style={styles.tableHeaderText}>Price</Text>
                   <Text style={styles.tableHeaderText}>Profit</Text>
                   {userInfo?.role != "company" && (
@@ -388,11 +389,17 @@ export default function ProductDetails({ id }: { id: string }) {
                 {combinedBuyOptions.map((options, index) =>
                   options.map((option, subIndex) => (
                     <View key={`${index}-${subIndex}`} style={styles.tableRow}>
-                      <Text style={styles.tableCell}>{option.quantity}</Text>
-                      <Text style={styles.tableCell}>₹{option.price}</Text>
+                      <Text style={styles.tableCell}>{option?.quantity}</Text>
                       <Text style={styles.tableCell}>
                         ₹
-                        {(productDetails?.mrp ?? 0) * option.quantity -
+                        {(option?.price / option?.quantity)
+                          .toFixed(2)
+                          .replace(/\.00$/, "")}
+                      </Text>
+                      <Text style={styles.tableCell}>₹{option?.price}</Text>
+                      <Text style={styles.tableCell}>
+                        ₹
+                        {(productDetails?.mrp ?? 0) * option?.quantity -
                           option.price}
                       </Text>
 

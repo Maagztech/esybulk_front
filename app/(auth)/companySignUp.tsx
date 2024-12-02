@@ -82,7 +82,7 @@ const CompanySignUp = () => {
       accountDetails.companyName &&
       accountDetails.categories.length > 0 &&
       accountDetails.village_city &&
-      accountDetails.street &&
+      accountDetails?.street &&
       accountDetails.pinCode &&
       accountDetails.district &&
       accountDetails.state &&
@@ -123,7 +123,7 @@ const CompanySignUp = () => {
       if (address) {
         setAccountDetails({
           ...accountDetails,
-          street: address[0].street,
+          street: address[0]?.street,
           village_city: address[0].city,
           pinCode: address[0].postalCode || "",
         });
@@ -220,7 +220,7 @@ const CompanySignUp = () => {
         </Pressable>
         <LabeledInput
           label="Street / Sahi / Chowk"
-          value={accountDetails.street}
+          value={accountDetails?.street}
           onChangeText={(text: string) =>
             setAccountDetails({ ...accountDetails, street: text })
           }

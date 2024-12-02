@@ -23,7 +23,7 @@ const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
         <FlatList
           contentContainerStyle={styles.cardContainer}
           data={orders}
-          keyExtractor={(item: any) => item.id.toString()}
+          keyExtractor={(item: any) => item._id.toString()}
           renderItem={({ item }) => (
             <View style={styles.row}>
               <OrderNotChangeCard order={item} />
@@ -48,7 +48,6 @@ const ShopkeeperCompletedOrders = ({ loadBuyOrdered, orders }: any) => {
 const styles = StyleSheet.create({
   container: {
     minHeight: 500,
-    padding: 20,
     display: "flex",
     alignItems: "center",
   },
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginVertical: 20,
   },
   scrollContent: {
     paddingBottom: 20,

@@ -3,36 +3,31 @@ import { useDistributor } from "@/context/distributorContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 
 const BuySellButton = ({ item }: { item: any }) => {
   const { userInfo }: any = useAuth();
-  const { cart, addToCart, selectForSell, setSelectForSell }: any = useDistributor();
+  const { cart, addToCart, selectForSell, setSelectForSell }: any =
+    useDistributor();
 
   const [visible, setVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  // Check if item is already in the cart
+  const [cartLoading, setCartLoading] = useState(false);
   useEffect(() => {
-    setIsFavorite(cart.some((cartItem: any) => cartItem.product._id === item._id));
+    if (cartLoading) return;
+    setIsFavorite(
+      cart.some((cartItem: any) => cartItem.product._id === item._id)
+    );
   }, [cart, item._id]);
 
-  const toggleFavorite = () => {
-    if (isFavorite) {
-      // Remove item from cart if already added
-      addToCart(item._id, "remove");
-    } else {
-      // Add item to cart
-      addToCart(item._id, "add");
-    }
-    setIsFavorite(!isFavorite); // Toggle the heart icon
+  const toggleFavorite = async () => {
+    setIsFavorite(!isFavorite);
+    setCartLoading(true);
+    await addToCart(item._id);
+    setCartLoading(false);
+     // Toggle the heart icon
   };
 
   return (
@@ -44,7 +39,15 @@ const BuySellButton = ({ item }: { item: any }) => {
         <Pressable onPress={() => router.push(`product/${item._id}` as never)}>
           <Text style={styles.productName}>{item.title}</Text>
         </Pressable>
-        <Text style={styles.productPrice}>MRP: {item.mrp}</Text>
+        <Text style={styles.productPrice}>
+          MRP: {item.mrp}{" "}
+          {item.lessPrice && (
+            <Text style={styles.productDiscount}>
+              -{((item.mrp - item.lessPrice) / item.mrp).toFixed(2)}%
+            </Text>
+          )}
+        </Text>
+
         <View style={styles.buttonContainer}>
           <Pressable onPress={toggleFavorite}>
             <Ionicons
@@ -109,6 +112,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#B12704",
     marginVertical: 4,
+    fontWeight: "bold",
+  },
+  productDiscount: {
+    fontSize: 12,
+    color: "#B12704",
+    marginVertical: 4,
+    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",

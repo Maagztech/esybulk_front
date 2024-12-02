@@ -58,7 +58,7 @@ export const ProductsToBuyNearbydistributor = () => {
             onPress={() => setQuery("")}
             style={{
               margin: 5,
-              backgroundColor: query === "" ? "black" : "gray",
+              backgroundColor: query === "" ? "black" : "black",
               paddingHorizontal: 15,
               paddingVertical: 5,
               borderRadius: 50,
@@ -71,7 +71,7 @@ export const ProductsToBuyNearbydistributor = () => {
               onPress={() => setQuery(item)}
               style={{
                 margin: 5,
-                backgroundColor: query === item ? "black" : "gray",
+                backgroundColor: query === item ? "black" : "black",
                 paddingHorizontal: 15,
                 paddingVertical: 5,
                 borderRadius: 50,

@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { OrderNotChangeCard } from "./OrderNotChangeCard";
 
 const ShopkeeperPendingOrders = ({ loadBuyOrdered, orders }: any) => {
@@ -23,7 +17,7 @@ const ShopkeeperPendingOrders = ({ loadBuyOrdered, orders }: any) => {
         <FlatList
           contentContainerStyle={styles.cardContainer}
           data={orders}
-          keyExtractor={(item: any) => item.id.toString()}
+          keyExtractor={(item: any) => item._id.toString()}
           renderItem={({ item }) => (
             <View style={styles.row}>
               <OrderNotChangeCard order={item} />
@@ -46,7 +40,7 @@ const ShopkeeperPendingOrders = ({ loadBuyOrdered, orders }: any) => {
 const styles = StyleSheet.create({
   container: {
     minHeight: 500,
-    flexDirection: "row",
+    display: "flex",
     alignItems: "center",
   },
   innerContainer: {
@@ -57,6 +51,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    marginVertical:20
   },
   cardContainer: {
     flexDirection: "column",
