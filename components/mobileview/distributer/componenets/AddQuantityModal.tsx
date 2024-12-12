@@ -4,20 +4,24 @@ import { useDistributor } from "@/context/distributorContext";
 import { useLoading } from "@/context/loadingContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Dimensions,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import LabeledInput from "../../global/LabeledInput";
-
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AddQuantityModal = ({ visible, setVisible }: any) => {
+  const modalHeight = useRef(new Animated.Value(SCREEN_HEIGHT * 0.7)).current;
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
   const { selectForSell, setSelectForSell }: any = useDistributor();
@@ -28,8 +32,10 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
   });
 
   useEffect(() => {
-    if (selectForSell) fetchSellOptions();
-  }, [selectForSell]);
+    if (visible && selectForSell) {
+      fetchSellOptions();
+    }
+  }, [visible, selectForSell]);
 
   const fetchSellOptions = async () => {
     const response = await axios.get(
@@ -37,20 +43,18 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       { headers: { Authorization: `${access_token}` } }
     );
     const options = response.data;
-    if (options.quantity && options.price.length != 0) {
-      setProductData({
-        quantity: String(options.quantity),
-        buyOptions: options.price.map((option: any) => ({
-          quantity: String(option.quantity),
-          price: String(option.price),
-        })),
-      });
-    }
+    setProductData({
+      quantity: String(options.quantity),
+      buyOptions: options.price.map((option: any) => ({
+        quantity: String(option.quantity),
+        price: String(option.price),
+      })),
+    });
   };
-
   const closeModal = () => {
-    setSelectForSell(null);
     setVisible(false);
+    setSelectForSell(null);
+    setProductData({ quantity: "", buyOptions: [{ quantity: "", price: "" }] });
   };
 
   const canSignUp = () => {
@@ -86,7 +90,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
         { headers: { Authorization: `${access_token}` } }
       );
       Toast.show({
-        type: "info",
+        type: "success",
         text1: "Updated",
         text2: "Sell option updated successfully.",
       });
@@ -153,108 +157,142 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <ScrollView contentContainerStyle={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Update Quantity</Text>
-          <Text style={styles.subTitle}>{selectForSell?.title}</Text>
-          <Text style={styles.subAbout} numberOfLines={3} ellipsizeMode="tail">
-            {selectForSell?.about}
-          </Text>
-          <Text style={{ marginBottom: 20, fontWeight: "bold" }}>
-            MRP:{selectForSell?.mrp}
-          </Text>
-          <LabeledInput
-            label="Quantity Available"
-            value={productData.quantity}
-            keyboardType="numeric"
-            onChangeText={(value: any) =>
-              setProductData((prevData) => ({
-                ...prevData,
-                quantity: value.replace(/[^0-9]/g, ""),
-              }))
-            }
-          />
-          <Text style={styles.subTitle}>Sell Options</Text>
-          {productData.buyOptions.map((option, index) => (
-            <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>quantity</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Quantity"
-                  value={option.quantity}
-                  keyboardType="numeric"
-                  onChangeText={(value) =>
-                    updateBuyOption(
-                      index,
-                      "quantity",
-                      value.replace(/[^0-9]/g, "")
-                    )
-                  }
-                />
-              </View>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>Price / Piece</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Price"
-                  value={option.price}
-                  keyboardType="decimal-pad"
-                  onChangeText={(value) =>
-                    updateBuyOption(
-                      index,
-                      "price",
-                      value.replace(/[^0-9.]/g, "").replace(/(\..*?)\./g, "$1")
-                    )
-                  }
-                />
-              </View>
-              <Pressable
-                onPress={() => handleDeleteOption(index)}
-                style={styles.deleteButton}
+      <View style={styles.overlay}>
+        <TouchableOpacity style={styles.background} onPress={closeModal} />
+        <Animated.View style={[styles.modalContainer, { height: modalHeight }]}>
+          <View style={styles.handleBar} />
+          <ScrollView contentContainerStyle={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Update Quantity</Text>
+              <Text style={styles.subTitle}>{selectForSell?.title}</Text>
+              <Text
+                style={styles.subAbout}
+                numberOfLines={3}
+                ellipsizeMode="tail"
               >
-                <Ionicons name="trash" size={24} color="white" />
+                {selectForSell?.about}
+              </Text>
+              <Text style={{ marginBottom: 20, fontWeight: "bold" }}>
+                MRP:{selectForSell?.mrp}
+              </Text>
+              <LabeledInput
+                label="Quantity Available"
+                value={productData.quantity}
+                keyboardType="numeric"
+                onChangeText={(value: any) =>
+                  setProductData((prevData) => ({
+                    ...prevData,
+                    quantity: value.replace(/[^0-9]/g, ""),
+                  }))
+                }
+              />
+              <Text style={styles.subTitle}>Sell Options</Text>
+              {productData.buyOptions.map((option, index) => (
+                <View key={index} style={styles.buyOptionContainer}>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>quantity</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Quantity"
+                      value={option.quantity}
+                      keyboardType="numeric"
+                      onChangeText={(value) =>
+                        updateBuyOption(
+                          index,
+                          "quantity",
+                          value.replace(/[^0-9]/g, "")
+                        )
+                      }
+                    />
+                  </View>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>Price / Piece</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Price"
+                      value={option.price}
+                      keyboardType="decimal-pad"
+                      onChangeText={(value) =>
+                        updateBuyOption(
+                          index,
+                          "price",
+                          value
+                            .replace(/[^0-9.]/g, "")
+                            .replace(/(\..*?)\./g, "$1")
+                        )
+                      }
+                    />
+                  </View>
+                  <Pressable
+                    onPress={() => handleDeleteOption(index)}
+                    style={styles.deleteButton}
+                  >
+                    <Ionicons name="trash" size={24} color="white" />
+                  </Pressable>
+                </View>
+              ))}
+              <Pressable
+                onPress={addBuyOption}
+                style={{ alignItems: "center", marginBottom: 20 }}
+              >
+                <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
               </Pressable>
-            </View>
-          ))}
-          <Pressable
-            onPress={addBuyOption}
-            style={{ alignItems: "center", marginBottom: 20 }}
-          >
-            <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
-          </Pressable>
 
-          <View style={styles.buttonContainer}>
-            <Pressable
-              style={[styles.fullButton, styles.cancelButton]}
-              onPress={closeModal}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.fullButton, styles.addButton]}
-              onPress={handleAddProduct}
-            >
-              {!selectForSell ? (
-                <Text style={styles.buttonText}>Add</Text>
-              ) : (
-                <Text style={styles.buttonText}>Update</Text>
-              )}
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-      <Toast />
+              <View style={styles.buttonContainer}>
+                <Pressable
+                  style={[styles.fullButton, styles.cancelButton]}
+                  onPress={closeModal}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.fullButton, styles.addButton]}
+                  onPress={handleAddProduct}
+                >
+                  {!selectForSell ? (
+                    <Text style={styles.buttonText}>Add</Text>
+                  ) : (
+                    <Text style={styles.buttonText}>Update</Text>
+                  )}
+                </Pressable>
+              </View>
+            </View>
+          </ScrollView>
+        </Animated.View>
+        <Toast />
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  handleBar: {
+    width: 40,
+    height: 5,
+    backgroundColor: "#ccc",
+    borderRadius: 2.5,
+    alignSelf: "center",
+    marginVertical: 4,
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: "100%",
+    overflow: "hidden",
+  },
+  overlay: {
     flex: 1,
+    justifyContent: "flex-end",
+  },
+  background: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalOverlay: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    width: "100%",
   },
   modalContent: {
     backgroundColor: "#fff",
@@ -264,10 +302,9 @@ const styles = StyleSheet.create({
     maxWidth: 700,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 15,
+    marginBottom: 20,
     textAlign: "center",
   },
   input: {
@@ -311,6 +348,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 3,
+    marginBottom: 10,
   },
   subAbout: {
     fontSize: 15,
@@ -329,7 +367,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     flex: 1,
-    fontSize: 11,
   },
   inputLabel: {
     position: "absolute",

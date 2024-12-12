@@ -4,8 +4,10 @@ import { useLoading } from "@/context/loadingContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Dimensions,
   FlatList,
   Image,
   Modal,
@@ -14,6 +16,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
@@ -26,12 +29,13 @@ type AddProductModalProps = {
   setIsOpen: (isOpen: boolean) => void;
   setLoading?: (loading: boolean) => void; // Optional setLoading prop
 };
-
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AddProductModal = ({
   isOpen,
   setIsOpen,
   setLoading,
 }: AddProductModalProps) => {
+  const modalHeight = useRef(new Animated.Value(SCREEN_HEIGHT * 0.8)).current;
   const { access_token }: any = useAuth();
   const { setIsLoading }: any = useLoading();
   const {
@@ -429,218 +433,260 @@ const AddProductModal = ({
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <ScrollView contentContainerStyle={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Add Product</Text>
-          <Pressable style={styles.imageButton} onPress={pickImages}>
-            <Text style={styles.buttonText}>
-              {productData.images.length > 0
-                ? `${productData.images.length} Photos Selected`
-                : "Select Photos"}
-            </Text>
-          </Pressable>
-          <FlatList
-            horizontal
-            data={productData.images}
-            renderItem={({ item, index }) => (
-              <View style={styles.imageContainer}>
-                <Image source={{ uri: item }} style={styles.imageThumbnail} />
+      <View style={styles.overlay}>
+        <TouchableOpacity style={styles.background} onPress={closeModal} />
+        <Animated.View style={[styles.modalContainer, { height: modalHeight }]}>
+          <View style={styles.handleBar} />
+          <ScrollView contentContainerStyle={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Add Product</Text>
+              <Pressable style={styles.imageButton} onPress={pickImages}>
+                <Text style={styles.buttonText}>
+                  {productData.images.length > 0
+                    ? `${productData.images.length} Photos Selected`
+                    : "Select Photos"}
+                </Text>
+              </Pressable>
+              <FlatList
+                horizontal
+                data={productData.images}
+                renderItem={({ item, index }) => (
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={{ uri: item }}
+                      style={styles.imageThumbnail}
+                    />
+                    <Pressable
+                      style={styles.deleteImageButton}
+                      onPress={() => removeImage(index)}
+                    >
+                      <Ionicons name="close-circle" size={24} color="white" />
+                    </Pressable>
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              <LabeledInput
+                label="Product Name"
+                value={productData.title}
+                onChangeText={(value: string) =>
+                  setProductData((prevData) => ({ ...prevData, title: value }))
+                }
+              />
+              <LabeledMultilineInput
+                label="About Product (optional)"
+                value={productData.about}
+                onChangeText={(value: string) =>
+                  setProductData((prevData) => ({ ...prevData, about: value }))
+                }
+                multiline={3}
+              />
+              <Text style={styles.subTitle}>
+                Product Proporties{" "}
+                <Text style={styles.subsubTitle}>
+                  {" "}
+                  (Brand,Size,Weight etc.)
+                </Text>
+              </Text>
+              {productData.proporties.map((option, index) => (
+                <View key={index} style={styles.buyOptionContainer}>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>Questions</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Size"
+                      value={option.question}
+                      onChangeText={(value) =>
+                        updateProductProporties(index, "question", value)
+                      }
+                    />
+                  </View>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>Answer</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Medium"
+                      value={option.answer}
+                      onChangeText={(value) =>
+                        updateProductProporties(index, "answer", value)
+                      }
+                    />
+                  </View>
+                  <Pressable
+                    onPress={() => handleDeleteProporties(index)}
+                    style={styles.deleteButton}
+                  >
+                    <Ionicons name="trash" size={24} color="white" />
+                  </Pressable>
+                </View>
+              ))}
+
+              <Pressable onPress={addProporties} style={{ marginBottom: 20 }}>
+                <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
+              </Pressable>
+
+              <Pressable
+                onPress={handleDropdownToggle}
+                style={styles.dropdownBox}
+              >
+                <Text style={styles.inputLabel}>Product Category</Text>
+                <Text>
+                  {productData.type.length > 0
+                    ? productData.type.join(", ")
+                    : ""}
+                </Text>
+                <Ionicons
+                  name={showDropdown ? "chevron-up" : "chevron-down"}
+                  size={24}
+                  color="black"
+                  style={styles.icon}
+                />
+              </Pressable>
+
+              {showDropdown && (
+                <View style={styles.dropdownContainer}>
+                  <ScrollView style={styles.dropdown}>
+                    {types.map((type) => (
+                      <View key={type} style={styles.checkboxContainer}>
+                        <Checkbox
+                          status={
+                            productData.type.includes(type)
+                              ? "checked"
+                              : "unchecked"
+                          }
+                          onPress={() => handleTypeChange(type)}
+                        />
+                        <Text>{type}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+
+              <LabeledInput
+                label="MRP"
+                value={productData.mrp}
+                keyboardType="decimal-pad"
+                onChangeText={(value: any) =>
+                  setProductData((prevData) => ({ ...prevData, mrp: value }))
+                }
+              />
+              <LabeledInput
+                label="Quantity Available"
+                value={productData.quantity}
+                keyboardType="numeric"
+                onChangeText={(value: any) =>
+                  setProductData((prevData) => ({
+                    ...prevData,
+                    quantity: value.replace(/[^0-9]/g, ""),
+                  }))
+                }
+              />
+
+              <Text style={styles.subTitle}>Sell Options</Text>
+              {productData.buyOptions.map((option, index) => (
+                <View key={index} style={styles.buyOptionContainer}>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>quantity</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Quantity"
+                      value={option.quantity}
+                      keyboardType="numeric"
+                      onChangeText={(value) =>
+                        updateBuyOption(
+                          index,
+                          "quantity",
+                          value.replace(/[^0-9]/g, "")
+                        )
+                      }
+                    />
+                  </View>
+                  <View style={{ position: "relative", width: "43%" }}>
+                    <Text style={styles.inputLabel}>Price / Piece</Text>
+                    <TextInput
+                      style={styles.buyOptionInput}
+                      placeholder="Price"
+                      value={option.price}
+                      keyboardType="decimal-pad"
+                      onChangeText={(value) =>
+                        updateBuyOption(
+                          index,
+                          "price",
+                          value
+                            .replace(/[^0-9.]/g, "")
+                            .replace(/(\..*?)\./g, "$1")
+                        )
+                      }
+                    />
+                  </View>
+                  <Pressable
+                    onPress={() => handleDeleteOption(index)}
+                    style={styles.deleteButton}
+                  >
+                    <Ionicons name="trash" size={24} color="white" />
+                  </Pressable>
+                </View>
+              ))}
+              <Pressable onPress={addBuyOption} style={{ marginBottom: 20 }}>
+                <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
+              </Pressable>
+
+              <View style={styles.buttonContainer}>
                 <Pressable
-                  style={styles.deleteImageButton}
-                  onPress={() => removeImage(index)}
+                  style={[styles.fullButton, styles.cancelButton]}
+                  onPress={closeModal}
                 >
-                  <Ionicons name="close-circle" size={24} color="white" />
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.fullButton, styles.addButton]}
+                  onPress={handleAddProduct}
+                >
+                  {!selectedProduct ? (
+                    <Text style={styles.buttonText}>Add</Text>
+                  ) : (
+                    <Text style={styles.buttonText}>Update</Text>
+                  )}
                 </Pressable>
               </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-          <LabeledInput
-            label="Product Name"
-            value={productData.title}
-            onChangeText={(value: string) =>
-              setProductData((prevData) => ({ ...prevData, title: value }))
-            }
-          />
-          <LabeledMultilineInput
-            label="About Product (optional)"
-            value={productData.about}
-            onChangeText={(value: string) =>
-              setProductData((prevData) => ({ ...prevData, about: value }))
-            }
-            multiline={3}
-          />
-          <Text style={styles.subTitle}>
-            Product Proporties{" "}
-            <Text style={styles.subsubTitle}> (Brand,Size,Weight etc.)</Text>
-          </Text>
-          {productData.proporties.map((option, index) => (
-            <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>Questions</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Size"
-                  value={option.question}
-                  onChangeText={(value) =>
-                    updateProductProporties(index, "question", value)
-                  }
-                />
-              </View>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>Answer</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Medium"
-                  value={option.answer}
-                  onChangeText={(value) =>
-                    updateProductProporties(index, "answer", value)
-                  }
-                />
-              </View>
-              <Pressable
-                onPress={() => handleDeleteProporties(index)}
-                style={styles.deleteButton}
-              >
-                <Ionicons name="trash" size={24} color="white" />
-              </Pressable>
             </View>
-          ))}
-
-          <Pressable onPress={addProporties} style={{ marginBottom: 20 }}>
-            <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
-          </Pressable>
-
-          <Pressable onPress={handleDropdownToggle} style={styles.dropdownBox}>
-            <Text style={styles.inputLabel}>Product Category</Text>
-            <Text>
-              {productData.type.length > 0 ? productData.type.join(", ") : ""}
-            </Text>
-            <Ionicons
-              name={showDropdown ? "chevron-up" : "chevron-down"}
-              size={24}
-              color="black"
-              style={styles.icon}
-            />
-          </Pressable>
-
-          {showDropdown && (
-            <View style={styles.dropdownContainer}>
-              <ScrollView style={styles.dropdown}>
-                {types.map((type) => (
-                  <View key={type} style={styles.checkboxContainer}>
-                    <Checkbox
-                      status={
-                        productData.type.includes(type)
-                          ? "checked"
-                          : "unchecked"
-                      }
-                      onPress={() => handleTypeChange(type)}
-                    />
-                    <Text>{type}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-          )}
-
-          <LabeledInput
-            label="MRP"
-            value={productData.mrp}
-            keyboardType="decimal-pad"
-            onChangeText={(value: any) =>
-              setProductData((prevData) => ({ ...prevData, mrp: value }))
-            }
-          />
-          <LabeledInput
-            label="Quantity Available"
-            value={productData.quantity}
-            keyboardType="numeric"
-            onChangeText={(value: any) =>
-              setProductData((prevData) => ({
-                ...prevData,
-                quantity: value.replace(/[^0-9]/g, ""),
-              }))
-            }
-          />
-
-          <Text style={styles.subTitle}>Sell Options</Text>
-          {productData.buyOptions.map((option, index) => (
-            <View key={index} style={styles.buyOptionContainer}>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>quantity</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Quantity"
-                  value={option.quantity}
-                  keyboardType="numeric"
-                  onChangeText={(value) =>
-                    updateBuyOption(
-                      index,
-                      "quantity",
-                      value.replace(/[^0-9]/g, "")
-                    )
-                  }
-                />
-              </View>
-              <View style={{ position: "relative", width: "43%" }}>
-                <Text style={styles.inputLabel}>Price / Piece</Text>
-                <TextInput
-                  style={styles.buyOptionInput}
-                  placeholder="Price"
-                  value={option.price}
-                  keyboardType="decimal-pad"
-                  onChangeText={(value) =>
-                    updateBuyOption(
-                      index,
-                      "price",
-                      value.replace(/[^0-9.]/g, "").replace(/(\..*?)\./g, "$1")
-                    )
-                  }
-                />
-              </View>
-              <Pressable
-                onPress={() => handleDeleteOption(index)}
-                style={styles.deleteButton}
-              >
-                <Ionicons name="trash" size={24} color="white" />
-              </Pressable>
-            </View>
-          ))}
-          <Pressable onPress={addBuyOption} style={{ marginBottom: 20 }}>
-            <Ionicons name="add-circle-outline" size={24} color="#3498DB" />
-          </Pressable>
-
-          <View style={styles.buttonContainer}>
-            <Pressable
-              style={[styles.fullButton, styles.cancelButton]}
-              onPress={closeModal}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.fullButton, styles.addButton]}
-              onPress={handleAddProduct}
-            >
-              {!selectedProduct ? (
-                <Text style={styles.buttonText}>Add</Text>
-              ) : (
-                <Text style={styles.buttonText}>Update</Text>
-              )}
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-      <Toast />
+          </ScrollView>
+        </Animated.View>
+        <Toast />
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  handleBar: {
+    width: 40,
+    height: 5,
+    backgroundColor: "#ccc",
+    borderRadius: 2.5,
+    alignSelf: "center",
+    marginVertical: 4,
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: "100%",
+    overflow: "hidden",
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  background: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
   modalOverlay: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    width: "100%",
   },
   modalContent: {
     backgroundColor: "#fff",

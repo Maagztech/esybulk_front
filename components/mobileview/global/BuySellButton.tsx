@@ -27,7 +27,7 @@ const BuySellButton = ({ item }: { item: any }) => {
     setCartLoading(true);
     await addToCart(item._id);
     setCartLoading(false);
-     // Toggle the heart icon
+    // Toggle the heart icon
   };
 
   return (
@@ -40,12 +40,21 @@ const BuySellButton = ({ item }: { item: any }) => {
           <Text style={styles.productName}>{item.title}</Text>
         </Pressable>
         <Text style={styles.productPrice}>
-          MRP: {item.mrp}{" "}
+          ₹{item.lessPrice ? item.lessPrice : item.mrp}
+          {"  "}
           {item.lessPrice && (
             <Text style={styles.productDiscount}>
               -{((item.mrp - item.lessPrice) / item.mrp).toFixed(2)}%
             </Text>
           )}
+        </Text>
+        <Text
+          style={[
+            styles.productPrice,
+            { color: "black", textDecorationLine: "line-through" },
+          ]}
+        >
+          MRP: ₹{item.mrp}
         </Text>
 
         <View style={styles.buttonContainer}>
@@ -111,7 +120,7 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 16,
     color: "#B12704",
-    marginVertical: 4,
+    marginTop: 2,
     fontWeight: "bold",
   },
   productDiscount: {
