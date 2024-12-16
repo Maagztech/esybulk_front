@@ -44,7 +44,7 @@ const BuySellButton = ({ item }: { item: any }) => {
           {"  "}
           {item.lessPrice && (
             <Text style={styles.productDiscount}>
-              -{((item.mrp - item.lessPrice) / item.mrp).toFixed(2)}%
+              -{(((item.mrp - item.lessPrice) / item.mrp) * 100).toFixed(2)}%
             </Text>
           )}
         </Text>
