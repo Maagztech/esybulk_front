@@ -47,41 +47,35 @@ const AddProductModal = ({
   }: any = useCompany();
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const uploadImages = async (productData: any) => {
-    const uploadedImageUrls: string[] = [];
-
-    for (const image of productData.images) {
-      if (!image.startsWith("http")) {
+  const uploadImages = async (eventData: any) => {
+    const uploadedImageUrls = await Promise.all(
+      eventData.image.map(async (image: string) => {
+        if (image.startsWith("http")) return image;
         try {
+          console.log(image)
           const formData = new FormData();
           formData.append("file", {
-            uri: image, // Local file URI from ImagePicker or similar
-            name: `${productData.title}.jpg`, // Name of the file
-            type: "image/jpeg", // MIME type
-          } as any); // Cast to 'any' to satisfy TypeScript
+            uri: image,
+            name: `${eventData.title}.jpg`,
+            type: "image/jpeg",
+          } as any);
           formData.append("upload_preset", "esybulk");
           formData.append("cloud_name", "dv5daoaut");
-
           const response = await axios.post(
             "https://api.cloudinary.com/v1_1/dv5daoaut/image/upload",
             formData,
             {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
+              headers: { "Content-Type": "multipart/form-data" },
             }
           );
-
-          uploadedImageUrls.push(response.data.secure_url);
+          return response.data.secure_url;
         } catch (error) {
           console.error("Error uploading image:", error);
+          return null; // Handle failed uploads gracefully
         }
-      } else {
-        uploadedImageUrls.push(image); // Add existing image URLs directly
-      }
-    }
-
-    return uploadedImageUrls;
+      })
+    );
+    return uploadedImageUrls.filter(Boolean); // Filter out null values
   };
 
   const types = [
