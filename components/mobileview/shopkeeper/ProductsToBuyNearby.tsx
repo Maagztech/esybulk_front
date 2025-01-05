@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import BuySellButton from "../global/BuySellButton";
+import VerticalBuySellButton from "../global/verticalBuySellButton";
 
 const ProductsToBuyNearby = () => {
   const {
@@ -20,6 +21,7 @@ const ProductsToBuyNearby = () => {
     totalPages,
     setQuery,
     query,
+    previousProducts,
   }: any = useDistributor();
 
   const types = [
@@ -66,21 +68,44 @@ const ProductsToBuyNearby = () => {
           ))}
         </ScrollView>
       </View>
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <BuySellButton item={item} />}
-        contentContainerStyle={styles.container}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#0000ff" />
-            </View>
-          ) : null
-        }
-      />
+      <ScrollView>
+        {previousProducts && previousProducts.length > 0 && (
+          <View
+            style={[
+              styles.container,
+              { backgroundColor: "white", marginHorizontal: 10, borderRadius: 10 },
+            ]}
+          >
+            <Text style={{ fontSize: 14, fontWeight: "bold",marginBottom:5 }}>
+              Keep Shopping For
+            </Text>
+            <FlatList
+              data={previousProducts}
+              horizontal={true}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <VerticalBuySellButton item={item} />}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+            />
+          </View>
+        )}
+
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <BuySellButton item={item} />}
+          contentContainerStyle={styles.container}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#0000ff" />
+              </View>
+            ) : null
+          }
+        />
+      </ScrollView>
     </>
   );
 };

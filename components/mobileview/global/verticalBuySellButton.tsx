@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import AddQuantityModal from "../distributer/componenets/AddQuantityModal";
 
-const BuySellButton = ({ item }: { item: any }) => {
+const VerticalBuySellButton = ({ item }: { item: any }) => {
   const { userInfo }: any = useAuth();
   const { cart, addToCart, selectForSell, setSelectForSell }: any =
     useDistributor();
@@ -36,7 +36,13 @@ const BuySellButton = ({ item }: { item: any }) => {
       </Pressable>
       <View style={styles.productInfo}>
         <Pressable onPress={() => router.push(`product/${item._id}` as never)}>
-          <Text style={styles.productName}>{item.title}</Text>
+          <Text
+            style={styles.productName}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.title}
+          </Text>
         </Pressable>
         <Text style={styles.productPrice}>
           ₹{item.lessPrice ? item.lessPrice : item.mrp}
@@ -90,16 +96,15 @@ const BuySellButton = ({ item }: { item: any }) => {
 
 const styles = StyleSheet.create({
   productCard: {
-    flexDirection: "row",
+    flexDirection: "column",
     backgroundColor: "#fff",
     padding: 10,
     marginVertical: 8,
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
+    alignItems: "center",
+    borderWidth: 1,
+    marginRight: 10,
+    width: 150,
   },
   productImage: {
     width: 100,
@@ -107,14 +112,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   productInfo: {
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: "space-between",
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
   },
   productName: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+    textAlign: "center",
+    lineHeight: 20, // Adjust line height for better readability
   },
   productPrice: {
     fontSize: 16,
@@ -129,18 +136,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     marginTop: 10,
     width: "100%",
-    gap: 10,
+    alignItems: "center",
+    gap: 4,
   },
   button: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    width: "70%",
+    paddingVertical: 8,
     borderRadius: 8,
     backgroundColor: "#966440",
-    marginRight: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -151,4 +157,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BuySellButton;
+export default VerticalBuySellButton;

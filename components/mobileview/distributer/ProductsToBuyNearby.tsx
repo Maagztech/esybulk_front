@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import BuySellButton from "../global/BuySellButton";
 import AddProductModal from "../global/ProductAddModal";
+import VerticalBuySellButton from "../global/verticalBuySellButton";
 
 export const ProductsToBuyNearbydistributor = () => {
   const { access_token } = useAuth();
@@ -25,6 +26,7 @@ export const ProductsToBuyNearbydistributor = () => {
     totalPages,
     setQuery,
     query,
+    previousProducts,
   }: any = useDistributor();
   const handleLoadMore = () => {
     const fetchProduct = async () => {
@@ -52,7 +54,7 @@ export const ProductsToBuyNearbydistributor = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.flatListContainer}
-          style={styles.scrollView} // Apply height constraint here
+          style={styles.scrollView}
         >
           <Pressable
             onPress={() => setQuery("")}
@@ -84,21 +86,48 @@ export const ProductsToBuyNearbydistributor = () => {
         </ScrollView>
       </View>
 
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <BuySellButton item={item} />}
-        contentContainerStyle={styles.container}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#0000ff" />
-            </View>
-          ) : null
-        }
-      />
+      <ScrollView>
+        {previousProducts && previousProducts.length > 0 && (
+          <View
+            style={[
+              styles.container,
+              {
+                backgroundColor: "white",
+                marginHorizontal: 10,
+                borderRadius: 10,
+              },
+            ]}
+          >
+            <Text style={{ fontSize: 14, fontWeight: "bold", marginBottom: 5 }}>
+              Keep Shopping For
+            </Text>
+            <FlatList
+              data={previousProducts}
+              horizontal={true}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <VerticalBuySellButton item={item} />}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+            />
+          </View>
+        )}
+
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <BuySellButton item={item} />}
+          contentContainerStyle={styles.container}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#0000ff" />
+              </View>
+            ) : null
+          }
+        />
+      </ScrollView>
       <AddProductModal isOpen={visible} setIsOpen={setVisible} />
       {currentPage === totalPages && (
         <Pressable

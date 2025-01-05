@@ -204,6 +204,22 @@ export default function ProductDetails({ id }: { id: string }) {
     };
   };
 
+  useEffect(() => {
+    const addHistory = async () => {
+      try {
+        await axios.post(
+          `https://esybulkback-production.up.railway.app/api/saveHistory`,
+          { product: id },
+          { headers: { Authorization: `${access_token}` } }
+        );
+        console.log("History added");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (id) addHistory();
+  }, [id]);
+
   const [comments, setComments] = useState<CommentType[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
