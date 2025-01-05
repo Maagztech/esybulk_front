@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/authContext";
+import { useCompany } from "@/context/companyContext";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
@@ -20,7 +21,10 @@ import RadioButton from "../shopkeeper/components/RadioButton";
 import BuyNowConfirmModal from "./BuyNowConfirmModal";
 import BuySellButton from "./BuySellButton";
 import LabeledInput from "./LabeledMultilineInput";
+import AddProductModal from "./ProductAddModal";
 export default function ProductDetails({ id }: { id: string }) {
+  const { setSelectedProduct }: any = useCompany();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const formatTime = (utcString: string) => {
     const time = moment(utcString);
     const now = moment();
@@ -63,7 +67,7 @@ export default function ProductDetails({ id }: { id: string }) {
     quantity: number;
     price: number;
   }[];
-
+  const [totalAvailable, setTotalAvailable] = useState(0);
   const [buyOptions, setBuyOptions] = useState<BuyOptionType[]>([]);
   const [combinedBuyOptions, setCombinedBuyOptions] = useState<
     combinedBuyOptionsType[]
@@ -75,7 +79,6 @@ export default function ProductDetails({ id }: { id: string }) {
   const fetchProductDetails = async () => {
     try {
       let response;
-      console.log(id);
       if (userInfo?.role === "distributor") {
         response = await axios.get(
           `https://esybulkback-production.up.railway.app/api/distributor/buyoptions?product=${id}`,
@@ -93,7 +96,7 @@ export default function ProductDetails({ id }: { id: string }) {
           { headers: { Authorization: `${access_token}` } }
         );
         setSellOptions(response.data.sellOptions);
-        console.log(response.data);
+        setTotalAvailable(response.data.totalAvailable);
       }
       setProductDetails(response.data.product);
       setBuyOptions(response.data.buyOptions);
@@ -335,6 +338,11 @@ export default function ProductDetails({ id }: { id: string }) {
                 )}
               />
             </View>
+            <AddProductModal
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              setLoading={setLoading}
+            />
           </>
         )}
         {userInfo?.role !== "company" && (
@@ -431,7 +439,7 @@ export default function ProductDetails({ id }: { id: string }) {
           </>
         )}
       </View>
-      {userInfo?.role !== "company" && (
+      {userInfo?.role !== "company" ? (
         <View style={styles.buttonContainer}>
           <Pressable
             style={[
@@ -442,6 +450,23 @@ export default function ProductDetails({ id }: { id: string }) {
             disabled={!selectedOption}
           >
             <Text style={styles.buttonText}>Buy Now</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.buttonContainer}>
+          <Pressable
+            style={[styles.button, styles.buttonEnabled]}
+            onPress={() => {
+              console.log(sellOptions);
+              setSelectedProduct({
+                ...productDetails,
+                buyOptions: sellOptions,
+                quantity: totalAvailable,
+              });
+              setIsOpen(true);
+            }}
+          >
+            <Text style={styles.buttonText}>Edit Product</Text>
           </Pressable>
         </View>
       )}
@@ -617,20 +642,22 @@ export default function ProductDetails({ id }: { id: string }) {
           )}
         </>
       )}
-      <FlatList
-        data={confinedSimmilarProducts}
-        keyExtractor={(item: { _id: string }) => item._id}
-        renderItem={({ item }) => <BuySellButton item={item} />}
-        ListFooterComponent={
-          <>
-            {loading ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="small" color="#0000ff" />
-              </View>
-            ) : null}
-          </>
-        }
-      />
+      {userInfo?.role !== "company" && (
+        <FlatList
+          data={confinedSimmilarProducts}
+          keyExtractor={(item: { _id: string }) => item._id}
+          renderItem={({ item }) => <BuySellButton item={item} />}
+          ListFooterComponent={
+            <>
+              {loading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color="#0000ff" />
+                </View>
+              ) : null}
+            </>
+          }
+        />
+      )}
     </View>
   );
 }

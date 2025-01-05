@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (!userInfo && currentPathname && currentPathname !== "index") {
-      router.push("/");
+      router.replace("/");
     }
   }, [currentPathname, userInfo]);
 
@@ -41,9 +41,9 @@ export const AuthProvider = ({ children }) => {
           const response = await axios.post("https://esybulkback-production.up.railway.app/api/refresh_token", { refresh_token });
           setUserInfo(response.data.user)
           if (response.data.user.role && response.data.user.pinCode) {
-            router.push("/home");
+            router.replace("/home");
           } else {
-            router.push("/selectRole");
+            router.replace("/selectRole");
           }
           setAccessToken(response.data.access_token)
           Toast.show({
@@ -55,11 +55,11 @@ export const AuthProvider = ({ children }) => {
           AsyncStorage.setItem("refresh_token", response.data.refresh_token);
           setIsLoading(false);
         } else {
-          router.push("/");
+          router.replace("/");
           setIsLoading(false);
         }
       } catch (error) {
-        router.push("/");
+        router.replace("/");
         setIsLoading(false);
       }
     };
@@ -95,9 +95,9 @@ export const AuthProvider = ({ children }) => {
       if (user.user.role && user.user.pinCode) {
         setUserInfo(user.user);
         setRole(user.user.role);
-        router.push("/home");
+        router.replace("/home");
       } else {
-        router.push("/selectRole");
+        router.replace("/selectRole");
       }
       AsyncStorage.setItem("refresh_token", user.refresh_token);
     } catch (error) {

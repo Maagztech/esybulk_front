@@ -10,7 +10,7 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
 import AddProductModal from "../global/ProductAddModal";
 
@@ -68,7 +68,13 @@ const CompanyProducts = () => {
         <FlatList
           data={distributorCompanyStocks}
           keyExtractor={(item: any) => item.id.toString()}
-          renderItem={({ item }) => <ItemCard product={item} />}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <ItemCard product={item} />
+            </View>
+          )}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
           ListEmptyComponent={
             <Text style={{ textAlign: "center", marginVertical: 20 }}>
               You do not have any products yet.
@@ -89,10 +95,17 @@ const CompanyProducts = () => {
 };
 
 const styles = StyleSheet.create({
+  itemContainer: {
+    flex: 1, 
+    margin: 3,
+  },
+  columnWrapper: {
+    justifyContent: "space-between", // Ensure spacing between columns
+  },
   container: {
     flex: 1,
     alignItems: "center",
-    padding: 20,
+    padding: 6,
   },
   innerContainer: {
     width: "100%",
@@ -103,10 +116,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginTop: 8,
+    marginHorizontal: 10,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 18,
     color: "black",
     fontWeight: "bold",
   },

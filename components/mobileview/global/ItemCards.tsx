@@ -33,11 +33,13 @@ const ProductDetails = ({ product }: any) => {
           router.push(`/product/${product.id}`);
         }}
       >
-        <Text style={styles.title}>{product.title}</Text>
+        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+          {product.title}
+        </Text>
         <Image source={{ uri: product.images[0] }} style={styles.image} />
       </Pressable>
 
-      <Text
+      {/* <Text
         style={styles.about}
         numberOfLines={showMoreAbout ? undefined : 2}
         ellipsizeMode="tail"
@@ -80,46 +82,47 @@ const ProductDetails = ({ product }: any) => {
         <Text style={styles.productTypes}>
           Categories: {product.type.join(", ")}
         </Text>
-      )}
+      )} */}
 
       <Text style={styles.mrp}>MRP: {product.mrp} ₹</Text>
-      <Text style={styles.quantity}>
-        Available Quantity: {product.quantity}
-      </Text>
-
-      <Text style={styles.buyOptionsTitle}>Sell Options</Text>
+      <Text style={styles.quantity}>Quantity: {product.quantity}</Text>
       <View style={styles.table}>
         <View style={styles.tableHeader}>
           <Text style={styles.tableHeaderCell}>Quantity</Text>
           <Text style={styles.tableHeaderCell}>Price (₹)</Text>
         </View>
-        <FlatList
-          data={showMore ? product.buyOptions : product.buyOptions.slice(0, 3)}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCell}>{item.quantity}</Text>
-              <Text style={styles.tableCell}>{item.price}</Text>
+        <View>
+          <FlatList
+            data={
+              showMore ? product.buyOptions : product.buyOptions.slice(0, 2)
+            }
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCell}>{item.quantity}</Text>
+                <Text style={styles.tableCell}>{item.price}</Text>
+              </View>
+            )}
+          />
+          {product.buyOptions.length > 2 && (
+            <View style={styles.showMoreContainer}>
+              <TouchableOpacity
+                style={styles.showMoreButton}
+                onPress={() => setShowMore(!showMore)}
+              >
+                <Ionicons
+                  name={showMore ? "chevron-up" : "chevron-down"}
+                  size={12}
+                  color="gray"
+                />
+                <Text style={styles.showMoreText}>
+                  {showMore ? "Show Less" : "Show More"}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
-        />
+        </View>
       </View>
-      {product.buyOptions.length > 3 && (
-        <TouchableOpacity
-          style={styles.showMoreButton}
-          onPress={() => setShowMore(!showMore)}
-        >
-          <Ionicons
-            name={showMore ? "chevron-up" : "chevron-down"}
-            size={24}
-            color="white"
-          />
-          <Text style={styles.showMoreText}>
-            {showMore ? "Show Less" : "Show More"}
-          </Text>
-        </TouchableOpacity>
-      )}
-
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => {
@@ -141,8 +144,12 @@ const ProductDetails = ({ product }: any) => {
 };
 
 const styles = StyleSheet.create({
+  showMoreContainer: {
+    
+    alignItems: "center", // Center align the button
+  },
   container: {
-    padding: 20,
+    padding: 5,
     backgroundColor: "#fff",
     borderRadius: 8,
     shadowColor: "#000",
@@ -150,13 +157,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    marginVertical: 10,
+    marginVertical: 3,
     maxWidth: 400,
   },
   title: {
-    fontSize: 24,
+    fontSize: 15,
     fontWeight: "bold",
     marginBottom: 10,
+    lineHeight: 20, // Set line height
+    height: 40,
   },
   image: {
     width: "100%",
@@ -174,13 +183,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   mrp: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "600",
-    marginBottom: 10,
   },
   quantity: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 13,
   },
   buyOptionsTitle: {
     fontSize: 17,
@@ -203,7 +210,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
     padding: 10,
     borderRadius: 5,
-    marginTop: 15,
   },
   editButtonText: {
     color: "#FFF",
@@ -212,8 +218,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   table: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 5,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
@@ -250,17 +255,15 @@ const styles = StyleSheet.create({
   },
   showMoreButton: {
     alignSelf: "center",
-    backgroundColor: "gray",
-    paddingVertical: 5,
-    paddingHorizontal: 15,
     borderRadius: 5,
     flexDirection: "row",
-    gap: 5,
+    alignItems: "center",
+    gap: 2,
   },
   showMoreText: {
-    color: "white",
+    color: "gray",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 12,
   },
 });
 
