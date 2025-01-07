@@ -15,14 +15,14 @@ export const DistributorProvider = ({ children }) => {
   const [searchText, setSearchText] = useState("");
   const [query, setQuery] = useState("");
   const [previousProducts, setPreviousProducts] = useState(null);
-  useEffect(() => { console.log(query); setProducts([]) }, [query])
+  useEffect(() => { setProducts([]) }, [query])
   const fetchPreviousProduct = async () => {
     try {
       if (!access_token) return;
       const response = await axios.get(`https://esybulkback-production.up.railway.app/api/getHistory`, {
         headers: { Authorization: `${access_token}` },
       });
-      setPreviousProducts(response.data);
+      setPreviousProducts(response.data.reverse());
     } catch (error) {
       console.log(error);
     }
@@ -123,6 +123,7 @@ export const DistributorProvider = ({ children }) => {
   return (
     <DistributorContext.Provider value={{
       fetchProducts,
+      query,
       setQuery,
       searchproducts,
       setSearchProducts,
@@ -144,7 +145,8 @@ export const DistributorProvider = ({ children }) => {
       currentPage,
       loading,
       previousProducts,
-      setPreviousProducts
+      setPreviousProducts,
+      fetchPreviousProduct
     }}>
       {children}
     </DistributorContext.Provider>

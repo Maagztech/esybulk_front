@@ -1,9 +1,10 @@
 import { useDistributor } from "@/context/distributorContext";
-import React from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ const ProductsToBuyNearby = () => {
     setQuery,
     query,
     previousProducts,
+    fetchPreviousProduct,
   }: any = useDistributor();
 
   const types = [
@@ -44,6 +46,14 @@ const ProductsToBuyNearby = () => {
     };
     fetchProduct();
   };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts(0);
+    await fetchPreviousProduct();
+    setRefreshing(false);
+  };
 
   return (
     <>
@@ -54,13 +64,28 @@ const ProductsToBuyNearby = () => {
           contentContainerStyle={styles.flatListContainer}
           style={styles.scrollView}
         >
-          <Pressable onPress={() => setQuery("")} style={styles.seleceted}>
+          <Pressable
+            onPress={() => setQuery("")}
+            style={{
+              margin: 5,
+              backgroundColor: query === "" ? "black" : "gray",
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              borderRadius: 50,
+            }}
+          >
             <Text style={styles.text}>All</Text>
           </Pressable>
           {types.map((item) => (
             <Pressable
               onPress={() => setQuery(item)}
-              style={styles.seleceted}
+              style={{
+                margin: 5,
+                backgroundColor: query === item ? "black" : "gray",
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+                borderRadius: 50,
+              }}
               key={item}
             >
               <Text style={styles.text}>{item}</Text>
@@ -69,14 +94,18 @@ const ProductsToBuyNearby = () => {
         </ScrollView>
       </View>
       <ScrollView>
-        {previousProducts && previousProducts.length > 0 && (
+        {query === "" && previousProducts && previousProducts.length > 0 && (
           <View
             style={[
               styles.container,
-              { backgroundColor: "white", marginHorizontal: 10, borderRadius: 10 },
+              {
+                backgroundColor: "white",
+                marginHorizontal: 10,
+                borderRadius: 10,
+              },
             ]}
           >
-            <Text style={{ fontSize: 14, fontWeight: "bold",marginBottom:5 }}>
+            <Text style={{ fontSize: 14, fontWeight: "bold", marginBottom: 5 }}>
               Keep Shopping For
             </Text>
             <FlatList
@@ -103,6 +132,9 @@ const ProductsToBuyNearby = () => {
                 <ActivityIndicator size="small" color="#0000ff" />
               </View>
             ) : null
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         />
       </ScrollView>

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,6 +28,7 @@ export const ProductsToBuyNearbydistributor = () => {
     setQuery,
     query,
     previousProducts,
+    fetchPreviousProduct,
   }: any = useDistributor();
   const handleLoadMore = () => {
     const fetchProduct = async () => {
@@ -47,6 +49,15 @@ export const ProductsToBuyNearbydistributor = () => {
     "Sports",
     "Automotive and Transportation",
   ];
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProducts(0);
+    await fetchPreviousProduct();
+    setRefreshing(false);
+  };
   return (
     <>
       <View style={styles.scrollViewContainer}>
@@ -60,7 +71,7 @@ export const ProductsToBuyNearbydistributor = () => {
             onPress={() => setQuery("")}
             style={{
               margin: 5,
-              backgroundColor: query === "" ? "black" : "black",
+              backgroundColor: query === "" ? "black" : "gray",
               paddingHorizontal: 15,
               paddingVertical: 5,
               borderRadius: 50,
@@ -73,7 +84,7 @@ export const ProductsToBuyNearbydistributor = () => {
               onPress={() => setQuery(item)}
               style={{
                 margin: 5,
-                backgroundColor: query === item ? "black" : "black",
+                backgroundColor: query === item ? "black" : "gray",
                 paddingHorizontal: 15,
                 paddingVertical: 5,
                 borderRadius: 50,
@@ -87,7 +98,7 @@ export const ProductsToBuyNearbydistributor = () => {
       </View>
 
       <ScrollView>
-        {previousProducts && previousProducts.length > 0 && (
+        {query == "" && previousProducts && previousProducts.length > 0 && (
           <View
             style={[
               styles.container,
@@ -125,6 +136,9 @@ export const ProductsToBuyNearbydistributor = () => {
                 <ActivityIndicator size="small" color="#0000ff" />
               </View>
             ) : null
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         />
       </ScrollView>
