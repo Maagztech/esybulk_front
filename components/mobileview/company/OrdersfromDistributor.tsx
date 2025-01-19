@@ -18,7 +18,7 @@ const PendingOrders = () => {
       await loadOrderedProducts();
     };
     loadOrderedProducts();
-  }, []);
+  }, [access_token]);
 
   const loadOrderedProducts = async () => {
     setIsLoading(true);

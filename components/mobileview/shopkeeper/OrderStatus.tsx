@@ -17,7 +17,7 @@ const OrderFromShop = () => {
       await loadBuyOrdered();
     };
     loadBuyOrdereds();
-  }, []);
+  }, [access_token]);
 
   const loadBuyOrdered = async () => {
     setIsLoading(true);

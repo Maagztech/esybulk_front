@@ -23,7 +23,7 @@ const OrderFromShop = () => {
       await loadBuyOrdered();
     };
     loadOrderedProducts();
-  }, []);
+  }, [access_token]);
 
   const loadSellOrdered = async () => {
     setIsLoading(true);
