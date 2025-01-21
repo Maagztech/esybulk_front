@@ -26,7 +26,7 @@ const CompanyProducts = () => {
       await loadcompanyProducts();
     };
     fetchProducts();
-  }, []);
+  }, [access_token]);
 
   const loadcompanyProducts = async () => {
     try {
@@ -96,7 +96,7 @@ const CompanyProducts = () => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    flex: 1, 
+    flex: 1,
     margin: 3,
   },
   columnWrapper: {
