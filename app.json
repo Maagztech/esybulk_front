@@ -38,7 +38,15 @@
           "locationAlwaysAndWhenInUsePermission": "Allow EsyBulk to use your location."
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
