@@ -66,7 +66,7 @@ export default function ProductDetails({ id }: { id: string }) {
     companyUserId: string;
     quantity: number;
     price: number;
-  }[];
+  };
   const [totalAvailable, setTotalAvailable] = useState(0);
   const [buyOptions, setBuyOptions] = useState<BuyOptionType[]>([]);
   const [combinedBuyOptions, setCombinedBuyOptions] = useState<
@@ -170,16 +170,19 @@ export default function ProductDetails({ id }: { id: string }) {
 
   useEffect(() => {
     if (buyOptions) {
-      const aggregatedOptions = buyOptions.map((option) =>
-        option.price
-          .map((priceOption) => ({
+      const aggregatedOptions = buyOptions
+        .flatMap((option) =>
+          option.price.map((priceOption) => ({
             companyUserId: option.companyUserId,
             companyName: option.companyName,
             quantity: priceOption.quantity,
             price: priceOption.price * priceOption.quantity,
           }))
-          .sort((a, b) => a.quantity - b.quantity)
-      );
+        )
+        .sort((a, b) =>
+          a.quantity === b.quantity ? a.price - b.price : a.quantity - b.quantity
+        );
+
       setCombinedBuyOptions(aggregatedOptions);
     }
   }, [buyOptions]);
@@ -212,7 +215,6 @@ export default function ProductDetails({ id }: { id: string }) {
           { product: id },
           { headers: { Authorization: `${access_token}` } }
         );
-        console.log("History added");
       } catch (error) {
         console.log(error);
       }
@@ -409,41 +411,39 @@ export default function ProductDetails({ id }: { id: string }) {
                     <Text style={styles.tableHeaderText}>Select</Text>
                   )}
                 </View>
-                {combinedBuyOptions.map((options, index) =>
-                  options.map((option, subIndex) => (
-                    <View key={`${index}-${subIndex}`} style={styles.tableRow}>
-                      <Text style={styles.tableCell}>{option?.quantity}</Text>
-                      <Text style={styles.tableCell}>
-                        ₹
-                        {(option?.price / option?.quantity)
-                          .toFixed(2)
-                          .replace(/\.00$/, "")}
-                      </Text>
-                      <Text style={styles.tableCell}>₹{option?.price}</Text>
-                      <Text style={styles.tableCell}>
-                        ₹
-                        {(productDetails?.mrp ?? 0) * option?.quantity -
-                          option.price}
-                      </Text>
+                {combinedBuyOptions.map((option, index) =>
+                  <View key={`${index}`} style={styles.tableRow}>
+                    <Text style={styles.tableCell}>{option?.quantity}</Text>
+                    <Text style={styles.tableCell}>
+                      ₹
+                      {(option?.price / option?.quantity)
+                        .toFixed(2)
+                        .replace(/\.00$/, "")}
+                    </Text>
+                    <Text style={styles.tableCell}>₹{option?.price}</Text>
+                    <Text style={styles.tableCell}>
+                      ₹
+                      {(productDetails?.mrp ?? 0) * option?.quantity -
+                        option.price}
+                    </Text>
 
-                      <View style={styles.tableCell}>
-                        <RadioButton
-                          selected={
-                            selectedOption?.order_from ===
-                            option.companyUserId &&
-                            selectedOption?.quantity === option.quantity
-                          }
-                          onPress={() =>
-                            handleSelectOption({
-                              order_from: option.companyUserId,
-                              product: id,
-                              quantity: option.quantity,
-                            })
-                          }
-                        />
-                      </View>
+                    <View style={styles.tableCell}>
+                      <RadioButton
+                        selected={
+                          selectedOption?.order_from ===
+                          option.companyUserId &&
+                          selectedOption?.quantity === option.quantity
+                        }
+                        onPress={() =>
+                          handleSelectOption({
+                            order_from: option.companyUserId,
+                            product: id,
+                            quantity: option.quantity,
+                          })
+                        }
+                      />
                     </View>
-                  ))
+                  </View>
                 )}
               </View>
             ) : (

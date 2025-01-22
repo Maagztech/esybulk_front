@@ -12,9 +12,9 @@ import { BarChart } from "react-native-chart-kit";
 interface ProductPriceChartProps {
   data: {
     product: string;
-    ordersByDate: { date: string; price: number }[];
-    ordersByWeek: { week: number; price: number }[];
-    ordersByMonth: { month: number; price: number }[];
+    ordersByDate: { date: string; price: number; quantity: number }[];
+    ordersByWeek: { week: number; price: number; quantity: number }[];
+    ordersByMonth: { month: number; price: number; quantity: number }[];
   }[];
 }
 
@@ -31,26 +31,26 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
       view === "daily"
         ? selectedProduct.ordersByDate.slice(-3)
         : view === "weekly"
-        ? selectedProduct.ordersByWeek.slice(-3)
-        : selectedProduct.ordersByMonth.slice(-3);
+          ? selectedProduct.ordersByWeek.slice(-3)
+          : selectedProduct.ordersByMonth.slice(-3);
 
     const labels =
       view === "daily"
         ? filteredData.map((entry) => {
-            if ("date" in entry) return entry.date;
-            return "";
-          })
+          if ("date" in entry) return entry.date;
+          return "";
+        })
         : view === "weekly"
-        ? filteredData.map((entry) => {
+          ? filteredData.map((entry) => {
             if ("week" in entry) return `Week ${entry.week}`;
             return "";
           })
-        : filteredData.map((entry) => {
+          : filteredData.map((entry) => {
             if ("month" in entry) return `Month ${entry.month}`;
             return "";
           });
 
-    const prices = filteredData.map((entry) => entry.price);
+    const prices = filteredData.map((entry) => entry.quantity * entry.price);
 
     return { labels, datasets: [{ data: prices }] };
   })();
@@ -99,7 +99,7 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
                 index === selectedProductIndex && styles.selectedProductText,
               ]}
             >
-              {item.product}
+              {item.product.length > 20 ? `${item.product.slice(0, 20)}...` : item.product}
             </Text>
           </Pressable>
         )}
@@ -124,14 +124,16 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
             barPercentage: 0.5,
             labelColor: () => "#374151",
             formatYLabel: (value) => {
-              const intValue = Number(value);
-              return intValue % 1 === 0 ? `${intValue}` : "";
+              const floatValue = parseFloat(value);
+              return floatValue < 100 && floatValue > 0 ? floatValue.toFixed(2) : `${Math.round(floatValue)}`;
+            },
+            propsForVerticalLabels: {
+              rotation: 0,
             },
           }}
-          style={styles.chart}
         />
       ) : (
-        <Text style={styles.noDataText}>No data available</Text>
+        <Text style={styles.noDataText}>Deliver your first order to unlock the graph!</Text>
       )}
     </View>
   );
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    padding: 20,
+    paddingTop: 20,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -192,12 +194,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
   },
-  chart: {
-    borderRadius: 10,
-    padding: 30,
-  },
   noDataText: {
-    marginTop: 50,
+    marginVertical: 50,
     color: "#9ca3af",
     fontSize: 16,
     textAlign: "center",

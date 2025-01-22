@@ -26,21 +26,21 @@ const ProductQuantityChart: React.FC<ProductQuantityChartProps> = ({ data }) => 
       view === "daily"
         ? selectedProduct.ordersByDate.slice(-3)
         : view === "weekly"
-        ? selectedProduct.ordersByWeek.slice(-3)
-        : selectedProduct.ordersByMonth.slice(-3);
+          ? selectedProduct.ordersByWeek.slice(-3)
+          : selectedProduct.ordersByMonth.slice(-3);
 
     const labels =
       view === "daily"
         ? lastEntries.map((entry) => {
-            if ("date" in entry) return entry.date;
-            return "";
-          })
+          if ("date" in entry) return entry.date;
+          return "";
+        })
         : view === "weekly"
-        ? lastEntries.map((entry) => {
+          ? lastEntries.map((entry) => {
             if ("week" in entry) return `Week ${entry.week}`;
             return "";
           })
-        : lastEntries.map((entry) => {
+          : lastEntries.map((entry) => {
             if ("month" in entry) return `Month ${entry.month}`;
             return "";
           });
@@ -94,10 +94,10 @@ const ProductQuantityChart: React.FC<ProductQuantityChartProps> = ({ data }) => 
                 index === selectedProductIndex && styles.selectedProductText,
               ]}
             >
-              {item.product}
+              {item.product.length > 20 ? `${item.product.slice(0, 20)}...` : item.product}
             </Text>
           </Pressable>
-          
+
         )}
         contentContainerStyle={styles.productList}
         showsHorizontalScrollIndicator={false}
@@ -124,10 +124,10 @@ const ProductQuantityChart: React.FC<ProductQuantityChartProps> = ({ data }) => 
               return intValue % 1 === 0 ? `${intValue}` : "";
             },
           }}
-          style={styles.chart}
+
         />
       ) : (
-        <Text style={styles.noDataText}>No data available</Text>
+        <Text style={styles.noDataText}>Place your first order to unlock the graph!</Text>
       )}
     </View>
   );
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     alignItems: "center",
-    padding: 20,
+    paddingTop: 20,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -188,12 +188,9 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
   },
-  chart: {
-    borderRadius: 10,
-    padding: 10,
-  },
+
   noDataText: {
-    marginTop: 50,
+    marginVertical: 50,
     color: "#9ca3af",
     fontSize: 16,
     textAlign: "center",

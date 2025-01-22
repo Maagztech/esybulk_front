@@ -13,14 +13,8 @@ const PendingOrders = () => {
 
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [completedOrders, setCompletedOrders] = useState<any[]>([]);
-  useEffect(() => {
-    const loadOrderedProducts = async () => {
-      await loadOrderedProducts();
-    };
-    loadOrderedProducts();
-  }, [access_token]);
 
-  const loadOrderedProducts = async () => {
+  const loadorderedProducts = async () => {
     setIsLoading(true);
     const response = await axios.get(
       "http://3.110.56.148:5000/api/distributor_or_company_orders",
@@ -42,6 +36,14 @@ const PendingOrders = () => {
     );
     setIsLoading(false);
   };
+  useEffect(() => {
+    const loadOrderedProducts = async () => {
+      await loadorderedProducts();
+    };
+    loadOrderedProducts();
+  }, [access_token]);
+
+
 
   return (
     <View style={styles.container}>
@@ -79,12 +81,12 @@ const PendingOrders = () => {
         <View style={styles.content}>
           {activeTab === "Pending" ? (
             <CompnayPendingOrders
-              loadSellOrders={loadOrderedProducts}
+              loadSellOrders={loadorderedProducts}
               orders={pendingOrders}
             />
           ) : (
             <CompletedOrders
-              loadSellOrdered={loadOrderedProducts}
+              loadSellOrdered={loadorderedProducts}
               orders={completedOrders}
             />
           )}
