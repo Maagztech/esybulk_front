@@ -29,12 +29,12 @@ export const ItemCard = ({ order }: any) => {
   const updateStatus = (newStatus: string) => {
     const url =
       newStatus === "shipped"
-        ? "https://esybulkback-production.up.railway.app/api/shipped"
+        ? "http://3.110.56.148:5000/api/shipped"
         : newStatus === "delivered"
-        ? "https://esybulkback-production.up.railway.app/api/delivered"
-        : newStatus === "cancelled"
-        ? "https://esybulkback-production.up.railway.app/api/cancelorder"
-        : null;
+          ? "http://3.110.56.148:5000/api/delivered"
+          : newStatus === "cancelled"
+            ? "http://3.110.56.148:5000/api/cancelorder"
+            : null;
 
     if (!url) {
       Toast.show({
@@ -268,11 +268,11 @@ const styles = StyleSheet.create({
   },
   shop: {
     fontStyle: "italic",
-    fontWeight:"bold"
+    fontWeight: "bold"
   },
   location: {
     color: "#555",
-    fontWeight:"bold"
+    fontWeight: "bold"
   },
   buttonAndInfo: {
     flexDirection: "row",

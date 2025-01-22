@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import Toast from 'react-native-toast-message';
-import { useAuth } from './authContext.js';
+import axios from "axios";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
+import { useAuth } from "./authContext.js";
 const DistributorContext = createContext(undefined);
 
 export const DistributorProvider = ({ children }) => {
@@ -15,27 +15,37 @@ export const DistributorProvider = ({ children }) => {
   const [searchText, setSearchText] = useState("");
   const [query, setQuery] = useState("");
   const [previousProducts, setPreviousProducts] = useState(null);
-  useEffect(() => { setProducts([]) }, [query])
+  useEffect(() => {
+    setProducts([]);
+  }, [query]);
   const fetchPreviousProduct = async () => {
     try {
       if (!access_token) return;
-      const response = await axios.get(`https://esybulkback-production.up.railway.app/api/getHistory`, {
-        headers: { Authorization: `${access_token}` },
-      });
+      const response = await axios.get(
+        `http://3.110.56.148:5000/api/getHistory`,
+        {
+          headers: { Authorization: `${access_token}` },
+        }
+      );
       setPreviousProducts(response.data.reverse());
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => { if (access_token) fetchPreviousProduct() }, [access_token]);
+  useEffect(() => {
+    if (access_token) fetchPreviousProduct();
+  }, [access_token]);
 
   const fetchProducts = async (page) => {
     try {
       if (!access_token) return;
       setLoading(true);
-      const response = await axios.get(`https://esybulkback-production.up.railway.app/api/distributor/products?page=${page}&query=${query}`, {
-        headers: { Authorization: `${access_token}` },
-      });
+      const response = await axios.get(
+        `http://3.110.56.148:5000/api/distributor/products?page=${page}&query=${query}`,
+        {
+          headers: { Authorization: `${access_token}` },
+        }
+      );
       setProducts((prev) => [...prev, ...response.data.products]);
       setCurrentPage(response.data.currentPage);
       setSearchProducts(response.data.products);
@@ -44,22 +54,35 @@ export const DistributorProvider = ({ children }) => {
     } catch (error) {
       setLoading(false);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Error fetching products.'
+        type: "error",
+        text1: "Error",
+        text2: "Error fetching products.",
       });
     }
   };
 
-  useEffect(() => { if (access_token) { fetchProducts(1); fetchCart(); } }, [access_token])
+  useEffect(() => {
+    if (access_token) {
+      fetchProducts(1);
+      fetchCart();
+    }
+  }, [access_token]);
 
-  useEffect(() => { setProducts([]); fetchProducts(1) }, [query])
+  useEffect(() => {
+    setProducts([]);
+    fetchProducts(1);
+  }, [query]);
 
   const [searchcurrentPage, setSearchCurrentPage] = useState(1);
   const [searchtotalPages, setSearchTotalPages] = useState(0);
   const [searchproducts, setSearchProducts] = useState([]);
   const [previousSearchText, setPreviousSearchText] = useState("");
-  useEffect(() => { setProducts([]); setSearchProducts([]); setCurrentPage(1); setSearchCurrentPage(1); }, [access_token])
+  useEffect(() => {
+    setProducts([]);
+    setSearchProducts([]);
+    setCurrentPage(1);
+    setSearchCurrentPage(1);
+  }, [access_token]);
   const handleSearchSubmit = async () => {
     try {
       if (previousSearchText != searchText) {
@@ -69,7 +92,7 @@ export const DistributorProvider = ({ children }) => {
       }
       setLoading(true);
       const response = await axios.get(
-        `https://esybulkback-production.up.railway.app/api/search?search=${searchText}&page=${currentPage}`,
+        `http://3.110.56.148:5000/api/search?search=${searchText}&page=${currentPage}`,
         {
           headers: { Authorization: `${access_token}` },
         }
@@ -81,73 +104,76 @@ export const DistributorProvider = ({ children }) => {
     } catch (error) {
       setLoading(false);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Error fetching products'
+        type: "error",
+        text1: "Error",
+        text2: "Error fetching products",
       });
     }
   };
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get("https://esybulkback-production.up.railway.app/api/distributor/cart",
-        { headers: { Authorization: `${access_token}` } })
+      const response = await axios.get(
+        "http://3.110.56.148:5000/api/distributor/cart",
+        { headers: { Authorization: `${access_token}` } }
+      );
       setCart(response.data.cartItems);
     } catch (error) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Error fetching cart'
+        type: "error",
+        text1: "Error",
+        text2: "Error fetching cart",
       });
     }
-  }
+  };
 
   const addToCart = async (product) => {
     try {
-      const response = await axios.post("https://esybulkback-production.up.railway.app/api/distributor/addremovecart",
+      const response = await axios.post(
+        "http://3.110.56.148:5000/api/distributor/addremovecart",
         { product },
-        { headers: { Authorization: `${access_token}` } });
+        { headers: { Authorization: `${access_token}` } }
+      );
       await fetchCart();
     } catch (error) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Error adding or removing from cart'
+        type: "error",
+        text1: "Error",
+        text2: "Error adding or removing from cart",
       });
     }
-
-  }
-
-
+  };
 
   return (
-    <DistributorContext.Provider value={{
-      fetchProducts,
-      query,
-      setQuery,
-      searchproducts,
-      setSearchProducts,
-      searchcurrentPage,
-      setSearchCurrentPage,
-      searchtotalPages,
-      setSearchTotalPages,
-      setCurrentPage,
-      setProducts,
-      searchText,
-      setSearchText,
-      handleSearchSubmit,
-      selectForSell,
-      setSelectForSell,
-      addToCart,
-      products,
-      cart,
-      totalPages,
-      currentPage,
-      loading,
-      previousProducts,
-      setPreviousProducts,
-      fetchPreviousProduct
-    }}>
+    <DistributorContext.Provider
+      value={{
+        fetchProducts,
+        query,
+        setQuery,
+        searchproducts,
+        setSearchProducts,
+        searchcurrentPage,
+        setSearchCurrentPage,
+        searchtotalPages,
+        setSearchTotalPages,
+        setCurrentPage,
+        setProducts,
+        searchText,
+        setSearchText,
+        handleSearchSubmit,
+        selectForSell,
+        setSelectForSell,
+        addToCart,
+        products,
+        cart,
+        totalPages,
+        currentPage,
+        loading,
+        previousProducts,
+        setPreviousProducts,
+        fetchPreviousProduct,
+      }}
+    >
       {children}
     </DistributorContext.Provider>
   );

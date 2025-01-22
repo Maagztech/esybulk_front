@@ -37,7 +37,7 @@ const CompanyStatistics = () => {
   const fetchOrderStats = async () => {
     try {
       const response = await axios.get(
-        "https://esybulkback-production.up.railway.app/api/company/stats",
+        "http://3.110.56.148:5000/api/company/stats",
         { headers: { Authorization: `${access_token}` } }
       );
       const data: OrderStats[] = response.data;

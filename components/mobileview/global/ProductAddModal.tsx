@@ -111,15 +111,15 @@ const AddProductModal = ({
         type: selectedProduct.type,
         proporties: selectedProduct.proporties
           ? selectedProduct.proporties.map((option: any) => ({
-              question: String(option.question), // Convert to string
-              answer: String(option.answer), // Convert to string
-            }))
+            question: String(option.question), // Convert to string
+            answer: String(option.answer), // Convert to string
+          }))
           : [{ quantity: "", price: "" }],
         buyOptions: selectedProduct.buyOptions
           ? selectedProduct.buyOptions.map((option: any) => ({
-              quantity: String(option.quantity), // Convert to string
-              price: String(option.price), // Convert to string
-            }))
+            quantity: String(option.quantity), // Convert to string
+            price: String(option.price), // Convert to string
+          }))
           : [{ quantity: "", price: "" }],
       });
     } else {
@@ -227,12 +227,12 @@ const AddProductModal = ({
           text2: "Updating the product details.",
         });
         await axios.post(
-          `https://esybulkback-production.up.railway.app/api/companyregisterproductedit/${selectedProduct.id}`,
+          `http://3.110.56.148:5000/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         await axios.post(
-          "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
+          "http://3.110.56.148:5000/api/distributor_or_company_add_quantity",
           {
             product: selectedProduct.id,
             price: productData.buyOptions
@@ -262,13 +262,13 @@ const AddProductModal = ({
           setLoading(true);
         }
         const productResponse = await axios.post(
-          "https://esybulkback-production.up.railway.app/api/company_or_ditsributor_registerproduct",
+          "http://3.110.56.148:5000/api/company_or_ditsributor_registerproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         const productId = productResponse.data._id;
         await axios.post(
-          "https://esybulkback-production.up.railway.app/api/distributor_or_company_add_quantity",
+          "http://3.110.56.148:5000/api/distributor_or_company_add_quantity",
           {
             product: productId,
             price: productData.buyOptions
@@ -315,7 +315,7 @@ const AddProductModal = ({
       });
     }
     const response = await axios.get(
-      "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
+      "http://3.110.56.148:5000/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

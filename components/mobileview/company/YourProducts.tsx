@@ -32,7 +32,7 @@ const CompanyProducts = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://esybulkback-production.up.railway.app/api/distributor_company_stocks",
+        "http://3.110.56.148:5000/api/distributor_company_stocks",
         {
           headers: { Authorization: `${access_token}` },
         }

@@ -23,7 +23,7 @@ const PendingOrders = () => {
   const loadOrderedProducts = async () => {
     setIsLoading(true);
     const response = await axios.get(
-      "https://esybulkback-production.up.railway.app/api/distributor_or_company_orders",
+      "http://3.110.56.148:5000/api/distributor_or_company_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

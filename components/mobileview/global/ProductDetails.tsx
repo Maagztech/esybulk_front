@@ -81,18 +81,18 @@ export default function ProductDetails({ id }: { id: string }) {
       let response;
       if (userInfo?.role === "distributor") {
         response = await axios.get(
-          `https://esybulkback-production.up.railway.app/api/distributor/buyoptions?product=${id}`,
+          `http://3.110.56.148:5000/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else if (userInfo?.role === "shopkeeper") {
         response = await axios.get(
-          `https://esybulkback-production.up.railway.app/api/distributor/buyoptionsshopkeeper?product=${id}`,
+          `http://3.110.56.148:5000/api/distributor/buyoptionsshopkeeper?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else {
         response = await axios.get(
-          "https://esybulkback-production.up.railway.app/api/companygetProductDetails?product=" +
-            id,
+          "http://3.110.56.148:5000/api/companygetProductDetails?product=" +
+          id,
           { headers: { Authorization: `${access_token}` } }
         );
         setSellOptions(response.data.sellOptions);
@@ -118,7 +118,7 @@ export default function ProductDetails({ id }: { id: string }) {
         try {
           setLoading(true);
           const response = await axios.get(
-            `https://esybulkback-production.up.railway.app/api/search?search=${productDetails?.title}&page=1`,
+            `http://3.110.56.148:5000/api/search?search=${productDetails?.title}&page=1`,
             {
               headers: { Authorization: `${access_token}` },
             }
@@ -148,7 +148,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const handleBuyNow = () => {
     try {
       const reponse = axios.post(
-        `https://esybulkback-production.up.railway.app/api/shopkeeperorder`,
+        `http://3.110.56.148:5000/api/shopkeeperorder`,
         selectedOption,
         { headers: { Authorization: `${access_token}` } }
       );
@@ -208,7 +208,7 @@ export default function ProductDetails({ id }: { id: string }) {
     const addHistory = async () => {
       try {
         await axios.post(
-          `https://esybulkback-production.up.railway.app/api/saveHistory`,
+          `http://3.110.56.148:5000/api/saveHistory`,
           { product: id },
           { headers: { Authorization: `${access_token}` } }
         );
@@ -227,8 +227,7 @@ export default function ProductDetails({ id }: { id: string }) {
     try {
       if (currentPage >= totalPages) return;
       const response = await axios.get(
-        `https://esybulkback-production.up.railway.app/api/getRating/${id}?&page=${
-          currentPage + 1
+        `http://3.110.56.148:5000/api/getRating/${id}?&page=${currentPage + 1
         }`
       );
       setCurrentPage(response.data.currentPage);
@@ -246,7 +245,7 @@ export default function ProductDetails({ id }: { id: string }) {
     try {
       setRatingAddLoading(true);
       const response = await axios.post(
-        `https://esybulkback-production.up.railway.app/api/addRating`,
+        `http://3.110.56.148:5000/api/addRating`,
         {
           product: id,
           rating: rating,
@@ -431,7 +430,7 @@ export default function ProductDetails({ id }: { id: string }) {
                         <RadioButton
                           selected={
                             selectedOption?.order_from ===
-                              option.companyUserId &&
+                            option.companyUserId &&
                             selectedOption?.quantity === option.quantity
                           }
                           onPress={() =>

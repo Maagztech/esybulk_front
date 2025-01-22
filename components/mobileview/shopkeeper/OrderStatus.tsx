@@ -22,7 +22,7 @@ const OrderFromShop = () => {
   const loadBuyOrdered = async () => {
     setIsLoading(true);
     const response = await axios.get(
-      "https://esybulkback-production.up.railway.app/api/distributor_or_shopkeeper_orders",
+      "http://3.110.56.148:5000/api/distributor_or_shopkeeper_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

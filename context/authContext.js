@@ -1,12 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
-import {
-  GoogleSignin
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
-import axios from 'axios';
-import { router } from 'expo-router';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import axios from "axios";
+import { router } from "expo-router";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { useLoading } from "./loadingContext";
 import { useNotification } from "./notificationsContext";
@@ -19,11 +17,9 @@ export const AuthProvider = ({ children }) => {
   const [access_token, setAccessToken] = useState(null);
   const [role, setRole] = useState("");
 
-
   const currentPathname = useNavigationState((state) => {
     return state.routes[state.index] ? state.routes[state.index].name : null;
   });
-
 
   useEffect(() => {
     if (!userInfo && currentPathname && currentPathname !== "index") {
@@ -32,24 +28,26 @@ export const AuthProvider = ({ children }) => {
   }, [currentPathname, userInfo]);
 
   useEffect(() => {
-
     const fetchUser = async () => {
       try {
         setIsLoading(true);
         const refresh_token = await getLocalUser();
         if (refresh_token) {
-          const response = await axios.post("https://esybulkback-production.up.railway.app/api/refresh_token", { refresh_token });
-          setUserInfo(response.data.user)
+          const response = await axios.post(
+            "http://3.110.56.148:5000/api/refresh_token",
+            { refresh_token }
+          );
+          setUserInfo(response.data.user);
           if (response.data.user.role && response.data.user.pinCode) {
             router.replace("/home");
           } else {
             router.replace("/selectRole");
           }
-          setAccessToken(response.data.access_token)
+          setAccessToken(response.data.access_token);
           Toast.show({
-            type: 'success',
-            text1: 'Sign In',
-            text2: 'Sing in successfully'
+            type: "success",
+            text1: "Sign In",
+            text2: "Sing in successfully",
           });
 
           AsyncStorage.setItem("refresh_token", response.data.refresh_token);
@@ -64,8 +62,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     fetchUser();
-
-  }, [])
+  }, []);
 
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("refresh_token");
@@ -77,10 +74,10 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "https://esybulkback-production.up.railway.app/api/login",
-        { 
-          pushToken: expoPushToken
-         },
+        "http://3.110.56.148:5000/api/login",
+        {
+          pushToken: expoPushToken,
+        },
         {
           headers: { Authorization: `${token}` },
         }
@@ -88,9 +85,9 @@ export const AuthProvider = ({ children }) => {
       const user = response.data;
       setAccessToken(user.access_token);
       Toast.show({
-        type: 'success',
-        text1: 'Sign In',
-        text2: 'Sing in successfully'
+        type: "success",
+        text1: "Sign In",
+        text2: "Sing in successfully",
       });
       if (user.user.role && user.user.pinCode) {
         setUserInfo(user.user);
@@ -102,51 +99,56 @@ export const AuthProvider = ({ children }) => {
       AsyncStorage.setItem("refresh_token", user.refresh_token);
     } catch (error) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Errour occured, cut the app come again !'
+        type: "error",
+        text1: "Error",
+        text2: "Errour occured, cut the app come again !",
       });
     }
     setIsLoading(false);
   };
 
-
   const selectRole = async (role) => {
     try {
-      const response = await axios.post("https://esybulkback-production.up.railway.app/api/selectRole", { role }, {
-        headers: { Authorization: `${access_token}` },
-      });
+      const response = await axios.post(
+        "http://3.110.56.148:5000/api/selectRole",
+        { role },
+        {
+          headers: { Authorization: `${access_token}` },
+        }
+      );
     } catch (error) {
       console.error("Error selecting role:", error);
     }
   };
 
-
   const activeAccount = async (data) => {
     try {
-      const response = await axios.post("https://esybulkback-production.up.railway.app/api/active",
+      const response = await axios.post(
+        "http://3.110.56.148:5000/api/active",
         data,
-        { headers: { Authorization: `${access_token}` } })
+        { headers: { Authorization: `${access_token}` } }
+      );
       setUserInfo(response.data.user);
       Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Account created successfully'
+        type: "success",
+        text1: "Success",
+        text2: "Account created successfully",
       });
       navigation.navigate("(tabs)");
     } catch (error) {
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Errour occured, Try Again !'
+        type: "error",
+        text1: "Error",
+        text2: "Errour occured, Try Again !",
       });
     }
-  }
+  };
 
   const handleLogout = async () => {
     try {
-      axios.get("https://esybulkback-production.up.railway.app/api/logout",
-        { headers: { Authorization: `${access_token}` } })
+      axios.get("http://3.110.56.148:5000/api/logout", {
+        headers: { Authorization: `${access_token}` },
+      });
 
       await AsyncStorage.removeItem("refresh_token");
 
@@ -160,11 +162,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
-
-
   return (
-    <AuthContext.Provider value={{ handleLogout, activeAccount, userInfo, setUserInfo, getUserInfo, access_token, role, selectRole }}>
+    <AuthContext.Provider
+      value={{
+        handleLogout,
+        activeAccount,
+        userInfo,
+        setUserInfo,
+        getUserInfo,
+        access_token,
+        role,
+        selectRole,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
