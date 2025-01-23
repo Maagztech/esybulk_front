@@ -193,12 +193,7 @@ const AddProductModal = ({
           text2: "Adding the product details.",
         });
       }
-      if (setLoading) {
-        setLoading(true);
-      }
-
       const uploadedImageUrls = await uploadImages(productData);
-
       const productPayload = {
         title: productData.title,
         about: productData.about,
