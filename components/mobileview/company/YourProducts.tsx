@@ -25,7 +25,8 @@ const CompanyProducts = () => {
     const fetchProducts = async () => {
       await loadcompanyProducts();
     };
-    fetchProducts();
+    if (access_token)
+      fetchProducts();
   }, [access_token]);
 
   const loadcompanyProducts = async () => {
