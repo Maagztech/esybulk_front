@@ -49,10 +49,9 @@ const AddProductModal = ({
 
   const uploadImages = async (eventData: any) => {
     const uploadedImageUrls = await Promise.all(
-      eventData.image.map(async (image: string) => {
+      eventData.images.map(async (image: string) => {
         if (image.startsWith("http")) return image;
         try {
-          console.log(image)
           const formData = new FormData();
           formData.append("file", {
             uri: image,
@@ -197,7 +196,9 @@ const AddProductModal = ({
       if (setLoading) {
         setLoading(true);
       }
+
       const uploadedImageUrls = await uploadImages(productData);
+
       const productPayload = {
         title: productData.title,
         about: productData.about,
