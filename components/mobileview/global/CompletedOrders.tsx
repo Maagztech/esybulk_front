@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollContent: {
-    paddingBottom: 20,
+    // paddingBottom: 20,
   },
   cardContainer: {
     alignItems: "center",
