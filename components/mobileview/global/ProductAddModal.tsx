@@ -213,9 +213,6 @@ const AddProductModal = ({
         mrp: productData.mrp,
         type: productData.type,
       };
-      if (setLoading) {
-        setLoading(false);
-      }
       if (selectedProduct) {
         Toast.show({
           type: "info",
