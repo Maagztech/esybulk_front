@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "204818550386",
+    "project_id": "esybulk-f437c",
+    "storage_bucket": "esybulk-f437c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204818550386:android:6429dce2e018926eba3ceb",
+        "android_client_info": {
+          "package_name": "com.asutosh123.esybulk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204818550386-8ep2uoj85bu7mu1oo0rltslh7f88bg9g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.asutosh123.esybulk",
+            "certificate_hash": "ce717c0ebe503a418a6c2bb6c51fa7e2a6df3ff1"
+          }
+        },
+        {
+          "client_id": "204818550386-adh6lokl3o462k7sjmlb5hqur4s1vqjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtm9Gvg5E0FTyGensRuNqnSiqB-MgB4xs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204818550386-adh6lokl3o462k7sjmlb5hqur4s1vqjl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,5 +21,3 @@ expo-env.d.ts
 
 /ios
 /android
-google-services.json
-googleServices-Info.plist
