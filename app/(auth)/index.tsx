@@ -33,7 +33,7 @@ export default function App() {
 
   async function onGoogleButtonPress() {
     try {
-     
+
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
@@ -62,47 +62,9 @@ export default function App() {
   }
 
   if (initializing) return null;
-
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   androidClientId:
-  //     "791745687932-ghg45cqrj6ojrupbs3h9v2tbr665bt4h.apps.googleusercontent.com",
-  //   webClientId:
-  //     "791745687932-e0dh3e3inqbgmmjabntt927fe104jlme.apps.googleusercontent.com",
-  // });
-
-  // const currentPathname = useNavigationState(
-  //   (state) => state.routes[state.index].name
-  // );
-
-  // useEffect(() => {
-  //   if (currentPathname === "index") {
-  //     handleEffect();
-  //   }
-  // }, [response, currentPathname]);
-
-  // async function handleEffect() {
-  //   if (response?.type === "success") {
-  //     if (response?.authentication?.accessToken) {
-  //       getUserInfo(response.authentication.accessToken);
-  //     }
-  //   }
-  // }
-
   return (
     <View style={styles.container}>
       <View style={styles.PressableContainer}>
-        {/* <Pressable
-          // disabled={!request}
-          onPress={
-            // () => {
-            // promptAsync();
-            onGoogleButtonPress
-            // }
-          }
-          style={styles.signUpPresseble}
-        >
-          <Text style={styles.signUpButton}>Continue with Google</Text>
-        </Pressable> */}
         <GoogleSigninButton
           style={{ width: 250, height: 60 }}
           size={GoogleSigninButton.Size.Wide}
