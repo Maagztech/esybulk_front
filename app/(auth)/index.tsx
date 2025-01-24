@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
 
   GoogleSignin.configure({
     webClientId:
@@ -17,7 +16,6 @@ export default function App() {
   const { getUserInfo }: any = useAuth();
 
   function onAuthStateChanged(user: any) {
-    setUser(user);
     if (initializing) setInitializing(false);
   }
 

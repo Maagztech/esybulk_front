@@ -12,9 +12,9 @@ import { BarChart } from "react-native-chart-kit";
 interface ProductPriceChartProps {
   data: {
     product: string;
-    ordersByDate: { date: string; price: number }[];
-    ordersByWeek: { week: number; price: number }[];
-    ordersByMonth: { month: number; price: number }[];
+    ordersByDate: { date: string; price: number; quantity: number }[];
+    ordersByWeek: { week: number; price: number; quantity: number }[];
+    ordersByMonth: { month: number; price: number; quantity: number }[];
   }[];
 }
 
@@ -50,7 +50,7 @@ const ProductPriceChart: React.FC<ProductPriceChartProps> = ({ data }) => {
             return "";
           });
 
-    const prices = filteredData.map((entry) => entry.price);
+    const prices = filteredData.map((entry) => entry.quantity * entry.price);
 
     return { labels, datasets: [{ data: prices }] };
   })();

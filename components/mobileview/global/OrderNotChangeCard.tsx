@@ -167,11 +167,11 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     fontSize: 14,
-    color: "#666",
+    color: "gray",
     marginBottom: 3,
   },
   quantity: {
-    color: "#FF5733",
+    color: "gray",
     fontWeight: "bold",
   },
   price: {
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "red",
+    backgroundColor: "gray",
   },
   horizontalBar: {
     flex: 1,
