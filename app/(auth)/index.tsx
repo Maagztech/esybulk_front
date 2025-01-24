@@ -6,7 +6,7 @@ import {
 } from "@react-native-google-signin/google-signin";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import Toast from "react-native-toast-message";
 WebBrowser.maybeCompleteAuthSession();
 
@@ -33,7 +33,6 @@ export default function App() {
 
   async function onGoogleButtonPress() {
     try {
-
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
@@ -64,9 +63,22 @@ export default function App() {
   if (initializing) return null;
   return (
     <View style={styles.container}>
+      <Image
+        source={require("./assets/images/logo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={styles.heading}>Welcome to EsyBulk</Text>
+      <Text style={styles.subheading}>
+        The Largest B2B E-commerce Chain in India
+      </Text>
+      <Text style={styles.description}>
+        Revolutionizing how businesses connect, trade, and grow. Join thousands
+        of partners and simplify your B2B supply chain with EsyBulk.
+      </Text>
       <View style={styles.PressableContainer}>
         <GoogleSigninButton
-          style={{ width: 250, height: 60 }}
+          style={styles.signinButton}
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Light}
           onPress={onGoogleButtonPress}
@@ -79,45 +91,45 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f9fa",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 20,
   },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  card: {
-    borderWidth: 1,
-    borderRadius: 15,
-    padding: 15,
-  },
-  image: {
+  logo: {
     width: 100,
     height: 100,
-    borderRadius: 50,
+    marginBottom: 20,
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#2c3e50",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  subheading: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#34495e",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  description: {
+    fontSize: 16,
+    color: "#7f8c8d",
+    textAlign: "center",
+    marginBottom: 30,
   },
   PressableContainer: {
     display: "flex",
     justifyContent: "center",
-    marginVertical: 10,
-    width: "100%",
-    maxWidth: 500,
     alignItems: "center",
-  },
-  signUpPresseble: {
-    display: "flex",
-    justifyContent: "center",
-    marginVertical: 10,
     width: "100%",
-    maxWidth: 500,
-    alignItems: "center",
+    maxWidth: 400,
   },
-  signUpButton: {
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: "#966440",
-    color: "white",
-    fontWeight: "bold",
+  signinButton: {
+    width: 250,
+    height: 60,
   },
 });
