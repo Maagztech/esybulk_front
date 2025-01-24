@@ -1,14 +1,9 @@
 import { useAuth } from "@/context/authContext";
 import auth from "@react-native-firebase/auth";
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
-import * as WebBrowser from "expo-web-browser";
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
-WebBrowser.maybeCompleteAuthSession();
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
@@ -33,20 +28,14 @@ export default function App() {
 
   async function onGoogleButtonPress() {
     try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
 
       const idToken = signInResult.data?.idToken;
       if (!idToken) return;
-      const googleCredential = auth.GoogleAuthProvider.credential(
-        idToken || null
-      );
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken || null);
 
       const userSigned = await auth().signInWithCredential(googleCredential);
-
       const firebaseToken = await userSigned.user.getIdToken();
 
       await getUserInfo(firebaseToken);
@@ -61,75 +50,61 @@ export default function App() {
   }
 
   if (initializing) return null;
+
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("./assets/images/logo.png")}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-      <Text style={styles.heading}>Welcome to EsyBulk</Text>
-      <Text style={styles.subheading}>
-        The Largest B2B E-commerce Chain in India
-      </Text>
-      <Text style={styles.description}>
-        Revolutionizing how businesses connect, trade, and grow. Join thousands
-        of partners and simplify your B2B supply chain with EsyBulk.
-      </Text>
-      <View style={styles.PressableContainer}>
-        <GoogleSigninButton
-          style={styles.signinButton}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Light}
-          onPress={onGoogleButtonPress}
-        />
+    <ImageBackground
+      source={require("../../assets/images/login_bg.webp")} // Replace with your image path
+      style={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <Text style={styles.heading}>India's Largest B2B E-commerce Chain</Text>
+        <Text style={styles.subHeading}>Empowering Businesses Nationwide</Text>
+        <TouchableOpacity style={styles.signinButton} onPress={onGoogleButtonPress}>
+          <Text style={styles.signinText}>Sign in with Google</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover", // Ensures the image covers the entire background
+  },
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.7)", // Optional overlay for better text visibility
   },
   heading: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
-    color: "#2c3e50",
+    color: "#fff",
     textAlign: "center",
     marginBottom: 10,
   },
-  subheading: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#34495e",
-    textAlign: "center",
-    marginBottom: 15,
-  },
-  description: {
+  subHeading: {
     fontSize: 16,
-    color: "#7f8c8d",
+    color: "#ccc",
     textAlign: "center",
     marginBottom: 30,
   },
-  PressableContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    maxWidth: 400,
-  },
   signinButton: {
-    width: 250,
-    height: 60,
+    backgroundColor: "#966440",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: 250,
+  },
+  signinText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
