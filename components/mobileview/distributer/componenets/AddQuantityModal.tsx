@@ -39,7 +39,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
 
   const fetchSellOptions = async () => {
     const response = await axios.get(
-      `http://3.110.56.148:5000/api/distributor_or_company_get_quantity/${selectForSell?.id}`,
+      `https://api.esybulk.run.place/api/distributor_or_company_get_quantity/${selectForSell?.id}`,
       { headers: { Authorization: `${access_token}` } }
     );
     const options = response.data;
@@ -78,7 +78,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
     setVisible(false);
     try {
       await axios.post(
-        "http://3.110.56.148:5000/api/distributor_or_company_add_quantity",
+        "https://api.esybulk.run.place/api/distributor_or_company_add_quantity",
         {
           product: selectForSell?.id,
           price: productData.buyOptions.map((option) => ({
@@ -102,7 +102,7 @@ const AddQuantityModal = ({ visible, setVisible }: any) => {
       });
     }
     const response = await axios.get(
-      "http://3.110.56.148:5000/api/distributor_company_stocks",
+      "https://api.esybulk.run.place/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

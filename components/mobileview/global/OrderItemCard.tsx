@@ -29,11 +29,11 @@ export const ItemCard = ({ order }: any) => {
   const updateStatus = (newStatus: string) => {
     const url =
       newStatus === "shipped"
-        ? "http://3.110.56.148:5000/api/shipped"
+        ? "https://api.esybulk.run.place/api/shipped"
         : newStatus === "delivered"
-          ? "http://3.110.56.148:5000/api/delivered"
+          ? "https://api.esybulk.run.place/api/delivered"
           : newStatus === "cancelled"
-            ? "http://3.110.56.148:5000/api/cancelorder"
+            ? "https://api.esybulk.run.place/api/cancelorder"
             : null;
 
     if (!url) {

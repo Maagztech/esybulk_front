@@ -43,8 +43,7 @@
         "expo-build-properties",
         {
           "android": {
-            "enableProguardInReleaseBuilds": true,
-            "usesCleartextTraffic": true
+            "enableProguardInReleaseBuilds": true
           }
         }
       ]

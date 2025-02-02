@@ -22,7 +22,7 @@ export const DistributorProvider = ({ children }) => {
     try {
       if (!access_token) return;
       const response = await axios.get(
-        `http://3.110.56.148:5000/api/getHistory`,
+        `https://api.esybulk.run.place/api/getHistory`,
         {
           headers: { Authorization: `${access_token}` },
         }
@@ -41,7 +41,7 @@ export const DistributorProvider = ({ children }) => {
       if (!access_token) return;
       setLoading(true);
       const response = await axios.get(
-        `http://3.110.56.148:5000/api/distributor/products?page=${page}&query=${query}`,
+        `https://api.esybulk.run.place/api/distributor/products?page=${page}&query=${query}`,
         {
           headers: { Authorization: `${access_token}` },
         }
@@ -92,7 +92,7 @@ export const DistributorProvider = ({ children }) => {
       }
       setLoading(true);
       const response = await axios.get(
-        `http://3.110.56.148:5000/api/search?search=${searchText}&page=${currentPage}`,
+        `https://api.esybulk.run.place/api/search?search=${searchText}&page=${currentPage}`,
         {
           headers: { Authorization: `${access_token}` },
         }
@@ -114,7 +114,7 @@ export const DistributorProvider = ({ children }) => {
   const fetchCart = async () => {
     try {
       const response = await axios.get(
-        "http://3.110.56.148:5000/api/distributor/cart",
+        "https://api.esybulk.run.place/api/distributor/cart",
         { headers: { Authorization: `${access_token}` } }
       );
       setCart(response.data.cartItems);
@@ -130,7 +130,7 @@ export const DistributorProvider = ({ children }) => {
   const addToCart = async (product) => {
     try {
       const response = await axios.post(
-        "http://3.110.56.148:5000/api/distributor/addremovecart",
+        "https://api.esybulk.run.place/api/distributor/addremovecart",
         { product },
         { headers: { Authorization: `${access_token}` } }
       );
