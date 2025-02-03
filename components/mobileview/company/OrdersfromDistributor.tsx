@@ -17,7 +17,7 @@ const PendingOrders = () => {
   const loadorderedProducts = async () => {
     setIsLoading(true);
     const response = await axios.get(
-      "https://api.esybulk.run.place/api/distributor_or_company_orders",
+      "https://esybulk.run.place/api/distributor_or_company_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

@@ -22,7 +22,7 @@ const OrderFromShop = () => {
   const loadBuyOrdered = async () => {
     setIsLoading(true);
     const response = await axios.get(
-      "https://api.esybulk.run.place/api/distributor_or_shopkeeper_orders",
+      "https://esybulk.run.place/api/distributor_or_shopkeeper_orders",
       {
         headers: { Authorization: `${access_token}` },
       }

@@ -37,7 +37,7 @@ const CompanyStatistics = () => {
   const fetchOrderStats = async () => {
     try {
       const response = await axios.get(
-        "https://api.esybulk.run.place/api/shopkeeper/stats",
+        "https://esybulk.run.place/api/shopkeeper/stats",
         { headers: { Authorization: `${access_token}` } }
       );
       const data: OrderStats[] = response.data;

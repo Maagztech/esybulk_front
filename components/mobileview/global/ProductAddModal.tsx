@@ -220,12 +220,12 @@ const AddProductModal = ({
           text2: "Updating the product details.",
         });
         await axios.post(
-          `https://api.esybulk.run.place/api/companyregisterproductedit/${selectedProduct.id}`,
+          `https://esybulk.run.place/api/companyregisterproductedit/${selectedProduct.id}`,
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         await axios.post(
-          "https://api.esybulk.run.place/api/distributor_or_company_add_quantity",
+          "https://esybulk.run.place/api/distributor_or_company_add_quantity",
           {
             product: selectedProduct.id,
             price: productData.buyOptions
@@ -255,13 +255,13 @@ const AddProductModal = ({
           setLoading(true);
         }
         const productResponse = await axios.post(
-          "https://api.esybulk.run.place/api/company_or_ditsributor_registerproduct",
+          "https://esybulk.run.place/api/company_or_ditsributor_registerproduct",
           productPayload,
           { headers: { Authorization: `${access_token}` } }
         );
         const productId = productResponse.data._id;
         await axios.post(
-          "https://api.esybulk.run.place/api/distributor_or_company_add_quantity",
+          "https://esybulk.run.place/api/distributor_or_company_add_quantity",
           {
             product: productId,
             price: productData.buyOptions
@@ -308,7 +308,7 @@ const AddProductModal = ({
       });
     }
     const response = await axios.get(
-      "https://api.esybulk.run.place/api/distributor_company_stocks",
+      "https://esybulk.run.place/api/distributor_company_stocks",
       {
         headers: { Authorization: `${access_token}` },
       }

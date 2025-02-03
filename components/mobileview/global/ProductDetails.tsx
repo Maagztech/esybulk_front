@@ -81,17 +81,17 @@ export default function ProductDetails({ id }: { id: string }) {
       let response;
       if (userInfo?.role === "distributor") {
         response = await axios.get(
-          `https://api.esybulk.run.place/api/distributor/buyoptions?product=${id}`,
+          `https://esybulk.run.place/api/distributor/buyoptions?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else if (userInfo?.role === "shopkeeper") {
         response = await axios.get(
-          `https://api.esybulk.run.place/api/distributor/buyoptionsshopkeeper?product=${id}`,
+          `https://esybulk.run.place/api/distributor/buyoptionsshopkeeper?product=${id}`,
           { headers: { Authorization: `${access_token}` } }
         );
       } else {
         response = await axios.get(
-          "https://api.esybulk.run.place/api/companygetProductDetails?product=" +
+          "https://esybulk.run.place/api/companygetProductDetails?product=" +
           id,
           { headers: { Authorization: `${access_token}` } }
         );
@@ -118,7 +118,7 @@ export default function ProductDetails({ id }: { id: string }) {
         try {
           setLoading(true);
           const response = await axios.get(
-            `https://api.esybulk.run.place/api/search?search=${productDetails?.title}&page=1`,
+            `https://esybulk.run.place/api/search?search=${productDetails?.title}&page=1`,
             {
               headers: { Authorization: `${access_token}` },
             }
@@ -148,7 +148,7 @@ export default function ProductDetails({ id }: { id: string }) {
   const handleBuyNow = () => {
     try {
       const reponse = axios.post(
-        `https://api.esybulk.run.place/api/shopkeeperorder`,
+        `https://esybulk.run.place/api/shopkeeperorder`,
         selectedOption,
         { headers: { Authorization: `${access_token}` } }
       );
@@ -211,7 +211,7 @@ export default function ProductDetails({ id }: { id: string }) {
     const addHistory = async () => {
       try {
         await axios.post(
-          `https://api.esybulk.run.place/api/saveHistory`,
+          `https://esybulk.run.place/api/saveHistory`,
           { product: id },
           { headers: { Authorization: `${access_token}` } }
         );
@@ -229,7 +229,7 @@ export default function ProductDetails({ id }: { id: string }) {
     try {
       if (currentPage >= totalPages) return;
       const response = await axios.get(
-        `https://api.esybulk.run.place/api/getRating/${id}?&page=${currentPage + 1
+        `https://esybulk.run.place/api/getRating/${id}?&page=${currentPage + 1
         }`
       );
       setCurrentPage(response.data.currentPage);
@@ -247,7 +247,7 @@ export default function ProductDetails({ id }: { id: string }) {
     try {
       setRatingAddLoading(true);
       const response = await axios.post(
-        `https://api.esybulk.run.place/api/addRating`,
+        `https://esybulk.run.place/api/addRating`,
         {
           product: id,
           rating: rating,
