@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "204818550386-3jur9ulp5uo2jbc6s9r4vf8lrhnhos4b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.asutosh123.esybulk",
+            "certificate_hash": "767ab1cb8465fc68253a81b89636d4867378cd12"
+          }
+        },
+        {
           "client_id": "204818550386-8ep2uoj85bu7mu1oo0rltslh7f88bg9g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

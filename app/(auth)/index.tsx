@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/authContext";
-import auth from "@react-native-firebase/auth";
+import { auth } from "@/firebaseConfig"; // Use our Firebase config
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
@@ -9,8 +10,7 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
 
   GoogleSignin.configure({
-    webClientId:
-      "204818550386-adh6lokl3o462k7sjmlb5hqur4s1vqjl.apps.googleusercontent.com",
+    webClientId: "204818550386-adh6lokl3o462k7sjmlb5hqur4s1vqjl.apps.googleusercontent.com",
   });
 
   const { getUserInfo }: any = useAuth();
@@ -20,8 +20,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    const unsubscribe = auth.onAuthStateChanged(onAuthStateChanged);
+    return unsubscribe;
   }, []);
 
   async function onGoogleButtonPress() {
@@ -29,13 +29,13 @@ export default function App() {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
 
-      const idToken = signInResult.data?.idToken;
+      const idToken = signInResult.data?.idToken
       if (!idToken) return;
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken || null);
 
-      const userSigned = await auth().signInWithCredential(googleCredential);
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const userSigned = await signInWithCredential(auth, googleCredential);
+
       const firebaseToken = await userSigned.user.getIdToken();
-
       await getUserInfo(firebaseToken);
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
@@ -51,7 +51,7 @@ export default function App() {
 
   return (
     <ImageBackground
-      source={require("../../assets/images/login_bg.webp")} // Replace with your image path
+      source={require("../../assets/images/login_bg.webp")}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
@@ -64,6 +64,7 @@ export default function App() {
     </ImageBackground>
   );
 }
+
 
 const styles = StyleSheet.create({
   backgroundImage: {
