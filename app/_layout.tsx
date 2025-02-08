@@ -5,7 +5,6 @@ import { CompanyProvider } from "@/context/companyContext";
 import { DistributorProvider } from "@/context/distributorContext";
 import { LoadingProvider } from "@/context/loadingContext";
 import { NotificationProvider } from "@/context/notificationsContext";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
@@ -28,7 +27,6 @@ Notifications.setNotificationHandler({
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -51,31 +49,31 @@ export default function RootLayout() {
               {/* <ThemeProvider
                 value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
               > */}
-                <View style={styles.overlay}>
-                  <SafeAreaView
-                    style={styles.container}
-                    edges={["top", "bottom", "left", "right"]}
-                  >
-                    <PaperProvider>
-                      <Header />
-                      <Loading />
-                      <Stack
-                        screenOptions={{
-                          headerShown: false,
-                        }}
-                      >
-                        <Stack.Screen
-                          name="(auth)"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(tabs)"
-                          options={{ headerShown: false }}
-                        />
-                      </Stack>
-                    </PaperProvider>
-                  </SafeAreaView>
-                </View>
+              <View style={styles.overlay}>
+                <SafeAreaView
+                  style={styles.container}
+                  edges={["top", "bottom", "left", "right"]}
+                >
+                  <PaperProvider>
+                    <Header />
+                    <Loading />
+                    <Stack
+                      screenOptions={{
+                        headerShown: false,
+                      }}
+                    >
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                    </Stack>
+                  </PaperProvider>
+                </SafeAreaView>
+              </View>
               {/* </ThemeProvider> */}
             </DistributorProvider>
           </CompanyProvider>
