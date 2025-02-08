@@ -75,7 +75,6 @@ const OrderFromShop = () => {
             </Text>
           </Pressable>
         </View>
-
         <View style={styles.content}>
           {pending === "Pending" && (
             <ShopkeeperPendingOrders
@@ -105,6 +104,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: "100%",
     maxWidth: 800,
+    flex: 1
   },
   tabContainer: {
     flexDirection: "row",

@@ -93,34 +93,14 @@ export const OrderNotChangeCard = ({ order }: any) => {
       />
 
       {/* Delivery process (status circles) */}
-      <View style={styles.deliveryProcess}>
-        <View style={styles.circleFilled} />
-        <View
-          style={
-            status === "shipped" || status === "delivered"
-              ? styles.horizontalBarFilled
-              : styles.horizontalBar
-          }
-        />
-        <View
-          style={
-            status === "shipped" || status === "delivered"
-              ? styles.circleFilled
-              : styles.circleVacant
-          }
-        />
-        <View
-          style={
-            status === "delivered"
-              ? styles.horizontalBarFilled
-              : styles.horizontalBar
-          }
-        />
-        <View
-          style={
-            status === "delivered" ? styles.circleFilled : styles.circleVacant
-          }
-        />
+      <View style={styles.deliveryContainer}>
+        <View style={styles.deliveryProcess}>
+          <View style={styles.circleFilled} />
+          <View style={styles.horizontalBarFull} />
+          <View style={status === "shipped" || status === "delivered" ? styles.circleFilled : styles.circleVacant} />
+          <View style={styles.horizontalBarFull} />
+          <View style={status === "delivered" ? styles.circleFilled : styles.circleVacant} />
+        </View>
       </View>
       <View style={styles.deliveryProcessButtons}>
         <Text style={styles.addButtonText}>Ordered</Text>
@@ -134,126 +114,110 @@ export const OrderNotChangeCard = ({ order }: any) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    width: "100%",
-    maxWidth: 350,
+    borderRadius: 12,
+    padding: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
+    width: "100%",
   },
   completedCard: {
-    borderColor: "green",
-    borderWidth: 2,
+    borderColor: "#28C76F",
+    borderWidth: 1,
   },
   cancelledCard: {
-    borderColor: "red",
-    borderWidth: 2,
+    borderColor: "#FF4D4F",
+    borderWidth: 1,
   },
   productImage: {
     width: "100%",
     height: 150,
     borderRadius: 10,
-    marginBottom: 10,
   },
   productName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginTop: 10,
     color: "#333",
-  },
-  productInfo: {
-    fontSize: 14,
-    color: "gray",
-    marginBottom: 3,
-  },
-  quantity: {
-    color: "gray",
-    fontWeight: "bold",
-  },
-  price: {
-    fontWeight: "bold",
-    color: "#2A7EFF",
-  },
-  shop: {
-    fontStyle: "italic",
-  },
-  location: {
-    color: "#555",
   },
   buttonAndInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
-    width: "100%",
-  },
-  complete_button: {
-    backgroundColor: "#2A7EFF",
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    marginVertical: 5,
-    justifyContent: "center",
     alignItems: "center",
-  },
-  incomplete_button: {
-    backgroundColor: "gray",
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
+    marginTop: 12,
   },
   infoContainer: {
     flex: 1,
   },
+  productInfo: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 4,
+  },
+  quantity: {
+    fontWeight: "bold",
+    color: "#222",
+  },
   buttons: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
+  },
+  complete_button: {
+    backgroundColor: "#FF4D4F",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  addButtonText: {
+    color: "black",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  deliveryContainer: {
+    alignItems: "center",
+    width: "100%",
   },
   deliveryProcess: {
     flexDirection: "row",
     alignItems: "center",
-    width: "100%",
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  circleFilled: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "green",
-  },
-  circleVacant: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "gray",
-  },
-  horizontalBar: {
-    flex: 1,
-    height: 4,
-    backgroundColor: "gray",
-  },
-  horizontalBarFilled: {
-    flex: 1,
-    height: 4,
-    backgroundColor: "green",
+    justifyContent: "space-between",
+    marginTop: 20,
+    width: "90%",
   },
   deliveryProcessButtons: {
-    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 8,
   },
-  addButtonText: {
-    color: "black",
-    fontWeight: "600",
+  circleFilled: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#28C76F",
+  },
+  circleVacant: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: "#BFBFBF",
+    backgroundColor: "#fff",
+  },
+  horizontalBar: {
+    width: 30,
+    height: 4,
+    backgroundColor: "#BFBFBF",
+  },
+  horizontalBarFilled: {
+    width: 30,
+    height: 4,
+    backgroundColor: "#28C76F",
+  },
+  horizontalBarFull: {
+    flex: 1,
+    height: 4,
+    backgroundColor: "lightgray",
+    marginHorizontal: 5,
   },
 });
