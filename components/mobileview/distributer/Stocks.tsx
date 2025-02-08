@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 5,
     marginHorizontal: 10,
+    paddingBottom: 3
   },
   headerTitle: {
     fontSize: 18,
@@ -112,12 +113,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   addButton: {
-    backgroundColor: "#270e45",
+    backgroundColor: "black",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 25,
   },
   addButtonText: {
     color: "#fff",
+    fontWeight: "bold",
   },
   scrollContainer: {
     flex: 1,
