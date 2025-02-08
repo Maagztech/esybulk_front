@@ -51,14 +51,12 @@ export default function App() {
 
   return (
     <ImageBackground
-      source={require("../../assets/images/login_bg.webp")}
+      source={require("../../assets/images/login_bg.gif")}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.heading}>India's Largest B2B E-commerce Chain</Text>
-        <Text style={styles.subHeading}>Empowering Businesses Nationwide</Text>
         <TouchableOpacity style={styles.signinButton} onPress={onGoogleButtonPress}>
-          <Text style={styles.signinText}>Sign in with Google</Text>
+          <Text style={styles.signinText}>Enter with Google</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -69,33 +67,20 @@ export default function App() {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: "cover", // Ensures the image covers the entire background
+    resizeMode: "cover",
   },
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Optional overlay for better text visibility
-  },
-  heading: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  subHeading: {
-    fontSize: 16,
-    color: "#ccc",
-    textAlign: "center",
-    marginBottom: 30,
+    justifyContent: "flex-end",
+    padding: 20,
+
   },
   signinButton: {
-    backgroundColor: "#966440",
+    backgroundColor: "black",
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
