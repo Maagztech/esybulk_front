@@ -51,7 +51,7 @@ export default function App() {
 
   return (
     <ImageBackground
-      source={require("../../assets/images/login_bg.gif")}
+      source={require("../../assets/images/login_bg.png")}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
