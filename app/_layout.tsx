@@ -5,6 +5,7 @@ import { CompanyProvider } from "@/context/companyContext";
 import { DistributorProvider } from "@/context/distributorContext";
 import { LoadingProvider } from "@/context/loadingContext";
 import { NotificationProvider } from "@/context/notificationsContext";
+import useForceUpdate from "@/hook/useForceUpdate";
 import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
@@ -27,6 +28,7 @@ Notifications.setNotificationHandler({
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useForceUpdate();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });

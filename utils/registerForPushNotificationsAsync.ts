@@ -10,13 +10,13 @@ export async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
-      sound: "default", // 🔊 Ensures sound plays
+      sound: "default",
     });
   }
 
   if (!Device.isDevice) {
     Alert.alert("Error", "Must use physical device for push notifications");
-    throw new Error("Must use physical device for push notifications");
+    return;
   }
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -28,13 +28,11 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (finalStatus !== "granted") {
-    return new Promise(() => {
-      Alert.alert(
-        "Permission Required",
-        "Push notification permission is required to continue using the app.",
-        [{ text: "OK", onPress: () => registerForPushNotificationsAsync() }]
-      );
-    });
+    Alert.alert(
+      "Permission Required",
+      "Push notification permission is required to continue using the app."
+    );
+    return;
   }
 
   const projectId =
