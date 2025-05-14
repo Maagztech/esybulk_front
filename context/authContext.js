@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         const refresh_token = await getLocalUser();
         if (refresh_token) {
           const response = await axios.post(
-            "https://esybulk.run.place/api/refresh_token",
+            "https://api.esybulk.store/api/refresh_token",
             { refresh_token }
           );
           setUserInfo(response.data.user);
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "https://esybulk.run.place/api/login",
+        "https://api.esybulk.store/api/login",
         {
           pushToken: expoPushToken,
         },
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
   const selectRole = async (role) => {
     try {
       const response = await axios.post(
-        "https://esybulk.run.place/api/selectRole",
+        "https://api.esybulk.store/api/selectRole",
         { role },
         {
           headers: { Authorization: `${access_token}` },
@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }) => {
   const activeAccount = async (data) => {
     try {
       const response = await axios.post(
-        "https://esybulk.run.place/api/active",
+        "https://api.esybulk.store/api/active",
         data,
         { headers: { Authorization: `${access_token}` } }
       );
@@ -146,7 +146,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      axios.get("https://esybulk.run.place/api/logout", {
+      axios.get("https://api.esybulk.store/api/logout", {
         headers: { Authorization: `${access_token}` },
       });
 

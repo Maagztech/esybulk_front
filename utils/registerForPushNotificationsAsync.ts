@@ -1,4 +1,4 @@
-import { Alert, Platform } from "react-native";
+import { Alert, Platform, Linking } from "react-native";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -15,24 +15,38 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (!Device.isDevice) {
-    Alert.alert("Error", "Must use physical device for push notifications");
+    Alert.alert("Error", "Must use a physical device for push notifications.");
     return;
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+  let { status } = await Notifications.getPermissionsAsync();
 
-  if (existingStatus !== "granted") {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
+  if (status !== "granted") {
+    const { status: newStatus } = await Notifications.requestPermissionsAsync();
+    status = newStatus;
   }
 
-  if (finalStatus !== "granted") {
-    Alert.alert(
-      "Permission Required",
-      "Push notification permission is required to continue using the app."
-    );
-    return;
+  while (status !== "granted") {
+    await new Promise((resolve) => {
+      Alert.alert(
+        "Permission Required",
+        "Notification permission is required to use this app. Please enable it in settings.",
+        [
+          {
+            text: "Go to Settings",
+            onPress: async () => {
+              await Linking.openSettings();
+              resolve(undefined);
+            },
+          },
+        ]
+      );
+    });
+
+    const { status: updatedStatus } = await Notifications.getPermissionsAsync();
+    if (updatedStatus === "granted") {
+      status = updatedStatus;
+    }
   }
 
   const projectId =

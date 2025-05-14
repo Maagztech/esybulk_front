@@ -14,7 +14,7 @@ export const OrderNotChangeCard = ({ order }: any) => {
   const cancelOrder = async () => {
     try {
       const response = await axios.post(
-        "https://esybulk.run.place/api/cancelorder",
+        "https://api.esybulk.store/api/cancelorder",
         {
           orderId: order._id,
         },

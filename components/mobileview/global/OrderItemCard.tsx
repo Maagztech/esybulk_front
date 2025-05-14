@@ -29,11 +29,11 @@ export const ItemCard = ({ order }: any) => {
   const updateStatus = (newStatus: string) => {
     const url =
       newStatus === "shipped"
-        ? "https://esybulk.run.place/api/shipped"
+        ? "https://api.esybulk.store/api/shipped"
         : newStatus === "delivered"
-          ? "https://esybulk.run.place/api/delivered"
+          ? "https://api.esybulk.store/api/delivered"
           : newStatus === "cancelled"
-            ? "https://esybulk.run.place/api/cancelorder"
+            ? "https://api.esybulk.store/api/cancelorder"
             : null;
 
     if (!url) {
